@@ -6,7 +6,7 @@ What is FAIR SHARE?</br>
 -Control every aspect of the flat</br>
 -Keep an eye on every invoice/bill</br>
 -Who payed what/What is due?</br>
-Image Recognition for bills, OS independency</br></br>
+-Image Recognition for bills, OS independency</br></br>
 
 Used Technologies:</br>
 
