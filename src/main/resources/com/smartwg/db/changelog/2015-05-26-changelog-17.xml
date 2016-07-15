@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-16" author="to">
+		<dropNotNullConstraint tableName="bill"
+			columnName="name" columnDataType="VARCHAR(45)" />
+		<addColumn tableName="bill">
+			<column name="private" type="TINYINT(1)" />
+		</addColumn>
+		<addDefaultValue columnName="private" tableName="bill"
+			columnDataType="TINYINT(1)" defaultValue="0" />
+		<update tableName="bill">
+			<column name="private" value="0" />
+			<where id='1' />
+		</update>
+		<update tableName="bill">
+			<column name="private" value="0" />
+			<where id='2' />
+		</update>
+		<update tableName="bill">
+			<column name="private" value="0" />
+			<where id='3' />
+		</update>
+		<update tableName="bill">
+			<column name="private" value="0" />
+			<where id='4' />
+		</update>
+	</changeSet>
+
+</databaseChangeLog>

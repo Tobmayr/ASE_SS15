@@ -1,0 +1,162 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h1 class="page-header">#{msg.tShowBill}</h1>
+		<h:form id="newBillForm" enctype="multipart/form-data">
+			<div class="ui-grid ui-grid-responsive">
+				<p:button value="#{msg.cancel}" outcome="#{billOverview.returnPage}"
+					icon="fa fa-reply" />
+				<p:commandButton value="#{msg.edit}"
+					action="#{billActions.editBill(billOverview.bill, navigation.pageHome)}"
+					icon="fa fa-edit" ajax="false"
+					rendered="#{smartWG.isDateBigger(billOverview.bill.date)}" />
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-4">
+
+						<p:panel id="summary" header="#{msg['summaryTab']}">
+							<p:panelGrid columns="2" style="width:90%" class="noBorderGrid">
+								<p:outputLabel value="#{msg['dateLabel']}:" />
+								<h:outputText value="#{billOverview.bill.date}">
+									<f:convertDateTime pattern="MM-dd-yyyy" />
+								</h:outputText>
+								<p:outputLabel value="#{msg['imageLabel']}:" />
+								<h:outputText value="#{billOverview.bill.resource.name}" />
+								<p:outputLabel value="#{msg['nameLabel']}:" />
+								<h:outputText value="#{billOverview.bill.name}" />
+								<p:outputLabel value="#{msg['shopLabel']}:" />
+								<h:outputText value="#{billOverview.bill.shopDTO.name}" />
+								<p:outputLabel value="#{msg['currencyLabel']}:" />
+								<h:outputText value="#{billOverview.bill.currency.isoCode}" />
+								<p:outputLabel value="#{msg.activityList_createdBy}" />
+								<h:outputText value="#{billOverview.bill.createdByUsername}" />
+
+							</p:panelGrid>
+						</p:panel>
+					</div>
+					<p:outputPanel class="ui-grid-col-4"
+						rendered="#{billOverview.bill.recurring!=null}">
+						<p:panel header="#{msg.recurringTab}">
+							<p:panelGrid columns="2" class="noBorderGrid">
+								<p:outputLabel value="#{msg.startLabel}:" />
+								<h:outputText value="#{billOverview.bill.recurring.date}">
+									<f:convertDateTime pattern="MM-dd-yyyy" />
+								</h:outputText>
+								<p:outputLabel value="#{msg.repeatEvery}:" />
+								<h:outputText
+									value="#{billOverview.bill.recurring.value} #{billOverview.bill.recurring.recurringType.name}" />
+								<p:outputLabel value="#{msg.repeatLabel}" />
+								<h:outputText
+									value="#{billOverview.bill.recurring.repeatType.name}"
+									rendered="#{billOverview.bill.recurring.repeatType=='FOREVER'}" />
+								<h:outputText
+									value="#{billOverview.bill.recurring.repeatType.name} #{billOverview.bill.recurring.times} #{msg.iteratLabel} "
+									rendered="#{billOverview.bill.recurring.repeatType=='TIMES'}" />
+								<h:outputText
+									value="#{billOverview.bill.recurring.repeatType.name} #{billOverview.bill.recurring.endDate}"
+									rendered="#{billOverview.bill.recurring.repeatType=='UNTIL'}" />
+							</p:panelGrid>
+						</p:panel>
+					</p:outputPanel>
+					<div class="ui-grid-col-4">
+						<p:panel header="#{msg.imageLabel}"
+							rendered="#{billOverview.bill.resource!=null}">
+							<p:panelGrid columns="2" class="noBorderGrid">
+								<p:graphicImage value="#{file.file}" width="#{file.width}"
+									height="#{file.height}">
+									<f:param name="id" value="#{billOverview.bill.resource.id}" />
+								</p:graphicImage>
+								<p:panelGrid columns="2">
+									<p:outputLabel value="#{msg.imageLabel}:" />
+									<h:outputText value="#{billOverview.bill.resource.name}" />
+									<p:outputLabel value="#{msg.fileType}:" />
+									<h:outputText value="#{billOverview.bill.resource.simpleType}" />
+								</p:panelGrid>
+								<p:commandButton ajax="false" icon="fa fa-download">
+									<p:fileDownload value="#{fileDownloadView.file}" />
+								</p:commandButton>
+
+							</p:panelGrid>
+
+						</p:panel>
+
+					</div>
+
+				</div>
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-12">
+						<p:panel>
+							<p:dataTable id="items" var="item1"
+								value="#{billOverview.bill.costEntries}" paginator="true"
+								paginatorTemplate=" {Exporters}">
+								<f:facet name="{Exporters}">
+									<h:commandLink>
+										<p:graphicImage name="/images/export/excel.png" width="24" />
+										<p:dataExporter type="xls" target="items"
+											fileName="itemsOfBill#{billOverview.bill.id}"
+											encoding="iso-8859-1" />
+									</h:commandLink>
+
+									<h:commandLink>
+										<p:graphicImage name="/images/export/pdf.png" width="24" />
+										<p:dataExporter type="pdf" target="items"
+											fileName="itemsOfBill#{billOverview.bill.id}"
+											encoding="iso-8859-1" />
+									</h:commandLink>
+
+									<h:commandLink>
+										<p:graphicImage name="/images/export/csv.png" width="24" />
+										<p:dataExporter type="csv" target="items"
+											fileName="itemsOfBill#{billOverview.bill.id}"
+											encoding="iso-8859-1" />
+									</h:commandLink>
+
+									<h:commandLink>
+										<p:graphicImage name="/images/export/xml.png" width="24" />
+										<p:dataExporter type="xml" target="items"
+											fileName="itemsOfBill#{billOverview.bill.id}"
+											encoding="iso-8859-1" />
+									</h:commandLink>
+								</f:facet>
+
+
+								<p:column headerText="#{msg['nameLabel']}">
+
+									<p:outputLabel value="#{item1.name}" />
+
+								</p:column>
+								<p:column headerText="#{msg['priceLabel']}" style="width:25%">
+									<h:outputText
+										value="#{item1.amount} #{billOverview.bill.currency.isoCode}" />
+								</p:column>
+								<p:column headerText="#{msg['categoryLabel']}">
+									<h:outputText value="#{item1.category.name}" />
+								</p:column>
+								<p:column headerText="#{msg['amount']}" style="width:25%">
+									<h:outputText value="#{item1.times}" />
+								</p:column>
+								<p:column headerText="#{msg['privateBill']}">
+									<p:selectBooleanCheckbox value="#{item1.excluded}"
+										disabled="true" />
+								</p:column>
+								<f:facet name="footer">
+									<p:outputPanel>
+									</p:outputPanel>
+
+								</f:facet>
+
+							</p:dataTable>
+						</p:panel>
+					</div>
+				</div>
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

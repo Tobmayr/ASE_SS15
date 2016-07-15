@@ -1,0 +1,103 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">#{msg.listSummary_title}</h1>
+			<p:button outcome="#{shoppingListOverview.returnPage}"
+				value="#{msg.back}" icon="fa fa-reply" />
+			<p:commandButton action="#{shoppingListOverview.updateShoppingList}"
+				value="#{msg.save}" icon="fa fa-check" update="listPanel"
+				rendered="#{shoppingListOverview.currentShoppingList.assignedTo eq userBean.currentUser.id
+                    and shoppingListOverview.currentShoppingList.state != 'DONE'}" />
+			<p:commandButton
+				action="#{shoppingListOverview.completeShoppingList}"
+				value="#{msg.complete}" icon="fa fa-check" update="listPanel"
+				rendered="#{shoppingListOverview.currentShoppingList.createdBy eq userBean.currentUser.id
+                    and shoppingListOverview.currentShoppingList.state eq 'RELEASED'}"
+				ajax="false" />
+			<p:separator />
+
+			<p:panel id="listPanel" header="#{msg.newShoppingList_listTitle}"
+				style="margin-bottom:10px; margin-top: 10px;">
+				<p:panelGrid columns="2" class="noBorderGrid">
+					<h:outputText for="listName"
+						value="#{msg.newShoppingList_listName}" />
+					<h:outputText id="listName"
+						value="#{shoppingListOverview.currentShoppingList.name}" />
+					<h:outputText for="listDeadline"
+						value="#{msg.newShoppingList_listDeadline}" />
+					<h:outputText id="listDeadline"
+						value="#{shoppingListOverview.currentShoppingList.deadline}">
+						<f:convertDateTime type="both" dateStyle="medium"
+							timeStyle="short" locale="de" />
+					</h:outputText>
+				</p:panelGrid>
+
+				<p:dataTable id="itemList" var="listItem"
+					value="#{shoppingListOverview.filteredItemList}"
+					style="margin-top: 10px;"
+					selection="#{shoppingListOverview.selectedListPositions}"
+					rowKey="#{listItem.id}"
+					disabledSelection="#{shoppingListOverview.currentShoppingList.assignedTo != userBean.currentUser.id
+                             or shoppingListOverview.currentShoppingList.state eq 'DONE'}"
+					paginator="true" paginatorTemplate=" {Exporters}">
+					<f:facet name="header">
+                        #{msg.newShoppingList_listPositionsTitle}
+                    </f:facet>
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="itemList"
+								fileName="ShoppingList" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="itemList"
+								fileName="ShoppingList" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="itemList"
+								fileName="ShoppingList" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="itemList"
+								fileName="ShoppingList" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column selectionMode="multiple"
+						style="width:35px; padding-top:5px; text-align:center;"
+						exportable="false" />
+					<p:column headerText="#{msg.newShoppingList_itemNameTitle}">
+						<h:outputText value="#{listItem.name}" />
+					</p:column>
+					<p:column headerText="#{msg.newShoppingList_itemCategoryTitle}"
+						priority="2">
+						<h:outputText value="#{listItem.category.name}" />
+					</p:column>
+					<p:column headerText="#{msg.newShoppingList_itemAmountTitle}"
+						priority="1">
+						<h:outputText value="#{listItem.amount}" />
+					</p:column>
+					<p:column exportable="false">
+						<h:outputText rendered="#{listItem.done}">
+							<i class="fa fa-check" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

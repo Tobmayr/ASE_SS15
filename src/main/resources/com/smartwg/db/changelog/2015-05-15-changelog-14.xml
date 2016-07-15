@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<property name="now" value="now()" dbms="mysql" />
+
+	<changeSet id="changelog-14" author="to">
+		<comment>add total field for bill and relationship to shoppinglist</comment>
+		<addColumn tableName="bill">
+			<column name="total" type="DECIMAL(7,2)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<addColumn tableName="shopping_list">
+			<column name="bill_id" type="INTEGER(11))">
+			</column>
+		</addColumn>
+
+		<createTable tableName="user_activity">
+			<column name="user_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="activity_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="rating" type="INT(2)">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-14-a" author="to">
+		<comment>move currency from cost_entry to bill</comment>
+		<addColumn tableName="bill">
+			<column name="currency_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<dropForeignKeyConstraint baseTableName="cost_entry"
+			constraintName="fk_cost_entry_currency_id" />
+		<dropColumn tableName="cost_entry" columnName="currency_id" />
+		<addForeignKeyConstraint constraintName="fk_bill_currency"
+			referencedTableName="currency" baseColumnNames="currency_id"
+			baseTableName="bill" referencedColumnNames="id" />
+
+		<dropNotNullConstraint tableName="group" columnName="country" columnDataType="INT(11)"/>
+	</changeSet>
+
+
+
+
+</databaseChangeLog>

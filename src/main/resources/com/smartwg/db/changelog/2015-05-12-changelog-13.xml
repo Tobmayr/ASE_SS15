@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<property name="now" value="now()" dbms="mysql" />
+
+	<changeSet id="changelog-13" author="to">
+		<comment>add relationship between group and bill</comment>
+		<addColumn tableName="bill">
+			<column name="group_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<update tableName="bill">
+			<column name="group_id" type="INT(11)" value="1" />
+		</update>
+	</changeSet>
+
+
+</databaseChangeLog>

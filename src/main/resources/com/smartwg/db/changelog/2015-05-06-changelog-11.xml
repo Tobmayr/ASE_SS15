@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<property name="now" value="now()" dbms="mysql" />
+	<changeSet id="changelog-11" author="to">
+		<dropNotNullConstraint tableName="group"
+			columnName="country" columnDataType="INT(11)" />
+		<addNotNullConstraint tableName="bill"
+			columnName="created_by_user_id" columnDataType="INT(11)" />
+	</changeSet>
+
+	<changeSet author="to" id="testdata">
+
+		<comment>Testdata for shop</comment>
+		<insert tableName="shop">
+			<column name="id" value="1" />
+			<column name="name" value="Billa" />
+		</insert>
+		<insert tableName="shop">
+			<column name="id" value="2" />
+			<column name="name" value="Hofer" />
+		</insert>
+		<insert tableName="shop">
+			<column name="id" value="3" />
+			<column name="name" value="Merkur" />
+		</insert>
+		<comment>Testdata for currency</comment>
+		<insert tableName="currency">
+			<column name="id" value="1" />
+			<column name="iso_code" value="EUR" />
+			<column name="rate_to_euro" value="1.00" />
+			<column name="updated" valueDate="${now}" />
+		</insert>
+
+		<comment>Testdata for Category</comment>
+		<insert tableName="category">
+			<column name="id" value="1" />
+			<column name="name" value="Lebensmittel" />
+			<column name="fixed_cost" value="1" />
+			<column name="is_default" value="1" />
+		</insert>
+		<insert tableName="category">
+			<column name="id" value="2" />
+			<column name="name" value="Miete und Co." />
+			<column name="fixed_cost" value="1" />
+			<column name="is_default" value="1" />
+		</insert>
+		<insert tableName="category">
+			<column name="id" value="3" />
+			<column name="name" value="Reinigunsmittel" />
+			<column name="fixed_cost" value="1" />
+			<column name="is_default" value="1" />
+		</insert>
+	</changeSet>
+
+	<changeSet author="to" id="testdata-2">
+
+		<comment>Testdata for country</comment>
+		<insert tableName="country">
+			<column name="id" value="1" />
+			<column name="iso_code" value="AT" />
+			<column name="name" value="Austria" />
+		</insert>
+		<insert tableName="country">
+			<column name="id" value="2" />
+			<column name="iso_code" value="DE" />
+			<column name="name" value="Germany" />
+		</insert>
+		<insert tableName="country">
+			<column name="id" value="3" />
+			<column name="iso_code" value="GB" />
+			<column name="name" value="Great Britain" />
+		</insert>
+		<insert tableName="country">
+			<column name="id" value="4" />
+			<column name="iso_code" value="US" />
+			<column name="name" value="United States of America" />
+		</insert>
+	</changeSet>
+
+	<changeSet author="to" id="testdata-3">
+		<comment>Testdata for group</comment>
+		<insert tableName="group">
+			<column name="id" value="1"/>
+			<column name="name" value="DefaultGroup"/>
+			<column name="country" value="1"/>
+		</insert>
+		<comment>Testdata for user</comment>
+		<insert tableName="user">
+			<column name="id" value="1" />
+			<column name="username" value="DefaultUser" />
+			<column name="e_mail" value="def@ult.user" />
+			<column name="notify" value="0" />
+			<column name="confirmed" value="1" />
+			<column name="confirm_code" value="CONFIRMED" />
+		</insert>
+		<comment>Testdata for bill</comment>
+		<insert tableName="bill">
+			<column name="id" value="1" />
+			<column name="name" value="FirstBill" />
+			<column name="date" value="2015-05-29 21:59:59" />
+			<column name="shop_id" value="1" />
+			<column name="group_id" value="1"/>
+			<column name="total" value="100"/>
+			<column name="currency_id" value="1"/>
+			<column name="created_by_user_id" value="1" />
+		</insert>
+		<insert tableName="bill">
+			<column name="id" value="2" />
+			<column name="name" value="SecondBill" />
+			<column name="date" value="2014-06-29 21:59:59" />
+			<column name="shop_id" value="2" />
+			<column name="group_id" value="1"/>
+			<column name="total" value="100"/>
+			<column name="currency_id" value="1"/>
+			<column name="created_by_user_id" value="1" />
+		</insert>
+		<insert tableName="bill">
+			<column name="id" value="3" />
+			<column name="name" value="ThirdBill" />
+			<column name="date" value="2015-05-29 21:59:59" />
+			<column name="shop_id" value="3" />
+			<column name="group_id" value="1"/>
+			<column name="total" value="100"/>
+			<column name="currency_id" value="1"/>
+			<column name="created_by_user_id" value="1" />
+		</insert>
+		<insert tableName="bill">
+			<column name="id" value="4" />
+			<column name="name" value="FourthBill" />
+			<column name="date" value="2015-04-29 21:59:59" />
+			<column name="shop_id" value="2" />
+			<column name="group_id" value="1"/>
+			<column name="total" value="100"/>
+			<column name="currency_id" value="1"/>
+			<column name="created_by_user_id" value="1" />
+		</insert>
+	</changeSet>
+
+	<changeSet author="to" id="testdata-4">
+		<comment>Testdata for costEntry</comment>
+		<insert tableName="cost_entry">
+			<column name="id" value="1" />
+			<column name="name" value="Entry1" />
+			<column name="amount" value="100.03" />
+			<column name="category_id" value="1" />
+			<column name="is_excluded" value="0" />
+			<column name="times" value="1" />
+			<column name="bill_id" value="1" />
+		</insert>
+		<insert tableName="cost_entry">
+			<column name="id" value="2" />
+			<column name="name" value="Entry2" />
+			<column name="amount" value="34.0" />
+			<column name="category_id" value="2" />
+			<column name="is_excluded" value="0" />
+			<column name="times" value="2" />
+			<column name="bill_id" value="1" />
+		</insert>
+		<insert tableName="cost_entry">
+			<column name="id" value="3" />
+			<column name="name" value="Entry3" />
+			<column name="amount" value="10" />
+			<column name="category_id" value="3" />
+			<column name="is_excluded" value="0" />
+			<column name="times" value="3" />
+			<column name="bill_id" value="2" />
+		</insert>
+		<insert tableName="cost_entry">
+			<column name="id" value="4" />
+			<column name="name" value="Entry5" />
+			<column name="amount" value="14.04" />
+			<column name="category_id" value="2" />
+			<column name="is_excluded" value="1" />
+			<column name="times" value="2" />
+			<column name="bill_id" value="3" />
+		</insert>
+		<insert tableName="cost_entry">
+			<column name="id" value="5" />
+			<column name="name" value="Entry5" />
+			<column name="amount" value="1" />
+			<column name="category_id" value="1" />
+			<column name="is_excluded" value="0" />
+			<column name="times" value="2" />
+			<column name="bill_id" value="4" />
+		</insert>
+
+	</changeSet>
+
+</databaseChangeLog>

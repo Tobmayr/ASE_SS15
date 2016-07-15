@@ -1,0 +1,99 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+
+		<h1 class="page-header ">Statistic</h1>
+		<!-- 
+	<pm:header title="Statistic" swatch="a">
+				<p:button outcome="pm:mockups?transition=slide" value="Back"
+             		 		icon="ui-icon-arrow-l"
+                 			styleClass="ui-btn-left ui-btn-inline"/>
+			</pm:header>
+			<pm:content>
+				<h:form id="statisticForm">
+               		 <h:messages/>
+                    <pm:field>
+                  		<h:outputLabel for="flat" value="Wohnung" style="font-weight:bold"/>
+                    	<p:selectOneMenu id="flat" value="#{mockup.flat}" effect="fold" editable="true">
+							<f:selectItem  itemLabel="Wähle Wohnung" itemValue="" noSelectionOption="true"/>
+							<f:selectItems itemValue="#{mockup.flats}" />
+       				 	</p:selectOneMenu>
+                    </pm:field>
+                     <pm:field>
+                  		<h:outputLabel for="shop" value="Geschäft" style="font-weight:bold"/>
+                    	<p:selectOneMenu id="shop" value="#{mockup.shop}" effect="fold" editable="true">
+							<f:selectItem  itemLabel="Wähle Geschäft" itemValue="" noSelectionOption="true"/>
+							<f:selectItems itemValue="#{mockup.shops}" />
+       				 	</p:selectOneMenu>
+                    </pm:field>
+                    <pm:field>
+                  		<h:outputLabel for="category" value="Kategorie" style="font-weight:bold"/>
+                    	<p:selectOneMenu id="category" value="#{mockup.category}" effect="fold" editable="true">
+							<f:selectItem  itemLabel="Wähle Kategorie" itemValue="" noSelectionOption="true"/>
+							<f:selectItems itemValue="#{mockup.categories}" />
+       				 	</p:selectOneMenu>
+                    </pm:field>
+                    <p:panel>
+                		<p:chart type="pie" model="#{mockup.model}" style="width:400px;height:300px" />
+                	</p:panel>
+                </h:form>			
+			</pm:content>
+			<pm:footer/>
+	
+	
+	
+	 -->
+
+		<h:form>
+			<h:messages />
+			<p:fieldset>
+				<h:outputLabel for="flat" value="Wohnung:" style="font-weight:bold" />
+				<p:selectOneMenu id="flat" value="#{mockup.flat}"
+					style="width:200px">
+					<f:selectItem itemLabel="Wähle Wohnung" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{mockup.flats}" />
+				</p:selectOneMenu>
+			</p:fieldset>
+			<p:fieldset>
+				<h:outputLabel for="shop" value="Geschäft: "
+					style="font-weight:bold" />
+				<p:selectOneMenu id="shop" value="#{mockup.shop}"
+					style="width:200px">
+					<f:selectItem itemLabel="Wähle Geschäft" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{mockup.shops}" />
+				</p:selectOneMenu>
+			</p:fieldset>
+			<p:fieldset>
+				<h:outputLabel for="category" value="Kategorie: "
+					style="font-weight:bold" />
+				<p:selectOneMenu id="category" value="#{mockup.category}"
+					style="width:200px">
+					<f:selectItem itemLabel="Wähle Kategorie" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{mockup.categories}" />
+				</p:selectOneMenu>
+			</p:fieldset>
+			<p:fieldset>
+				<h:outputLabel for="datefrom" value="Zeitraum von: "
+					style="font-weight:bold" />
+				<p:calendar id="button" value="#{mockup.datefrom}" showOn="button" />
+				<h:outputLabel for="dateto" value="bis: " style="font-weight:bold" />
+				<p:calendar id="button2" value="#{mockup.dateto}" showOn="button" />
+			</p:fieldset>
+			<p:panel>
+				<p:chart type="pie" model="#{mockup.model}" style="height:300px"
+					responsive="true" />
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+
+
+</ui:composition>

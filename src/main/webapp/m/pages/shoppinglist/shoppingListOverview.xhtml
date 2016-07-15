@@ -1,0 +1,85 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header class="app-title" title="#{msg.listSummary_title}"
+				swatch="a">
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+			</pm:header>
+			<pm:content>
+				<h:form>
+					<p:commandButton
+						action="#{shoppingListOverview.updateShoppingList}"
+						value="#{msg.save}" icon="ui-icon-check"
+						rendered="#{shoppingListOverview.currentShoppingList.assignedTo eq userBean.currentUser.id
+                    and shoppingListOverview.currentShoppingList.state != 'DONE'}" />
+					<p:commandButton
+						action="#{shoppingListOverview.completeShoppingList}"
+						value="#{msg.complete}" icon="ui-icon-check"
+						rendered="#{shoppingListOverview.currentShoppingList.createdBy eq userBean.currentUser.id
+                    and shoppingListOverview.currentShoppingList.state eq 'RELEASED'}" />
+
+					<pm:field>
+						<h:outputText id="listName"
+							value="#{msg.newShoppingList_listName}: #{shoppingListOverview.currentShoppingList.name}" />
+					</pm:field>
+					<pm:field>
+						<h:outputText for="listDeadline"
+							value="#{msg.newShoppingList_listDeadline}: " />
+						<h:outputText id="listDeadline"
+							value="#{shoppingListOverview.currentShoppingList.deadline}">
+							<f:convertDateTime type="both" dateStyle="medium"
+								timeStyle="short" locale="de" />
+						</h:outputText>
+					</pm:field>
+					<pm:field>
+						<h:outputText id="assignedTo"
+							value="#{msg.shoppingLists_assignedToTitle}: #{shoppingListOverview.currentShoppingList.assignedToUsername}" />
+					</pm:field>
+					<pm:field>
+						<h:outputText id="state"
+							value="#{msg.shoppingLists_stateTitle}: #{shoppingListOverview.currentShoppingList.state.name}" />
+					</pm:field>
+
+					<pm:field>
+						<p:outputLabel value="#{msg.newShoppingList_listPositionsTitle}"
+							style="text-align: center; font-weight: bold" />
+
+						<p:dataTable id="itemList" var="listItem"
+							value="#{shoppingListOverview.filteredItemList}"
+							tableStyleClass="ui-table-columntoggle"
+							selection="#{shoppingListOverview.selectedListPositions}"
+							rowKey="#{listItem.id}" selectionMode="multiple"
+							disabledSelection="#{shoppingListOverview.currentShoppingList.assignedTo != userBean.currentUser.id
+                             or shoppingListOverview.currentShoppingList.state eq 'DONE'}">
+							<p:column headerText="#{msg.newShoppingList_itemNameTitle}">
+								<h:outputText value="#{listItem.name}" />
+							</p:column>
+							<p:column headerText="#{msg.newShoppingList_itemCategoryTitle}"
+								priority="2">
+								<h:outputText value="#{listItem.category.name}" />
+							</p:column>
+							<p:column headerText="#{msg.newShoppingList_itemAmountTitle}"
+								priority="1">
+								<h:outputText value="#{listItem.amount}" />
+							</p:column>
+
+						</p:dataTable>
+					</pm:field>
+				</h:form>
+			</pm:content>
+			<pm:footer>
+			</pm:footer>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

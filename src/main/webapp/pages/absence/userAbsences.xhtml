@@ -1,0 +1,85 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">
+				<i class="fa fa-calendar" /> #{msg.myAbsences_title}
+			</h1>
+			<p:commandButton action="#{userAbsence.createAbsence}" ajax="false"
+				value="#{msg.absece_create}" icon="fa fa-plus" />
+
+			<p:separator />
+			<p:dataTable id="myAbsences" var="myAbsence"
+				value="#{userAbsence.myAbsences}" rowKey="#{myAbsence.id}"
+				widgetVar="absencesTable"
+				emptyMessage="#{msg['empty.list.criteria']}"
+				filteredValue="#{userAbsence.filteredUserAbsences}" paginator="true"
+				paginatorTemplate=" {Exporters}">
+
+				<f:facet name="header">
+          #{msg.mAbsences}
+        </f:facet>
+
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="myAbsences"
+							fileName="myAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="myAbsences"
+							fileName="myAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="myAbsences"
+							fileName="myAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="myAbsences"
+							fileName="myAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="#{msg.awayFromLabel}" priority="1"
+					filterBy="#{myAbsence.awayFrom}" filterMatchMode="contains"
+					sortBy="#{myAbsence.awayFrom}">
+					<h:outputText value="#{myAbsence.awayFrom}">
+						<f:convertDateTime type="date" dateStyle="medium" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.awayTillLabel}" priority="1"
+					filterBy="#{myAbsence.awayTill}" filterMatchMode="contains"
+					sortBy="#{myAbsence.awayTill}">
+					<h:outputText value="#{myAbsence.awayTill}">
+						<f:convertDateTime type="date" dateStyle="medium" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.temporaryLabel}" priority="2"
+					filterBy="#{myAbsence.temporary}" filterMatchMode="contains"
+					sortBy="#{myAbsence.temporary}">
+					<h:outputText value="#{myAbsence.temporary}" />
+				</p:column>
+
+				<p:column exportable="false">
+					<p:commandButton action="#{userAbsence.editAbsence(myAbsence)}"
+						id="edit" icon="fa fa-edit" title="#{msg.edit}" />
+					<p:commandButton action="#{userAbsence.deleteAbsence(myAbsence)}"
+						id="delete" icon="fa fa-trash" update="myAbsences" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

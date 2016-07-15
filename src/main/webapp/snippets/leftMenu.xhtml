@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition>
+
+	<h:form id="menuForm">
+		<p:outputLabel value="#{msg.lcurGroup}" />
+		<br></br>
+		<p:selectOneMenu value="#{userBean.currentGroup}"
+			converter="omnifaces.SelectItemsConverter"
+			style="margin-top:0.2em;width:90%;">
+			<f:selectItems value="#{userBean.groupsOfCurrentUser}" var="group"
+				itemLabel="#{group.name}" itemValue="#{group}"
+				itemDisabled="#{userEditor.isUnsubscribed(group)}" />
+			<p:ajax listener="#{userBean.changeGroup()}" update="navForm" />
+		</p:selectOneMenu>
+		<p:menu toggleable="true" style="width:90%;">
+			<p:menuitem value="#{msg.homeh1}" outcome="#{navigation.pageHome}"
+				icon="fa fa-dashboard" />
+			<p:submenu label="#{msg.costDivision}"
+				rendered="#{userBean.usersOfCurrentGroup.size() > 1}">
+				<p:menuitem value="#{msg['costDivisionOverview']}"
+					outcome="#{navigation.pageCostDivisionOverview}"
+					icon="fa fa-list-alt" />
+				<p:menuitem value="#{msg['costDivisionDetails']}"
+					outcome="#{navigation.pageCostDivisionDetails}" icon="fa fa-eye" />
+				<p:menuitem value="#{msg['userPayments']}"
+					outcome="#{navigation.pageUserPayments}" icon="fa fa-money" />
+				<p:menuitem value="#{msg['groupPayments']}"
+					outcome="#{navigation.pageGroupPayments}" icon="fa fa-list-alt" />
+			</p:submenu>
+
+			<p:submenu label="#{msg.mGroup}">
+				<p:menuitem value="#{msg.mMygroups}"
+					outcome="#{navigation.pageGroupList}" icon="fa fa-list-alt" />
+			</p:submenu>
+			<p:submenu label="#{msg.mBills}">
+				<p:menuitem value="#{msg.mOverview}"
+					outcome="#{navigation.pageBillOverview}" icon="fa fa-list-alt"
+					ajax="false" />
+			</p:submenu>
+			<p:submenu label="#{msg.mShopping}">
+				<p:menuitem value="#{msg.myShoppingList}"
+					outcome="#{navigation.pageUserShoppingLists}" icon="fa fa-list-ol" />
+				<p:menuitem value="#{msg.groupShoppingLists}"
+					outcome="#{navigation.pageGroupShoppingLists}" icon="fa fa-list-ul" />
+
+			</p:submenu>
+			<p:submenu label="#{msg.mCalendar}">
+				<p:menuitem value="#{msg.mCalendar}"
+					outcome="#{navigation.pageCalendar}" icon="fa fa-calendar" />
+			</p:submenu>
+			<p:submenu label="#{msg.mActivities}">
+				<p:menuitem value="#{msg.mOverview}"
+					outcome="#{navigation.pageActivityOverview}" icon="fa fa-list-alt" />
+				<p:menuitem value="#{msg['workDistrib']}"
+					outcome="#{navigation.pageWorkDistributionOverview}"
+					icon="fa fa-list-alt" />
+
+			</p:submenu>
+			<p:submenu label="#{msg.mStatistics}">
+				<p:menuitem value="#{msg.hStatistics}"
+					outcome="#{navigation.pageStatistics}" icon="fa fa-bar-chart" />
+			</p:submenu>
+
+			<p:submenu label="#{msg.mAbsences}">
+				<p:menuitem value="#{msg.mMyAbsences}"
+					outcome="#{navigation.pageUserAbsences}" icon="fa fa-list-alt" />
+				<p:menuitem value="#{msg.mGroupAbsences}"
+					outcome="#{navigation.pageGroupAbsences}" icon="fa fa-list-alt" />
+			</p:submenu>
+		</p:menu>
+	</h:form>
+	<h:form id="secMenu">
+		<p:menu toggleable="true" style="width:90%;">
+			<p:submenu label="#{msg.mSettings}">
+				<p:menuitem value="#{msg.mAccount}"
+					outcome="#{navigation.pageUserEdit}" icon="fa fa-user" />
+				<p:menuitem value="#{msg.mAdmin}" icon="fa fa-key"
+					outcome="#{navigation.pageGroupAdministration}"
+					rendered="#{userBean.currentUserGroup.role=='ADMIN'}" />
+	
+			</p:submenu>
+		</p:menu>
+	</h:form>
+</ui:composition>
+</html>

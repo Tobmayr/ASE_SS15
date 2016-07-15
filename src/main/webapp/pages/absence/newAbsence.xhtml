@@ -1,0 +1,40 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h1 class="page-header">#{absenceBean.currentAbsence.id eq null ?
+			msg.newAbsenceTitle : msg.editAbsenceTitle}</h1>
+		<div class="container-fluid">
+			<!--<p:growl id="messages" sticky="true" showDetail="true" />-->
+			<h:form id="newAbsenceForm" enctype="multipart/form-data">
+				<p:button outcome="#{navigation.pageUserAbsences}"
+					value="#{msg.cancel}" icon="fa fa-remove" />
+				<p:commandButton action="#{absenceBean.saveAbsence}"
+					value="#{msg.save}" icon="fa fa-check" update="listPanel" />
+				<p:separator />
+				<p:panel id="listPanel" header="#{msg.absenceProperties}"
+					style="margin-bottom:10px; margin-top: 10px;">
+					<p:messages />
+					<p:panelGrid columns="2" class="noBorderGrid">
+						<p:outputLabel for="awayFrom" value="#{msg['awayFromLabel']}:" />
+						<p:calendar id="awayFrom" pattern="MM/dd/yyyy"
+							value="#{absenceBean.currentAbsence.awayFrom}" required="true" />
+
+						<p:outputLabel for="awayTill" value="#{msg['awayTillLabel']}:" />
+						<p:calendar id="awayTill" pattern="MM/dd/yyyy"
+							value="#{absenceBean.currentAbsence.awayTill}" required="true" />
+
+						<p:outputLabel for="temporary" value="#{msg['temporaryLabel']}:" />
+						<p:selectBooleanCheckbox id="temporary"
+							value="#{absenceBean.currentAbsence.temporary}" />
+
+					</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

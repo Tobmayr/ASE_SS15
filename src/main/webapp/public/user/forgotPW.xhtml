@@ -1,0 +1,33 @@
+<ui:composition template="/templates/main_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-user" /> #{msg.FPWHeader}
+		</h1>
+		<h:form id="fpwForm">
+			<p:panel>
+				<p:messages id="messages" />
+				<h:outputText value="#{msg.FPWMessage}" />
+				<br />
+				<br />
+				<p:inputText id="registerEemail"
+					value="#{registrationBean.currentUser.email}"
+					pt:placeholder="#{msg['phMail']}" pt:type="email"
+					pt:data-required="true" required="true">
+					<f:validateRegex
+						pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+				</p:inputText>
+				<p:commandButton value="#{msg.submit}"
+					action="#{registrationBean.resetPassword}" update="fpwForm" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+
+
+</ui:composition>

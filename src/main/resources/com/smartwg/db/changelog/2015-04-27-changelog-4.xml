@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-4" author="as">
+		<comment>rename columns email, user_name, role in user table and rename messages and rename flat_enabled_features table</comment>
+		<renameColumn columnDataType="VARCHAR(45)" newColumnName="username"
+			oldColumnName="user_name" tableName="user" />
+
+		<renameColumn columnDataType="VARCHAR(45)" newColumnName="e_mail"
+			oldColumnName="email" tableName="user" />
+
+		<dropColumn columnName="role" tableName="user" />
+
+		<dropForeignKeyConstraint baseTableName="user_group"
+			constraintName="fk_user_flat_flat_id" />
+
+		<renameColumn columnDataType="INT(11)" newColumnName="group_id"
+			oldColumnName="flat_id" tableName="user_group" />
+
+		<renameTable newTableName="message" oldTableName="massages" />
+
+		<addColumn tableName="user_group">
+			<column name="role" type="ENUM('admin','user')">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+		<renameTable newTableName="group_enabled_feature"
+			oldTableName="flat_enabled_features" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4a" author="as">
+		<comment>set all IDs to INT(11) and strings length</comment>
+
+		<dropForeignKeyConstraint baseTableName="user_group"
+			constraintName="fk_user_flat_user_id" />
+
+		<dropColumn tableName="user" columnName="id" />
+		<addColumn tableName="user">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="user" columnName="first_name" />
+		<dropColumn tableName="user" columnName="last_name" />
+		<dropColumn tableName="user" columnName="birth_date" />
+		<addColumn tableName="user">
+			<column name="first_name" type="VARCHAR(45)" />
+			<column name="last_name" type="VARCHAR(45)" />
+			<column name="birth_date" type="DATE" />
+		</addColumn>
+
+		<dropColumn tableName="absence" columnName="id" />
+		<addColumn tableName="absence">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="absence" columnName="user_id" />
+		<addColumn tableName="absence">
+			<column name="user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="message" columnName="id" />
+		<addColumn tableName="message">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="message" columnName="from_user_id" />
+		<addColumn tableName="message">
+			<column name="from_user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="message" columnName="to_user_id" />
+		<addColumn tableName="message">
+			<column name="to_user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="message" columnName="to_group_id" />
+		<addColumn tableName="message">
+			<column name="to_group_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="message" columnName="content" />
+		<addColumn tableName="message">
+			<column name="content" type="VARCHAR(1000)" />
+		</addColumn>
+
+		<dropForeignKeyConstraint baseTableName="payment_has_bill"
+			constraintName="fk_payment_id" />
+		<dropForeignKeyConstraint baseTableName="payment_has_bill"
+			constraintName="fk_bill_id" />
+
+		<dropColumn tableName="payment" columnName="id" />
+		<addColumn tableName="payment">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="payment" columnName="sender_id" />
+		<addColumn tableName="payment">
+			<column name="sender_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="payment" columnName="receiver_id" />
+		<addColumn tableName="payment">
+			<column name="receiver_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="payment_has_bill" columnName="payment_id" />
+		<addColumn tableName="payment_has_bill">
+			<column name="payment_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="payment_has_bill" columnName="bill_id" />
+		<addColumn tableName="payment_has_bill">
+			<column name="bill_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="user_group" columnName="user_id" />
+		<addColumn tableName="user_group">
+			<column name="user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="user_group" columnName="group_id" />
+		<addColumn tableName="user_group">
+			<column name="group_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="shop" columnName="id" />
+		<addColumn tableName="shop">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="bill" columnName="id" />
+		<addColumn tableName="bill">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="bill" columnName="recurring_type" />
+		<addColumn tableName="bill">
+			<column name="recurring_type" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="bill" columnName="created_by" />
+		<addColumn tableName="bill">
+			<column name="created_by" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="bill" columnName="shop_id" />
+		<addColumn tableName="bill">
+			<column name="shop_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="recurring" columnName="id" />
+		<addColumn tableName="recurring">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="cost_entry" columnName="id" />
+		<addColumn tableName="cost_entry">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="cost_entry" columnName="currency_id" />
+		<addColumn tableName="cost_entry">
+			<column name="currency_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="cost_entry" columnName="bill_id" />
+		<addColumn tableName="cost_entry">
+			<column name="bill_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="cost_entry" columnName="category_id" />
+		<addColumn tableName="cost_entry">
+			<column name="category_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="currency" columnName="id" />
+		<addColumn tableName="currency">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="activity" columnName="id" />
+		<addColumn tableName="activity">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="activity" columnName="assigned_to_user_id" />
+		<addColumn tableName="activity">
+			<column name="assigned_to_user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="activity" columnName="created_by_user_id" />
+		<addColumn tableName="activity">
+			<column name="created_by_user_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="activity" columnName="flat_id" />
+		<addColumn tableName="activity">
+			<column name="flat_id" type="INT(11)" />
+		</addColumn>
+
+		<dropForeignKeyConstraint baseTableName="group_enabled_feature"
+			constraintName="fk_flat_id" />
+		<dropColumn tableName="group" columnName="id" />
+		<addColumn tableName="group">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="category" columnName="id" />
+		<addColumn tableName="category">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="category" columnName="parent_category_id" />
+		<addColumn tableName="category">
+			<column name="parent_category_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="category" columnName="flat_id" />
+		<addColumn tableName="category">
+			<column name="flat_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="list_position" columnName="id" />
+		<addColumn tableName="list_position">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="list_position" columnName="shopping_list_id" />
+		<addColumn tableName="list_position">
+			<column name="list_id" type="INT(11)" />
+		</addColumn>
+
+		<dropForeignKeyConstraint baseTableName="group_enabled_feature"
+			constraintName="fk_feature_id" />
+
+		<dropColumn tableName="feature" columnName="id" />
+		<addColumn tableName="feature">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</addColumn>
+
+		<dropColumn tableName="group_enabled_feature" columnName="flat_id" />
+		<addColumn tableName="group_enabled_feature">
+			<column name="group_id" type="INT(11)" />
+		</addColumn>
+
+		<dropColumn tableName="group_enabled_feature" columnName="feature_id" />
+		<addColumn tableName="group_enabled_feature">
+			<column name="feature_id" type="INT(11)" />
+		</addColumn>
+
+		<addPrimaryKey tableName="group_enabled_feature"
+			columnNames="feature_id, group_id" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4b" author="as">
+		<comment>create list table</comment>
+
+		<createTable tableName="list">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="deadline" type="DATETIME" />
+			<column name="activity_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="group_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+			<column name="is_private" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="user_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="activity_id"
+			baseTableName="list" constraintName="fk_list_activity_id"
+			referencedColumnNames="id" referencedTableName="activity" />
+
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="list" constraintName="fk_list_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+
+		<addForeignKeyConstraint baseColumnNames="user_id"
+			baseTableName="list" constraintName="fk_list_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="list_id"
+			baseTableName="list_position" constraintName="fk_position_list_list_id"
+			referencedColumnNames="id" referencedTableName="list" />
+	</changeSet>
+
+	<changeSet id="changelog-4c" author="as">
+		<comment>rename columns in table message</comment>
+		<renameColumn columnDataType="VARCHAR(1000)"
+			newColumnName="message" oldColumnName="content" tableName="message" />
+
+		<renameColumn columnDataType="INT(11)" newColumnName="group_id"
+			oldColumnName="to_group_id" tableName="message" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4d" author="as">
+		<comment>rename columns in table activity</comment>
+		<renameColumn columnDataType="INT(11)" newColumnName="group_id"
+			oldColumnName="flat_id" tableName="activity" />
+
+		<renameColumn columnDataType="TINYINT(1)" newColumnName="is_done"
+			oldColumnName="done" tableName="activity" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4e" author="as">
+		<comment>delete column bill_id from table payment and create relationship to bill and add amount payment_has_bill</comment>
+		<dropColumn columnName="bill_id" tableName="payment" />
+
+		<addForeignKeyConstraint baseColumnNames="payment_id"
+			baseTableName="payment_has_bill" constraintName="fk_payment_has_bill_payment_id"
+			referencedColumnNames="id" referencedTableName="payment" />
+
+		<addColumn tableName="payment_has_bill">
+			<column name="amount" type="DECIMAL(5,2)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+	</changeSet>
+
+	<changeSet id="changelog-4f" author="as">
+		<comment>bill table update</comment>
+
+		<dropColumn tableName="bill" columnName="file_url" />
+		<addColumn tableName="bill">
+			<column name="file" type="BLOB" />
+		</addColumn>
+
+		<renameColumn columnDataType="INT(11)" newColumnName="created_by_user_id"
+			oldColumnName="created_by" tableName="bill" />
+
+		<renameColumn columnDataType="INT(11)" newColumnName="recurring_id"
+			oldColumnName="recurring_type" tableName="bill" />
+
+		<addForeignKeyConstraint baseColumnNames="shop_id"
+			baseTableName="bill" constraintName="fk_bill_shop_id"
+			referencedColumnNames="id" referencedTableName="shop" />
+
+		<addForeignKeyConstraint baseColumnNames="bill_id"
+			baseTableName="payment_has_bill" constraintName="fk_payment_has_bill_bill_id"
+			referencedColumnNames="id" referencedTableName="bill" />
+
+		<addForeignKeyConstraint baseColumnNames="recurring_id"
+			baseTableName="bill" constraintName="fk_bill_recurring_id"
+			referencedColumnNames="id" referencedTableName="recurring" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4g" author="as">
+		<comment>cost_entry table update</comment>
+
+		<renameColumn columnDataType="TINYINT(1)" newColumnName="is_excluded"
+			oldColumnName="excluded" tableName="cost_entry" />
+
+		<dropColumn columnName="bill_id" tableName="cost_entry" />
+		<addColumn tableName="cost_entry">
+			<column name="bill_id" type="INT(11)" />
+		</addColumn>
+
+		<addForeignKeyConstraint baseColumnNames="currency_id"
+			baseTableName="cost_entry" constraintName="fk_cost_entry_currency_id"
+			referencedColumnNames="id" referencedTableName="currency" />
+
+		<addForeignKeyConstraint baseColumnNames="bill_id"
+			baseTableName="cost_entry" constraintName="fk_cost_entry_bill_id"
+			referencedColumnNames="id" referencedTableName="bill" />
+
+		<addForeignKeyConstraint baseColumnNames="category_id"
+			baseTableName="cost_entry" constraintName="fk_cost_entry_category_id"
+			referencedColumnNames="id" referencedTableName="category" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4h" author="as">
+		<comment>update group table</comment>
+
+		<dropColumn columnName="admin_id" tableName="group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4i" author="as">
+		<comment>update category table</comment>
+
+		<renameColumn columnDataType="INT(11)" oldColumnName="flat_id"
+			newColumnName="group_id" tableName="category" />
+
+	</changeSet>
+
+	<changeSet id="changelog-4j" author="as">
+		<comment>update list_position table</comment>
+
+		<renameColumn columnDataType="TINYINT(1)" oldColumnName="done"
+			newColumnName="is_done" tableName="list_position" />
+
+		<dropColumn columnName="name" tableName="list_position" />
+
+		<addColumn tableName="list_position">
+			<column name="order" type="INT" />
+		</addColumn>
+
+	</changeSet>
+
+	<changeSet id="changelog-4k" author="as">
+		<comment>add deleted constraints</comment>
+
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="user_group" constraintName="fk_user_group_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+
+		<addForeignKeyConstraint baseColumnNames="user_id"
+			baseTableName="user_group" constraintName="fk_user_group_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="feature_id"
+			baseTableName="group_enabled_feature" constraintName="fk_feature_id"
+			referencedColumnNames="id" referencedTableName="feature" />
+
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="group_enabled_feature" constraintName="fk_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+<ui:composition>
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-collapse">
+					<span class="sr-only">#{msg['srNav']}</span> <span class="icon-bar" />
+					<span class="icon-bar" /> <span class="icon-bar" />
+				</button>
+				<a class="navbar-brand" href="#">#{msg['aAppTitle']}</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<h:form class="navbar-form navbar-right" role="form">
+					<div class="form-group">
+						<p:inputText id="email" class="form-control"
+							value="#{login.emailUsername}"
+							pt:placeholder="#{msg['phMailUsername']}" pt:data-required="true" />
+					</div>
+					<div class="form-group">
+						<p:password id="password" class="form-control"
+							value="#{login.password}" pt:placeholder="#{msg['phPass']}"
+							pt:type="password" />
+					</div>
+					<div class="form-group">
+						<h:commandButton class="btn btn-success" value="#{msg['bLogin']}"
+							action="#{login.login}" ajax="false" />
+					</div>
+				</h:form>
+				>
+			</div>
+		</div>
+	</div>
+</ui:composition>
+</html>

@@ -1,0 +1,291 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:wc="http://googlecode.com/wickedcharts">
+
+	<ui:define name="content">
+		<h1 class="page-header ">
+			<i class="fa fa-tachometer" /> #{msg['homeh1']}
+		</h1>
+		<h:form id="dashForm">
+
+			<p:messages showDetail="true" id="messages" />
+
+			<p:panelGrid columns="2" class="noBorderGrid container-fluid"
+				layout="grid">
+				<p:panel header="#{msg.d1}">
+					<p:dataTable id="bills" var="bill" value="#{billList.bills}"
+						widgetVar="billsTable"
+						emptyMessage="#{msg['empty.list.criteria']}" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}  {RowsPerPageDropdown} {Exporters}"
+						rowsPerPageTemplate="5,10,15,20">
+						<f:facet name="header">
+                    #{msg.sCurrentMonth}
+                </f:facet>
+
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="bills" fileName="bills"
+									encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="bills" fileName="bills"
+									encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="bills" fileName="bills"
+									encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="bills" fileName="bills"
+									encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['dateLabel']}">
+							<h:outputText value="#{bill.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="#{msg['nameLabel']}" priority="5">
+							<h:outputText value="#{bill.name}" />
+						</p:column>
+						<p:column headerText="#{msg['totalLabel']}">
+							<h:outputText value="#{bill.total} #{bill.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg['shopLabel']}" priority="4">
+							<h:outputText value="#{bill.shopDTO.name}" />
+						</p:column>
+						<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+							priority="6">
+							<h:outputText value="#{bill.createdByUsername}" />
+						</p:column>
+						<p:column exportable="false">
+							<p:commandButton id="billActions" icon="ui-icon-action"
+								type="button" />
+							<p:overlayPanel id="actionPanelBill" for="billActions"
+								hideEffect="fade">
+
+								<p:commandButton
+									action="#{billActions.showBill(bill, navigation.pageHome,false)}"
+									id="view" icon="fa fa-eye" title="#{msg.view}" ajax="false" />
+								<p:commandButton
+									action="#{billActions.editBill(bill,  navigation.pageHome)}"
+									id="edit" icon="fa fa-edit" title="#{msg.edit}" ajax="false"
+									rendered="#{bill.paymendId==null}" />
+								<p:commandButton
+									action="#{billActions.deleteBill(bill, navigation.pageHome)}"
+									id="delete" icon="fa fa-trash" title="#{msg.delete}"
+									update="bills" ajax="false" rendered="#{bill.paymendId==null}" />
+
+							</p:overlayPanel>
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText
+								value="#{msg['totalFooter']} #{billList.overviewTotal} #{billList.defaultCurrency.isoCode}"
+								style="font-weight:bold;">
+								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+				<p:panel header="#{msg.d3}">
+					<p:dataTable id="myShoppingLists" var="myShoppingList"
+						value="#{userShoppingList.shoppingListsAssignedToMe}"
+						widgetVar="shoppingListsTable"
+						emptyMessage="#{msg['empty.list.criteria']}" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}   {PreviousPageLink} {PageLinks} {NextPageLink}  {RowsPerPageDropdown} {Exporters2}"
+						rowsPerPageTemplate="5,10,15,20">>
+
+						<f:facet name="header">
+                    #{msg.newShoppingList_listTitle}
+                </f:facet>
+
+						<f:facet name="{Exporters2}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="myShoppingLists"
+									fileName="ShoppingLists" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="myShoppingLists"
+									fileName="ShoppingLists" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="myShoppingLists"
+									fileName="ShoppingLists" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="myShoppingLists"
+									fileName="ShoppingLists" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg.shoppingLists_nameTitle}">
+							<h:outputText value="#{myShoppingList.name}" />
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_stateTitle}"
+							priority="2">
+							<h:outputText value="#{myShoppingList.state.name}" />
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+							priority="3">
+							<h:outputText value="#{myShoppingList.deadline}">
+								<f:convertDateTime type="both" dateStyle="medium"
+									timeStyle="short" locale="de" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+							priority="4">
+							<h:outputText value="#{myShoppingList.createdByUsername}"
+								title="#{myShoppingList.createdByFirstName} #{myShoppingList.createdByLastName}" />
+						</p:column>
+
+						<p:column exportable="false">
+							<p:commandButton id="slActions" icon="ui-icon-action"
+								type="button" />
+							<p:overlayPanel for="slActions" hideEffect="fade">
+								<p:commandButton
+									action="#{userShoppingList.viewShoppingList(myShoppingList, navigation.pageUserShoppingLists)}"
+									id="view" icon="fa fa-eye" title="#{msg.view}" />
+								<p:commandButton
+									action="#{userShoppingList.editShoppingList(myShoppingList)}"
+									id="edit" icon="fa fa-edit" title="#{msg.edit}"
+									disabled="#{myShoppingList.state != 'NEW' and myShoppingList.state != 'CANCELLED'}" />
+								<p:commandButton
+									action="#{userShoppingList.deleteShoppingList(myShoppingList)}"
+									id="delete" icon="fa fa-trash"
+									title="#{myShoppingList.state eq 'NEW' or myShoppingList.state eq 'CANCELLED'? msg.delete : msg.cancel}"
+									update="myShoppingLists"
+									disabled="#{myShoppingList.state eq 'ASSIGNED'}" />
+								<p:commandButton
+									action="#{userShoppingList.releaseShoppingList(myShoppingList)}"
+									id="release" icon="fa fa-check-square-o" title="#{msg.release}"
+									update="myShoppingLists"
+									disabled="#{myShoppingList.state != 'NEW'}" />
+								<p:commandButton
+									action="#{billBean.convertToBill(myShoppingList)}" id="convert"
+									icon="fa fa-money" title="#{msg.transfer}"
+									disabled="#{myShoppingList.state != 'ASSIGNED'}" />
+
+							</p:overlayPanel>
+
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+				<p:panel header="#{msg.d2}">
+					<p:dataTable id="activities" var="activity"
+						value="#{dashboard.activities}" widgetVar="activitiesTable"
+						emptyMessage="#{msg['empty.list.criteria']}" paginator="true"
+						paginatorTemplate=" {Exporters3}">
+						<f:facet name="header">
+							#{msg.upActivities}
+						</f:facet>
+						<f:facet name="{Exporters3}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['activityList_date']}">
+							<h:outputText value="#{activity.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="#{msg['nameLabel']}">
+							<h:outputText value="#{activity.name}" />
+						</p:column>
+						<p:column headerText="#{msg['activityList_points']}">
+							<h:outputText
+								value="#{activity.getRatingFromUser(userBean.currentUser.userName)}" />
+						</p:column>
+						<p:column headerText="#{msg.activityList_createdBy}">
+							<h:outputText value="#{activity.createdBy_Username}" />
+						</p:column>
+						<p:column exportable="false">
+							<p:commandButton id="acActions" icon="ui-icon-action"
+								type="button" />
+							<p:overlayPanel for="acActions" hideEffect="fade">
+								<p:commandButton
+									action="#{activityActions.editActivity(activity, navigation.pageHome)}"
+									id="edit" icon="fa fa-edit" title="#{msg.edit}" ajax="false" />
+								<p:commandButton
+									action="#{activityActions.deleteActivity(activity,navigation.pageHome)}"
+									id="delete" icon="fa fa-trash" title="#{msg.delete}"
+									update="activities" />
+							</p:overlayPanel>
+
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText
+								value="#{msg['totalFooter']} #{dashBoard.overviewTotal} #{msg.pointLabel}"
+								style="font-weight:bold;">
+							</h:outputText>
+						</f:facet>
+
+					</p:dataTable>
+				</p:panel>
+				<p:panel header="#{msg.d4}">
+					<script src="http://code.highcharts.com/stock/highstock.js"></script>
+					<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+					<h:panelGroup id="chart-panel">
+						<p:panel id="chartPanel">
+							<body>
+								<wc:chart id="chart1" options="#{dashboard.options}"
+									theme="#{dashboard.theme}" />
+							</body>
+							<div id="container"></div>
+						</p:panel>
+					</h:panelGroup>
+				</p:panel>
+
+			</p:panelGrid>
+
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

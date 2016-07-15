@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-10" author="as">
+		<comment>replace country column to group table</comment>
+
+		<dropColumn columnName="country" tableName="group" />
+
+		<addColumn tableName="group">
+			<column name="country" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="changelog-10a" author="as">
+		<comment>add country table</comment>
+
+		<createTable tableName="country">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="iso_code" type="VARCHAR(2)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint constraintName="fk_group_country"
+			referencedTableName="country" baseColumnNames="country"
+			baseTableName="group" referencedColumnNames="id" />
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,50 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header class="header-title" title="#{msg['aAppTitle']}"
+				swatch="a">
+			</pm:header>
+			<pm:content>
+				<h:form id="loginForm">
+					<h:messages />
+					<pm:field>
+						<h:outputLabel for="email" value="#{msg['lMailUsername']}" />
+						<p:inputText id="email" value="#{login.emailUsername}"
+							pt:placeholder="#{msg['phMail']}" pt:data-required="true"
+							class="input-big"
+							requiredMessage="#{valMsg['error.nameemail.required']}" />
+
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="password" value="#{msg['lPass']}" />
+						<p:password id="password" value="#{login.password}"
+							pt:placeholder="#{msg['phPass']}" class="input-big"
+							required="true"
+							requiredMessage="#{valMsg['error.password.required']}" />
+					</pm:field>
+					<div class="likeButton"></div>
+					<h:commandButton value="#{msg['bLogin']}" update=":result"
+						action="#{login.login}" icon="ui-icon-check" ajax="false" />
+					<div class="align-center">
+						<p:link class="align-center text-big"
+							outcome="#{navigation.pageRegister}">#{msg['linkRegister']}</p:link>
+					</div>
+					<div class="align-center text-big">
+						<p:link class="align-center" outcome="/m/public/user/forgotPW">#{msg['lforgotPassword']}</p:link>
+					</div>
+
+				</h:form>
+			</pm:content>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,149 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<h:form id="form">
+				<style>
+.absenceClass, .absenceClass .fc-event, .absenceClass a, .absenceClass .fc-event-inner
+	{
+	background-color: red !important;
+}
+
+.styleClassUser1, .styleClassUser1 .fc-event, .styleClassUser1 a,
+	.styleClassUser1 .fc-event-inner {
+	background-color: lightblue !important;
+	color: black !important;
+}
+
+.styleClassUser2, .styleClassUser2 .fc-event, .styleClassUser2 a,
+	.styleClassUser2 .fc-event-inner {
+	background-color: lightgreen !important;
+	color: black !important;
+}
+
+.styleClassUser3, .styleClassUser3 .fc-event, .styleClassUser3 a,
+	.styleClassUser3 .fc-event-inner {
+	background-color: lightsalmon !important;
+	color: black !important;
+}
+
+.styleClassUser4, .styleClassUser4 .fc-event, .styleClassUser4 a,
+	.styleClassUser4 .fc-event-inner {
+	background-color: lightcoral !important;
+	color: black !important;
+}
+
+.styleClassUser5, .styleClassUser5 .fc-event, .styleClassUser5 a,
+	.styleClassUser5 .fc-event-inner {
+	background-color: lightyellow !important;
+	color: black !important;
+}
+
+.styleClassUser6, .styleClassUser6 .fc-event, .styleClassUser6 a,
+	.styleClassUser6 .fc-event-inner {
+	background-color: lightsteelblue !important;
+	color: black !important;
+}
+
+.styleClassUser7, .styleClassUser7 .fc-event, .styleClassUser7 a,
+	.styleClassUser7 .fc-event-inner {
+	background-color: lightseagreen !important;
+	color: white !important;
+}
+
+.styleClassUser8, .styleClassUser8 .fc-event, .styleClassUser8 a,
+	.styleClassUser8 .fc-event-inner {
+	background-color: orange !important;
+	color: black !important;
+}
+
+.styleClassUser9, .styleClassUser9 .fc-event, .styleClassUser9 a,
+	.styleClassUser9 .fc-event-inner {
+	background-color: yellow !important;
+	color: black !important;
+}
+
+.styleClassUser10, .styleClassUser10 .fc-event, .styleClassUser10 a,
+	.styleClassUser10 .fc-event-inner {
+	background-color: plum !important;
+	color: black !important;
+}
+</style>
+				<pm:header class="app-title" title="#{msg['calendar']}" swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value=" #{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+					<div class="container-fluid">
+						<p:tabMenu activeIndex="0">
+							<p:menuitem value="#{msg['calendar']}" outcome="calendar"
+								icon="ui-icon-calendar" />
+							<p:menuitem value="#{msg['groupCalendar']}"
+								outcome="groupCalendar" icon="ui-icon-grip-dotted-vertical" />
+						</p:tabMenu>
+						<br />
+						<br />
+						<p:messages id="messages" showDetail="true" />
+
+						<p:schedule id="schedule" value="#{calendarBean.eventModel}"
+							widgetVar="myschedule" timeZone="GMT+2"
+							rightHeaderTemplate="month, basicWeek" draggable="false"
+							resizable="false">
+							<p:ajax event="dateSelect"
+								listener="#{calendarBean.onDateSelect}" update="dialog"
+								oncomplete="PF('eventDialog').show();" />
+							<p:ajax event="eventSelect"
+								listener="#{calendarBean.onActivitySelect}" update="dialog"
+								oncomplete="PF('eventDialog').show();" />
+						</p:schedule>
+
+						<p:dialog id="dialog" widgetVar="eventDialog"
+							header="#{activityEditor.activity.id eq null ? msg['newActivity'] : msg['editActivity']}"
+							showEffect="clip" hideEffect="clip">
+							<h:panelGrid id="eventDetails" columns="2">
+								<h:outputLabel for="name" value="#{msg['nameLabel']}: " />
+								<p:inputText id="name" value="#{activityEditor.activity.name}"
+									required="true" />
+
+								<h:outputLabel for="date" value="#{msg['date']}: " />
+								<p:calendar id="date" pattern="dd/MM/yyyy"
+									value="#{activityEditor.activity.date}" />
+
+								<h:outputLabel for="points" value="#{msg['pointLabel']}: " />
+								<p:spinner id="points" value="#{activityEditor.activity.points}"
+									min="0" max="10" />
+
+								<h:outputLabel for="assignTo" value="#{msg['assignLabel']}: " />
+								<h:selectOneMenu id="assignTo"
+									value="#{activityEditor.activity.assignedToUserId}">
+									<f:selectItems value="#{calendarBean.users}" var="user"
+										itemValue="#{user.id}" itemLabel="#{user.userName}" />
+								</h:selectOneMenu>
+							</h:panelGrid>
+							<p:commandButton type="reset" value="Reset" />
+							<p:commandButton value="Delete"
+								actionListener="#{calendarBean.deleteButtonClicked}"
+								oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
+								disabled="#{activityEditor.activity.id eq null}" />
+							<p:commandButton value="Save"
+								actionListener="#{calendarBean.saveButtonClicked}"
+								oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+						</p:dialog>
+					</div>
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

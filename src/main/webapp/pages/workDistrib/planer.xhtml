@@ -1,0 +1,74 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<h1 class="page-header ">#{msg['actiplan']}</h1>
+
+			<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+				<p:messages />
+				<h:panelGrid columns="2">
+					<h:outputLabel for="date" value="#{msg['dueDate']}:" />
+					<p:calendar id="date" pattern="dd/MM/yyyy"
+						value="#{activityEditor.activity.date}" language="de" />
+					<h:outputLabel for="name" value="#{msg['nameLabel']}:" />
+					<p:inputText id="name" value="#{activityEditor.activity.name}" />
+					<h:outputLabel value="#{msg['pointLabel']}:" />
+					<p:rating value="#{activityEditor.userRating}" stars="10" />
+
+				</h:panelGrid>
+				<p:commandButton
+					value="#{activityEditor.activity.id eq null ? msg.create :msg.save}"
+					action="#{activityPlaner.createRecurringActivity}"
+					update="schedule" icon="ui-icon-check" ajax="false" />
+				<p:commandButton
+					action="#{activityActions.deleteActivity(activityEditor.activity, navigation.pageActivityPlaner )}"
+					id="delete" icon="fa fa-trash" value="#{msg.delete}"
+					rendered="#{activityEditor.activity.id!=null}" />
+			</p:panel>
+			<p:panel>
+
+				<p:schedule id="schedule" value="#{activityPlaner.eventModel}"
+					widgetVar="myschedule" timeZone="GMT+2" rightHeaderTemplate="month"
+					draggable="false" resizable="false"
+					locale="#{userBean.currentUser.locale}">
+					<p:ajax event="dateSelect"
+						listener="#{activityPlaner.onDateSelect}" update="form" />
+					<p:ajax event="eventSelect"
+						listener="#{activityPlaner.onActivitySelect}" update="form" />
+				</p:schedule>
+			</p:panel>
+		</h:form>
+		<script type="text/javascript">
+			PrimeFaces.locales['tr'] = {
+				closeText : 'kapat',
+				prevText : 'geri',
+				nextText : 'ileri',
+				currentText : 'bugün',
+				monthNames : [ 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs',
+						'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim',
+						'Kasım', 'Aralık' ],
+				monthNamesShort : [ 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+						'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara' ],
+				dayNames : [ 'Pazar', 'Pazartesi', 'Salı', 'Çarşamba',
+						'Perşembe', 'Cuma', 'Cumartesi' ],
+				dayNamesShort : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+				dayNamesMin : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+				weekHeader : 'Hf',
+				firstDay : 1,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				month : 'Ay',
+				week : 'Hafta',
+				day : 'Gün',
+				allDayText : 'Tüm Gün'
+			};
+		</script>
+	</ui:define>
+
+</ui:composition>

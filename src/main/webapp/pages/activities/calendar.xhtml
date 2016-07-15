@@ -1,0 +1,167 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<style>
+.absenceClass, .absenceClass .fc-event, .absenceClass a, .absenceClass .fc-event-inner
+	{
+	background-color: red !important;
+}
+
+.styleClassUser1, .styleClassUser1 .fc-event, .styleClassUser1 a,
+	.styleClassUser1 .fc-event-inner {
+	background-color: lightblue !important;
+	color: black !important;
+}
+
+.styleClassUser2, .styleClassUser2 .fc-event, .styleClassUser2 a,
+	.styleClassUser2 .fc-event-inner {
+	background-color: lightgreen !important;
+	color: black !important;
+}
+
+.styleClassUser3, .styleClassUser3 .fc-event, .styleClassUser3 a,
+	.styleClassUser3 .fc-event-inner {
+	background-color: lightsalmon !important;
+	color: black !important;
+}
+
+.styleClassUser4, .styleClassUser4 .fc-event, .styleClassUser4 a,
+	.styleClassUser4 .fc-event-inner {
+	background-color: lightcoral !important;
+	color: black !important;
+}
+
+.styleClassUser5, .styleClassUser5 .fc-event, .styleClassUser5 a,
+	.styleClassUser5 .fc-event-inner {
+	background-color: lightyellow !important;
+	color: black !important;
+}
+
+.styleClassUser6, .styleClassUser6 .fc-event, .styleClassUser6 a,
+	.styleClassUser6 .fc-event-inner {
+	background-color: lightsteelblue !important;
+	color: black !important;
+}
+
+.styleClassUser7, .styleClassUser7 .fc-event, .styleClassUser7 a,
+	.styleClassUser7 .fc-event-inner {
+	background-color: lightseagreen !important;
+	color: white !important;
+}
+
+.styleClassUser8, .styleClassUser8 .fc-event, .styleClassUser8 a,
+	.styleClassUser8 .fc-event-inner {
+	background-color: orange !important;
+	color: black !important;
+}
+
+.styleClassUser9, .styleClassUser9 .fc-event, .styleClassUser9 a,
+	.styleClassUser9 .fc-event-inner {
+	background-color: yellow !important;
+	color: black !important;
+}
+
+.styleClassUser10, .styleClassUser10 .fc-event, .styleClassUser10 a,
+	.styleClassUser10 .fc-event-inner {
+	background-color: plum !important;
+	color: black !important;
+}
+</style>
+			<h1 class="page-header ">#{msg['calendar']}</h1>
+			<div class="container-fluid">
+				<p:commandButton id="toPrint" value="#{msg.print}" ajax="false"
+					icon="fa fa-print">
+					<p:printer target="schedule" />
+				</p:commandButton>
+				<p:tabMenu activeIndex="0">
+					<p:menuitem value="#{msg['calendar']}" outcome="calendar"
+						icon="ui-icon-calendar" />
+					<p:menuitem value="#{msg['groupCalendar']}" outcome="groupCalendar"
+						icon="ui-icon-grip-dotted-vertical" />
+				</p:tabMenu>
+
+				<p:schedule id="schedule" value="#{calendarBean.eventModel}"
+					widgetVar="myschedule" timeZone="GMT+2"
+					rightHeaderTemplate="month, basicWeek" draggable="false"
+					resizable="false" locale="#{userBean.currentUser.locale}">
+					<p:ajax event="dateSelect" listener="#{calendarBean.onDateSelect}"
+						update="dialog" oncomplete="PF('eventDialog').show();" />
+					<p:ajax event="eventSelect"
+						listener="#{calendarBean.onActivitySelect}" update="dialog"
+						oncomplete="PF('eventDialog').show();" />
+				</p:schedule>
+
+				<p:dialog id="dialog" widgetVar="eventDialog"
+					header="#{activityEditor.activity.id eq null ? msg['newActivity'] : msg['editActivity']}"
+					showEffect="clip" hideEffect="clip">
+					<h:panelGrid id="eventDetails" columns="2">
+						<h:outputLabel for="name" value="#{msg['nameLabel']}: " />
+						<p:inputText id="name" value="#{activityEditor.activity.name}"
+							required="true" />
+
+						<h:outputLabel for="date" value="#{msg['date']}: " />
+						<p:calendar id="date" pattern="dd/MM/yyyy"
+							value="#{activityEditor.activity.date}" />
+
+						<h:outputLabel value="#{msg['pointLabel']}:" />
+						<p:spinner id="userRating" value="#{activityEditor.userRating}"
+							min="0" max="10" />
+
+						<h:outputLabel for="assignTo" value="#{msg['assignLabel']}: " />
+						<h:selectOneMenu id="assignTo"
+							value="#{activityEditor.activity.assignedToUserId}">
+							<f:selectItems value="#{calendarBean.users}" var="user"
+								itemValue="#{user.id}" itemLabel="#{user.userName}" />
+						</h:selectOneMenu>
+
+						<p:outputLabel for="done" value="#{msg['done']}:" />
+						<p:selectBooleanCheckbox id="done"
+							value="#{activityEditor.activity.isDone}"
+							disabled="#{activityEditor.activity.id eq null ? 'true' : 'false'}" />
+					</h:panelGrid>
+					<p:commandButton type="reset" value="Reset" />
+					<p:commandButton value="Delete"
+						actionListener="#{calendarBean.deleteButtonClicked}"
+						oncomplete="PF('myschedule').update();PF('eventDialog').hide();"
+						disabled="#{activityEditor.activity.id eq null}" />
+					<p:commandButton value="Save"
+						actionListener="#{calendarBean.saveButtonClicked}"
+						oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+				</p:dialog>
+			</div>
+		</h:form>
+		<script type="text/javascript">
+			PrimeFaces.locales['tr'] = {
+				closeText : 'kapat',
+				prevText : 'geri',
+				nextText : 'ileri',
+				currentText : 'bugün',
+				monthNames : [ 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs',
+						'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim',
+						'Kasım', 'Aralık' ],
+				monthNamesShort : [ 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+						'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara' ],
+				dayNames : [ 'Pazar', 'Pazartesi', 'Salı', 'Çarşamba',
+						'Perşembe', 'Cuma', 'Cumartesi' ],
+				dayNamesShort : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+				dayNamesMin : [ 'Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct' ],
+				weekHeader : 'Hf',
+				firstDay : 1,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				month : 'Ay',
+				week : 'Hafta',
+				day : 'Gün',
+				allDayText : 'Tüm Gün'
+			};
+		</script>
+	</ui:define>
+
+</ui:composition>

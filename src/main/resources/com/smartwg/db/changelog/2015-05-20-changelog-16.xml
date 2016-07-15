@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-17" author="to">
+		<comment>Change payment according to new scheme</comment>
+		<dropTable tableName="payment_has_bill" />
+		<dropColumn tableName="payment" columnName="confirmed" />
+		<dropAllForeignKeyConstraints
+			baseTableName="payment" />
+		<dropColumn tableName="payment" columnName="sender_id" />
+		<dropColumn tableName="payment" columnName="receiver_id" />
+		<addColumn tableName="payment">
+			<column name="log" type="MEDIUMBLOB" />
+		</addColumn>
+	</changeSet>
+	<changeSet id="changelog-17b" author="to">
+		<comment>Update bill</comment>
+		<addColumn tableName="bill">
+			<column name="payment_id" type="INT(11)" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="changelog17c" author="to">
+		<comment>Create payment_user table</comment>
+		<createTable tableName="payment_user">
+			<column name="payment_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="sender_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="receiver_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="amount" type="DECIMAL(7,2)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="confirmed" type="TINYINT(1)" />
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_pu_payment"
+			referencedTableName="payment" baseColumnNames="payment_id"
+			baseTableName="payment_user" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="fk_pu_sender"
+			referencedTableName="user" baseColumnNames="sender_id" baseTableName="payment_user"
+			referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="fk_pu_receiver"
+			referencedTableName="user" baseColumnNames="receiver_id"
+			baseTableName="payment_user" referencedColumnNames="id" />
+	</changeSet>
+
+</databaseChangeLog>

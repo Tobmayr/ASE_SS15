@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-3" author="ks">
+		<comment>role property added to user table</comment>
+		<addColumn tableName="user">
+			<column name="role" type="VARCHAR(10)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="changelog-3a" author="ks">
+		<comment>create table payment_has_bill</comment>
+		<createTable tableName="payment_has_bill">
+			<column name="bill_id" type="BIGINT" />
+			<column name="payment_id" type="BIGINT" />
+		</createTable>
+
+		<addPrimaryKey tableName="payment_has_bill" columnNames="bill_id, payment_id" />
+
+		<addForeignKeyConstraint baseColumnNames="bill_id"
+			baseTableName="payment_has_bill" constraintName="fk_bill_id"
+			referencedColumnNames="id" referencedTableName="bill" />
+
+		<addForeignKeyConstraint baseColumnNames="payment_id"
+			baseTableName="payment_has_bill" constraintName="fk_payment_id"
+			referencedColumnNames="id" referencedTableName="payment" />
+	</changeSet>
+
+	<changeSet id="changelog-3b" author="ks">
+		<comment>create recurring table</comment>
+		<createTable tableName="recurring">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="type" type="VARCHAR(10)" />
+			<column name="value" type="TINYINT(2)" />
+			<column name="date" type="DATETIME" />
+			<column name="end_date" type="DATETIME" />
+			<column name="times" type="SMALLINT" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-3c" author="ks">
+		<comment>recurring_type type changed to integer</comment>
+
+		<modifyDataType columnName="recurring_type"
+			newDataType="BIGINT" tableName="bill" />
+
+	</changeSet>
+
+	<changeSet id="changelog-3d" author="ks">
+		<comment>recurring properties removed from bill table</comment>
+
+		<dropColumn tableName="bill" columnName="recurring" />
+
+		<dropColumn tableName="bill" columnName="recurring_start_date" />
+
+		<dropColumn tableName="bill" columnName="recurring_end_date" />
+
+		<addColumn tableName="bill">
+			<column name="date" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+	</changeSet>
+
+	<changeSet id="changelog-3e" author="ks">
+		<comment>remove group and user_group tables</comment>
+
+		<dropTable tableName="user_group" />
+		<dropTable tableName="group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-3f" author="ks">
+		<comment>rename flat table to group and user_flat to user_group</comment>
+
+		<renameTable oldTableName="flat" newTableName="group" />
+		<renameTable oldTableName="user_flat" newTableName="user_group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-3g" author="ks">
+		<comment>shopping list table extended by assigned_to_user column</comment>
+
+		<addColumn tableName="shopping_list">
+			<column name="assigned_to_user_id" type="BIGINT" />
+		</addColumn>
+
+	</changeSet>
+
+</databaseChangeLog>

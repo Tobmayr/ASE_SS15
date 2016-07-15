@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<h:form id="menuForm">
+					<p:menu toggleable="true" style="width:90%;">
+						<p:menuitem value="#{msg['liLogin']}"
+							outcome="#{navigation.pageIndex}" icon="fa fa-sign-in" />
+						<p:menuitem value="#{msg['liRegister']}"
+							outcome="#{navigation.pageRegister}" icon="fa fa-user" />
+						<p:menuitem value="#{msg.about}" outcome="#{navigation.pageAbout}"
+							icon="fa fa-info-circle" />
+					</p:menu>
+				</h:form>
+
+			</div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<ui:insert name="content" />
+			</div>
+		</div>
+	</div>
+</ui:composition>
+</html>

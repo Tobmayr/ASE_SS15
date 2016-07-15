@@ -1,0 +1,392 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h1 class="page-header">#{editBill.bill.id eq null ? msg.newBill
+			: msg.editBill}</h1>
+
+		<div class="container-fluid">
+
+			<!--<p:growl id="messages" sticky="true" showDetail="true" />-->
+			<h:form id="newBillForm" enctype="multipart/form-data">
+				<p:button
+					outcome="#{editBill.returnPage!=null ? editBill.returnPage : navigation.pageHome}"
+					value="#{msg.cancel}" icon="fa fa-reply" />
+				<p:separator />
+				<p:wizard widgetVar="wiz" flowListener="#{editBill.onFlowProcess}">
+					<p:tab id="basicTab" title="#{msg['basicsHeader']}">
+						<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+							<p:messages />
+							<h:panelGrid columns="2" class="noBorderGrid">
+								<p:outputLabel for="date" value="#{msg['dateLabel']}:" />
+								<p:calendar id="date" pattern="MM/dd/yyyy"
+									value="#{editBill.bill.date}" required="true"
+									requiredMessage="#{valMsg['error.date.required']}" />
+								<h:outputLabel value="#{msg['imageLabel']}:" />
+								<p:outputLabel value="#{editBill.bill.resource.name}" />
+								<p:outputLabel value=" " />
+								<p:fileUpload fileUploadListener="#{editBill.handleFileUpload}"
+									mode="advanced" label="#{msg['chooseFile']}"
+									allowTypes="/(\.|\/)(gif|jpe?g|png|pdf)$/"
+									invalidFileMessage="#{valMsg['error.filetype.invalid']}"
+									update="basicPanel" dragDropSupport="true"
+								 />
+								<p:outputLabel for="name" value="#{msg['nameLabel']}:" />
+								<p:inputText id="name" value="#{editBill.bill.name}"
+									maxlength="45" />
+								<p:outputLabel for="shop" value="#{msg['shopLabel']}:" />
+								<p:selectOneMenu id="shop" value="#{editBill.bill.shopDTO}"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem itemLabel="#{msg['chooseShop']}" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{editBill.shops}" var="item"
+										itemLabel="#{item.name}" itemValue="#{item}" />
+								</p:selectOneMenu>
+								<p:outputLabel for="recurring" value="#{msg['recurringLabel']}:" />
+								<p:selectBooleanCheckbox id="recurring"
+									value="#{editBill.bill.recurringBill}" />
+							</h:panelGrid>
+						</p:panel>
+
+						<p:dialog id="irDialog" widgetVar="irDlg" resizable="false"
+							closable="true" closeOnEscape="true" header="#{msg.hIrDlg}">
+							<p:messages id="dlgNsg" />
+							<p:panelGrid columns="1" styleClass="noBorderGrid">
+								<p:outputLabel value="#{msg.mIrDlg}" />
+								<h:outputText value="#{msg.mIrDlg1}" />
+								<h:outputText value="#{msg.mIrDlg2}" />
+								<h:outputText value="#{msg.mIrDlg3}" />
+
+							</p:panelGrid>
+							<p:commandButton actionListener="#{editBill.startIr}"
+								value="#{msg.yes}" style="padding-left:1em;padding-right:1em;"
+								update="newBillForm" oncomplete="PF('irDialog').hide();"
+								ajax="false" />
+
+
+
+						</p:dialog>
+					</p:tab>
+
+					<p:tab id="recurringTab" title="#{msg['recurringTab']}">
+						<p:panel id="recurringBill" header="#{msg['recurringHeader']}">
+							<p:messages />
+							<p:panelGrid class="noBorderGrid">
+								<p:row>
+									<p:column>
+										<p:outputLabel for="start" value="#{msg['startLabel']}:" />
+									</p:column>
+									<p:column colspan="2">
+										<p:calendar id="start" pattern="MM/dd/yyyy"
+											value="#{editBill.bill.recurring.date}" required="true" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column colspan="1">
+										<p:outputLabel for="recType" value="#{msg['repeatEvery']}:" />
+									</p:column>
+									<p:column colspan="1">
+										<p:spinner id="recValue"
+											value="#{editBill.bill.recurring.value}" min="1" max="365" />
+									</p:column>
+									<p:column colspan="1">
+										<p:selectOneMenu id="recType"
+											value="#{editBill.bill.recurring.recurringType}"
+											converter="omnifaces.SelectItemsConverter">
+											<f:selectItems value="#{editBill.recurringTypes}" var="type"
+												itemValue="#{type}" itemLabel="#{type.name}" />
+										</p:selectOneMenu>
+
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column colspan="3">#{msg['repeatLabel']}</p:column>
+								</p:row>
+								<p:row>
+									<p:column rowspan="3">
+										<p:selectOneRadio layout="pageDirection"
+											value="#{editBill.bill.recurring.repeatType}">
+											<f:selectItems value="#{editBill.repeatTypes}" var="item"
+												itemLabel="#{item.name}" />
+										</p:selectOneRadio>
+									</p:column>
+									<p:column colspan="2">
+										<p:outputLabel value="" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+										<p:spinner id="iterations"
+											value="#{editBill.bill.recurring.times}" min="1" />
+									</p:column>
+									<p:column>
+										<p:outputLabel for="iterations" value="#{msg['iteratLabel']}" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column colspan="2">
+										<p:calendar id="end" pattern="MM/dd/yyyy"
+											value="#{editBill.bill.recurring.endDate}" />
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+
+					<p:tab id="itemsTab" title="#{msg['itemsHeader']}">
+						<p:panel>
+							<p:messages id="msg" />
+							<p:panelGrid id="attributGrid" columns="2" class="noBorderGrid">
+								<p:outputLabel value="#{msg.cPrivate}" />
+								<p:selectBooleanCheckbox value="#{editBill.bill.privateBill}">
+									<p:ajax event="change" listener="#{editBill.changePrivateBill}"
+										update="items" />
+								</p:selectBooleanCheckbox>
+								<p:outputLabel value="#{msg.noEntries}" />
+								<p:selectBooleanCheckbox value="#{editBill.onlyTotal}">
+									<p:ajax event="change" update="newBillForm" />
+								</p:selectBooleanCheckbox>
+
+								<p:outputLabel value="#{msg.totalLabel}"
+									rendered="#{editBill.onlyTotal}" />
+								<p:spinner value="#{editBill.bill.total}"
+									prefix="#{editBill.bill.currency.isoCode} " min="0"
+									stepFactor="0.1" rendered="#{editBill.onlyTotal}" />
+								<p:outputLabel for="category" value="#{msg['categoryLabel']}"
+									rendered="#{editBill.onlyTotal}" />
+								<p:selectOneMenu value="#{editBill.costEntry.category}"
+									converter="omnifaces.SelectItemsConverter" filter="true"
+									filterMatchMode="startsWith" style="width:75%;" required="true"
+									rendered="#{editBill.onlyTotal}">
+									<f:selectItem itemLabel="#{msg['chooseCategory']}" itemValue=""
+										noSelectionOption="true" style="width:75%;" />
+									<f:selectItems value="#{editBill.categories}" var="item"
+										itemLabel="#{item.name}" itemValue="#{item}"
+										style="width:75%;" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="currency" value="#{msg['currencyLabel']}:"
+									rendered="#{editBill.onlyTotal}" />
+								<p:selectOneMenu id="currency" value="#{editBill.bill.currency}"
+									converter="omnifaces.SelectItemsConverter"
+									rendered="#{editBill.onlyTotal}">
+									<f:selectItems value="#{editBill.currencies}" var="cur"
+										itemLabel="#{cur.isoCode}" itemValue="#{cur}" />
+									<f:ajax event="change" execute="@this"
+										render=":newBillForm:itemsPanel :newBillForm:addItems " />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+						</p:panel>
+						<p:panel id="addItems" header="#{msg['addItemHeader']}"
+							rendered="#{editBill.onlyTotal==false}">
+							<p:panelGrid class="noBorderGrid">
+								<p:messages id="itemMsg" autoUpdate="true"
+									rendered="#{editBill.onlyTotal==false}" />
+								<p:row>
+									<p:column>
+										<p:outputLabel for="itemName" value="#{msg['nameLabel']}:" />
+									</p:column>
+									<p:column>
+										<p:inputText id="itemName" value="#{editBill.costEntry.name}"
+											maxlength="45" />
+									</p:column>
+									<p:column>
+										<p:outputLabel for="price" value="#{msg['priceLabel']}:" />
+									</p:column>
+									<p:column>
+										<p:spinner id="price" value="#{editBill.costEntry.amount}"
+											prefix="#{editBill.bill.currency.isoCode} " min="0"
+											stepFactor="0.1" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+										<p:outputLabel for="category" value="#{msg['categoryLabel']}" />
+									</p:column>
+									<p:column>
+										<div>
+											<p:selectOneMenu id="category"
+												value="#{editBill.costEntry.category}"
+												converter="omnifaces.SelectItemsConverter" filter="true"
+												filterMatchMode="startsWith" style="width:75%;">
+												<f:selectItem itemLabel="#{msg['chooseCategory']}"
+													itemValue="" noSelectionOption="true" style="width:75%;" />
+												<f:selectItems value="#{editBill.categories}" var="item"
+													itemLabel="#{item.name}" itemValue="#{item}"
+													style="width:75%;" />
+											</p:selectOneMenu>
+											<p:commandButton oncomplete="PF('newCatDlg').show();"
+												icon="fa fa-plus" title="#{msg.newCat}"
+												action="#{editBill.setNewCatDlgVisible(true)}"
+												update="newBillForm:newCatDlg"
+												style="float:right;margin-top:2px;" />
+										</div>
+
+
+
+									</p:column>
+									<p:column>
+										<p:outputLabel for="amount" value="#{msg['amount']}" />
+									</p:column>
+									<p:column>
+										<p:spinner id="amount" min="1"
+											value="#{editBill.costEntry.times}" />
+									</p:column>
+									<p:column>
+										<p:commandButton value="#{msg['addButton']}"
+											action="#{editBill.addItem}"
+											update=":newBillForm:itemsPanel :newBillForm:addItems">
+										</p:commandButton>
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:panel>
+
+						<p:dialog id="newCatDlg" widgetVar="newCatDlg"
+							header="#{msg.newCat}" resizable="false" closable="false"
+							closeOnEscape="true">
+							<p:messages id="dlgMsg" />
+							<p:panelGrid columns="2" class="noBorderGrid">
+								<p:outputLabel value="#{msg.lhName}:" />
+								<p:inputText value="#{editBill.newCateName}"
+									required="#{editBill.newCatDlgVisible}" />
+								<p:commandButton onclick="PF('newCatDlg').hide();"
+									value="#{msg.cancel}" icon="fa fa-reply" />
+								<p:commandButton action="#{editBill.dialogCreate}"
+									value="#{msg.create}" icon="fa fa-check"
+									update="newBillForm:category dlgMsg"
+									oncomplete="PF('newCatDlg').hide();" />
+							</p:panelGrid>
+
+						</p:dialog>
+
+
+						<p:panel id="itemsPanel" header="#{msg['itemsHeader']}"
+							rendered="#{editBill.onlyTotal==false}">
+
+							<p:dataTable id="items" var="item1"
+								value="#{editBill.bill.costEntries}" style="width:80%;"
+								rowKey="#{item1.rowKey}"
+								emptyMessage="#{msg['empty.norecords']}">
+								<p:column headerText="#{msg['nameLabel']}">
+									<p:inplace id="costItemName" editor="true">
+										<p:inputText value="#{item1.name}" />
+									</p:inplace>
+								</p:column>
+								<p:column headerText="#{msg['priceLabel']}" style="width:25%">
+									<p:inplace id="costItemPrice" editor="true">
+										<f:facet name="output">
+               								#{item1.amount} #{editBill.bill.currency.isoCode }
+           								 </f:facet>
+										<p:spinner id="price" value="#{item1.amount}"
+											prefix="#{editBill.bill.currency.isoCode} " min="0"
+											stepFactor="0.1">
+											<f:convertNumber pattern="#0.00" />
+
+										</p:spinner>
+										<p:ajax event="save" process="items"
+											listener="#{editBill.amountEdited}"
+											update=":newBillForm:itemsPanel" />
+									</p:inplace>
+								</p:column>
+								<p:column headerText="#{msg['categoryLabel']}">
+									<p:inplace id="costEntryCategory" editor="true">
+										<f:facet name="output">
+               								#{item1.category.name}
+           								 </f:facet>
+										<p:selectOneMenu value="#{item1.category}"
+											converter="omnifaces.SelectItemsConverter">
+											<f:selectItems value="#{editBill.categories}" var="item"
+												itemLabel="#{item.name}" itemValue="#{item}" />
+										</p:selectOneMenu>
+									</p:inplace>
+								</p:column>
+								<p:column headerText="#{msg['amount']}" style="width:25%">
+									<p:inplace id="costEntryTimes" editor="true">
+										<p:spinner id="amount" min="1" value="#{item1.times}" />
+										<p:ajax event="save" process="items"
+											listener="#{editBill.amountEdited}"
+											update=":newBillForm:itemsPanel" />
+									</p:inplace>
+								</p:column>
+								<p:column headerText="#{msg.excluded}">
+									<h:outputText value="#{item1.excluded ? msg.yes : msg.no}" />
+								</p:column>
+								<p:column>
+									<p:commandButton action="#{editBill.changeItemStatus(item1)}"
+										icon="fa fa-plus" title="#{msg.include}" update="items"
+										rendered="#{item1.excluded}" />
+									<p:commandButton action="#{editBill.changeItemStatus(item1)}"
+										icon="fa fa-minus" title="#{msg.exclude}" update="items"
+										rendered="#{item1.excluded!=true}" />
+									<p:commandButton action="#{editBill.deleteItem(item1)}"
+										id="delete" icon="fa fa-trash" title="#{msg.delete}"
+										update="items" immediate="true" />
+
+								</p:column>
+								<f:facet name="footer">
+									<p:outputPanel>
+										<h:outputText
+											value="#{msg['totalFooter']} #{editBill.total} #{editBill.bill.currency.isoCode} ">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+										<h:outputText
+											value="#{msg.excluded} #{editBill.privateCost} #{editBill.bill.currency.isoCode}"
+											style="margin-left:3em">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:outputPanel>
+								</f:facet>
+
+							</p:dataTable>
+						</p:panel>
+					</p:tab>
+					<p:tab id="summaryTab" title="#{msg['summaryTab']}">
+						<p:panel id="summary" header="#{msg['summaryTab']}">
+							<p:panelGrid columns="2">
+								<p:outputLabel value="#{msg['dateLabel']}:" />
+								<p:outputLabel value="#{editBill.bill.date}">
+									<f:convertDateTime pattern="MM-dd-yyyy" />
+								</p:outputLabel>
+								<p:outputLabel value="#{msg['nameLabel']}:" />
+								<p:outputLabel value="#{editBill.bill.name}" />
+								<p:outputLabel value="#{msg['shopLabel']}:" />
+								<p:outputLabel value="#{editBill.bill.shopDTO.name}" />
+								<p:outputLabel value="#{msg['recurringLabel']}:" />
+								<p:selectBooleanCheckbox value="#{editBill.bill.recurringBill}"
+									disabled="true" />
+								<p:outputLabel value="#{msg['totalFooter']}" />
+								<p:outputLabel
+									value="#{editBill.bill.total==null ? editBill.total 
+									: editBill.bill.total} #{editBill.bill.currency.isoCode}" />
+								<p:outputLabel value="#{msg['excluded']}" />
+								<p:outputLabel
+									value="#{editBill.privateCost} #{editBill.bill.currency.isoCode}" />
+							</p:panelGrid>
+							<p:commandButton value="#{msg['reset']}"
+								action="#{editBill.reset}" update="newBillForm"
+								oncomplete="PF('wiz').loadStep('basicTab', false)"
+								rendered="#{editBill.bill.id eq null}" />
+							<p:commandButton
+								value="#{editBill.bill.id eq null ? msg['create'] :msg.save}"
+								action="#{editBill.createBill(false)}" icon="ui-icon-check"
+								ajax="false" />
+							<p:commandButton value="#{msg['createcon']}"
+								action="#{editBill.createBill(true)}" update="newBillForm"
+								icon="ui-icon-check" rendered="#{editBill.bill.id eq null}"
+								ajax="false" />
+
+						</p:panel>
+					</p:tab>
+				</p:wizard>
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

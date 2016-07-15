@@ -1,0 +1,62 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h1 class="page-header ">#{activityEditor.activity.id eq null ?
+			msg['newActivity'] : msg.editActivity}</h1>
+
+		<div class="container-fluid">
+
+			<h:form id="newActivityForm" enctype="multipart/form-data">
+
+				<p:button
+					outcome="#{activityEditor.returnPage==null ? navigation.pageActivityOverview : activityEditor.returnPage}"
+					value="#{msg.cancel}" icon="fa fa-remove" />
+				<p:commandButton
+					value="#{activityEditor.activity.id eq null ? msg.create :msg.save}"
+					action="#{activityEditor.createActivity(false)}"
+					icon="ui-icon-check" ajax="false" />
+				<p:commandButton value="#{msg['createcon']}"
+					rendered="#{activityEditor.activity.id eq null}"
+					action="#{activityEditor.createActivity(true)}"
+					update="newActivityForm" icon="ui-icon-check" ajax="false" />
+
+				<p:separator />
+
+				<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+					<p:messages />
+					<h:panelGrid columns="2">
+						<h:outputLabel for="date" value="#{msg['dateLabel']}:" />
+						<p:calendar id="date" pattern="dd/MM/yyyy"
+							value="#{activityEditor.activity.date}" language="de" />
+						<h:outputLabel for="name" value="#{msg['nameLabel']}:" />
+						<p:inputText id="name" value="#{activityEditor.activity.name}" />
+						<h:outputLabel value="#{msg['pointLabel']}:" />
+
+						<p:spinner id="userRating" value="#{activityEditor.userRating}"
+							min="0" max="10" />
+						<h:outputLabel value="#{msg['assignLabel']}:" />
+						<p:selectOneMenu id="assignedTo"
+							value="#{activityEditor.activity.assignedToUserId}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="#{msg['selectAssignLabel']}"
+								itemValue="" noSelectionOption="true" />
+							<f:selectItems value="#{activityEditor.users}" var="item"
+								itemLabel="#{item.userName}" itemValue="#{item.id}" />
+						</p:selectOneMenu>
+						<p:outputLabel for="done" value="#{msg['done']}:" />
+						<p:selectBooleanCheckbox id="done"
+							value="#{activityEditor.activity.isDone}"
+							disabled="#{activityEditor.activity.id eq null ? 'true' : 'false'}" />
+					</h:panelGrid>
+				</p:panel>
+
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

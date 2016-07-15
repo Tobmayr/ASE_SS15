@@ -1,0 +1,85 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header ">
+				<i class="fa fa-th-list" />#{msg['hCategoryOverview']}
+			</h1>
+
+			<p:panel>
+
+				<p:dataTable id="categories" var="category"
+					value="#{categoryList.categories}" rowKey="#{category.id}"
+					widgetVar="categoriesTable" emptyMessage="No category found"
+					paginator="true" paginatorTemplate=" {Exporters}">
+
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="categories"
+								fileName="categories" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="categories"
+								fileName="categories" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="categories"
+								fileName="categories" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="categories"
+								fileName="categories" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['categoryName']}"
+						sortBy="#{category.name}">
+						<h:outputText value="#{category.name}" />
+					</p:column>
+					<p:column headerText="#{msg['lFixedCost']}">
+						<p:selectBooleanCheckbox value="#{category.fixedCost}"
+							disabled="true" />
+					</p:column>
+					<p:column headerText="#{msg.lCustomCategory}">
+						<p:selectBooleanCheckbox value="#{category.customDivision}"
+							disabled="true" />
+					</p:column>
+					<p:column headerText="#{msg['lParentCategory']}">
+						<h:outputText value="#{category.parentCategory.name}" />
+					</p:column>
+					<p:column exportable="false">
+						<p:commandButton
+							action="#{categoryActions.showCategory(category, navigation.pageCategoryOverview)}"
+							id="view" icon="fa fa-eye" title="#{msg.view}" />
+						<p:commandButton type="submit"
+							action="#{categoryActions.editCategory(category, navigation.pageCategoryOverview)}"
+							id="edit" icon="fa fa-edit" title="#{msg.edit}" />
+						<p:commandButton
+							action="#{categoryActions.deleteCategory(category, navigation.pageCategoryOverview)}"
+							id="delete" icon="fa fa-trash" title="#{msg.delete}"
+							update="categories" />
+					</p:column>
+
+
+				</p:dataTable>
+			</p:panel>
+
+
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<include file="2015-03-20-changelog-1.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-21-changelog-2.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-24-changelog-3.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-27-changelog-4.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-27-changelog-5.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-27-changelog-6.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-28-changelog-7.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-04-30-changelog-8.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-02-changelog-9.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-04-changelog-10.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-07-changelog-12.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-12-changelog-13.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-15-changelog-14.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-06-changelog-11.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-19-changelog-15.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-20-changelog-16.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-05-26-changelog-17.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-03-changelog-18.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-14-changelog-19.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-16-changelog-20.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-17-changelog-21.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-17-changelog-22.xml"
+		relativeToChangelogFile="true" />
+	<include file="2015-06-24-changelog-23.xml"
+		relativeToChangelogFile="true" />
+</databaseChangeLog>

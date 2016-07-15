@@ -1,0 +1,202 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<h1 class="page-header ">#{msg['userPayments']}</h1>
+
+			<div class="container-fluid">
+
+				<p:messages showDetail="true" id="messages" />
+				<p:panel header="#{msg.unconfirmedPayments}">
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.unconfirmedPaymentUsers}"
+						id="receiverPaymentTable" paginator="true"
+						paginatorTemplate=" {Exporters}"
+						emptyMessage="#{msg['empty.norecords']}">
+						<f:facet name="header">
+							<h:outputText value="#{msg['paymentsYouReceive']}" />
+						</f:facet>
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="receiverPaymentTable"
+									fileName="receiverPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="receiverPaymentTable"
+									fileName="receiverPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="receiverPaymentTable"
+									fileName="receiverPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="receiverPaymentTable"
+									fileName="receiverPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['sender']}">
+							<h:outputText value="#{payment.sender.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}">
+							<h:outputText value="#{payment.amount}" />
+						</p:column>
+						<p:column headerText="#{msg['confirm']}" exportable="false">
+							<p:commandButton
+								action="#{costDivisionBean.onConfirm(payment.paymentId, payment.sender.id)}"
+								id="view" icon="fa fa-check" title="#{msg['confirm']}"
+								ajax="false" />
+						</p:column>
+					</p:dataTable>
+					<br />
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.unconfirmedPaymentsSender}"
+						id="senderPaymentTable" paginator="true"
+						paginatorTemplate=" {Exporters2}">
+						<f:facet name="header" emptyMessage="#{msg['empty.norecords']}">
+							<h:outputText value="#{msg['debts']}" />
+						</f:facet>
+						<f:facet name="{Exporters2}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="senderPaymentTable"
+									fileName="senderPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="senderPaymentTable"
+									fileName="senderPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="senderPaymentTable"
+									fileName="senderPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="senderPaymentTable"
+									fileName="senderPayment" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['receiver']}">
+							<h:outputText value="#{payment.receiver.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}">
+							<h:outputText
+								value="#{payment.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+				<br />
+				<p:panel header="#{msg.userPaymentsAll}">
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.databasePaymentUsersReceiver}"
+						id="receiverAllPaymentsTable" paginator="true"
+						paginatorTemplate=" {Exporters3}">
+						<f:facet name="header">
+							<h:outputText value="+" />
+						</f:facet>
+						<f:facet name="{Exporters3}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="receiverAllPaymentsTable"
+									fileName="receiverAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="receiverAllPaymentsTable"
+									fileName="receiverAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="receiverAllPaymentsTable"
+									fileName="receiverAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="receiverAllPaymentsTable"
+									fileName="receiverAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['sender']}">
+							<h:outputText value="#{payment.sender.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}">
+							<h:outputText
+								value="#{payment.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg.confirmed}">
+							<h:outputText value="#{payment.confirmed ? msg.yes : msg.no}" />
+						</p:column>
+					</p:dataTable>
+					<br />
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.databasePaymentUsersSender}"
+						id="senderAllPaymentsTable" paginator="true"
+						paginatorTemplate=" {Exporters4}">
+						<f:facet name="header">
+							<h:outputText value="-" />
+						</f:facet>
+						<f:facet name="{Exporters4}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="senderAllPaymentsTable"
+									fileName="senderAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="senderAllPaymentsTable"
+									fileName="senderAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="senderAllPaymentsTable"
+									fileName="senderAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="senderAllPaymentsTable"
+									fileName="senderAllPayments" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+
+						<p:column headerText="#{msg['receiver']}">
+							<h:outputText value="#{payment.receiver.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}">
+							<h:outputText
+								value="#{payment.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg.confirmed}">
+							<h:outputText value="#{payment.confirmed ? msg.yes : msg.no}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

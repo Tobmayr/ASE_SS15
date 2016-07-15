@@ -1,0 +1,49 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+		<pm:page id="index">
+			<h:form id="form">
+				<pm:header class="app-title" title="#{msg.groupCalendar}" swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value=" #{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+
+					<p:messages id="messages" showDetail="true" />
+
+					<div class="container-fluid">
+						<p:tabMenu activeIndex="1">
+							<p:menuitem value="#{msg['calendar']}" outcome="calendar"
+								icon="ui-icon-calendar" />
+							<p:menuitem value="#{msg['groupCalendar']}"
+								outcome="groupCalendar" icon="ui-icon-grip-dotted-vertical" />
+						</p:tabMenu>
+						<br />
+						<br />
+						<p:dataTable var="activities" value="#{calendarBean.rows}">
+							<p:column headerText="#{msg['date']}"
+								style="width:100px;white-space:pre;#{activities[0].name == null ? 'border-style:hidden !important' : ''}">
+								<h:outputText value="#{activities[0].name}" />
+							</p:column>
+							<p:columns value="#{calendarBean.users}" var="user"
+								columnIndexVar="colIndex">
+								<f:facet name="header">
+									<h:outputText value="#{user.userName}" />
+								</f:facet>
+								<h:outputText value="#{activities[colIndex + 1].name}" />
+							</p:columns>
+						</p:dataTable>
+					</div>
+				</pm:content>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+</ui:composition>

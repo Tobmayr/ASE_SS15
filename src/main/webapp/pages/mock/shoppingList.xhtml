@@ -1,0 +1,69 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header ">Einkaufsliste</h1>
+
+			<p:tabMenu activeIndex="3">
+				<p:menuitem value="Home" outcome="activities" icon="ui-icon-home" />
+				<p:menuitem value="Putzen" outcome="cleaning" icon="ui-icon-trash" />
+				<p:menuitem value="Freizeit" outcome="freetime" icon="ui-icon-star" />
+				<p:menuitem value="Einkaufsliste" outcome="shoppingList"
+					icon="ui-icon-cart" />
+			</p:tabMenu>
+
+
+
+			<p:growl id="msgs" showDetail="true" />
+			<h3 style="margin-top: 0">Wohnungen</h3>
+			<p:accordionPanel>
+				<p:tab title="#{mockup.flat1}">
+					<h:panelGrid columns="1" cellpadding="10">
+						<p:selectOneListbox id="shoppinglist1"
+							value="#{mockup.shoppinglist}">
+							<f:selectItems value="#{mockup.shoppinglist}" />
+						</p:selectOneListbox>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="#{mockup.flat2}">
+					<h:panelGrid columns="1" cellpadding="10">
+						<p:selectOneListbox id="shoppinglist2"
+							value="#{mockup.shoppinglist}">
+							<f:selectItems value="#{mockup.shoppinglist}" />
+						</p:selectOneListbox>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="#{mockup.flat3}">
+					<h:panelGrid columns="1" cellpadding="10">
+						<p:selectOneListbox id="shoppinglist3"
+							value="#{mockup.shoppinglist}">
+							<f:selectItems value="#{mockup.shoppinglist}" />
+						</p:selectOneListbox>
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+
+			<!-- 
+		<h:panelGrid columns="3" cellpadding="5">
+                 <h:outputLabel for="menu" value="Wohnungen: " style="font-weight:bold"/>
+                    	<p:selectCheckboxMenu id="menu" value="#{mockup.shoppinglistitem}" label="Wohnung" required="true" filter="true" filterMatchMode="startsWith" panelStyle="width:250px" >
+							<f:selectItems value="#{mockup.flats2}" />
+       				 	</p:selectCheckboxMenu>
+       				 	<p:commandLink value="Submit" update="display" />
+         </h:panelGrid>
+         <p:outputPanel id="display" style="width:250px;padding-left:5px;margin-top:10px">
+        <p:dataList value="#{mockup.shoppinglistitem}" var="hey" emptyMessage="Keine Wohnung gewählt">
+            #{hey}
+        </p:dataList>
+    </p:outputPanel>
+     -->
+		</h:form>
+	</ui:define>
+
+
+</ui:composition>

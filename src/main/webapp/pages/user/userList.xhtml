@@ -1,0 +1,63 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-users" /> #{msg.liUList}
+		</h1>
+
+		<p:panel>
+			<p:dataTable id="users" var="user"
+				value="#{userBean.usersOfCurrentGroup}" paginator="true"
+				paginatorTemplate=" {Exporters}">
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="users" fileName="users"
+							encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="users" fileName="users"
+							encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="users" fileName="users"
+							encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="users" fileName="users"
+							encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+				<p:column headerText="#{msg['lhFirstName']}">
+					<h:outputText value="#{user.firstName}" />
+				</p:column>
+
+				<p:column headerText="#{msg['lhLastName']}" priority="2">
+					<h:outputText value="#{user.lastName}" />
+				</p:column>
+
+				<p:column headerText="#{msg['lhUsername']}" priority="4">
+					<h:outputText value="#{user.userName}" />
+				</p:column>
+
+				<p:column headerText="#{msg['lhMail']}" priority="4">
+					<h:outputText value="#{user.email}" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+	</ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,292 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+		<pm:page id="basic">
+			<h:form id="basicForm" enctype="multipart/form-data">
+				<pm:header
+					title="#{editBill.bill.id==null ? msg.mBill : msg.editBill} - #{msg.basicsHeader}"
+					swatch="a">
+					<p:button
+						outcome="#{editBill.returnPage!=null ? editBill.returnPage : navigation.pageHome}"
+						value="#{msg.cancel}" icon="ui-icon-arrow-l"
+						styleClass="ui-btn-left ui-btn-inline" />
+					<p:commandButton action="#{editBill.mobileWizardNext(1)}"
+						value="#{msg.next}" icon="ui-icon-arrow-r"
+						styleClass="ui-btn-right ui-btn-inline" update="recurring"
+						type="submit" />
+				</pm:header>
+
+				<pm:content>
+					<p:messages autoUpdate="true" />
+					<pm:field>
+						<p:outputLabel for="date" value="#{msg['dateLabel']}:" />
+						<p:calendar id="date" pattern="MM/dd/yyyy"
+							value="#{editBill.bill.date}" required="true"
+							requiredMessage="#{valMsg['error.date.required']}" />
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="file" value="#{msg['imageLabel']}:" />
+						<p:panelGrid columns="2">
+						
+						<p:fileUpload value="#{editBill.file}" simple="true" />
+						<p:commandButton value="Upload" icon="ui-icon-camera"
+							actionListener="#{editBill.mobileUpload}" ajax="false" />
+						</p:panelGrid>
+						
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="name" value="#{msg['nameLabel']}:" />
+						<p:inputText id="name" value="#{editBill.bill.name}"
+							maxlength="45" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="shop" value="#{msg['shopLabel']}:" />
+						<p:selectOneMenu id="shop" value="#{editBill.bill.shopDTO}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="#{msg['chooseShop']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{editBill.shops}" var="item"
+								itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</pm:field>
+					<pm:field>
+						<p:outputLabel value="" />
+						<p:selectBooleanCheckbox value="#{editBill.bill.recurringBill}"
+							itemLabel="#{msg.recurringLabel}" />
+					</pm:field>
+
+				</pm:content>
+
+			</h:form>
+		</pm:page>
+
+
+		<pm:page id="recurring" lazy="true">
+			<h:form>
+
+				<pm:header
+					title="#{editBill.bill.id==null ? msg.mBill : msg.editBill} - #{msg.recurringTab}"
+					swatch="a">
+					<p:commandButton type="submit"
+						action="#{editBill.mobileWizardBack(2)}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline"
+						ajax="false" />
+					<p:commandButton type="submit"
+						action="#{editBill.mobileWizardNext(2)}" value="#{msg.next}"
+						icon="ui-icon-arrow-r" styleClass="ui-btn-right ui-btn-inline"
+						ajax="false" />
+
+				</pm:header>
+				<pm:content>
+					<pm:field>
+						<p:outputLabel for="start" value="#{msg['startLabel']}:" />
+						<p:calendar id="start" pattern="MM/dd/yyyy"
+							value="#{editBill.bill.recurring.date}" required="true" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="recType" value="#{msg['repeatEvery']}:" />
+						<p:panelGrid columns="2">
+							<pm:inputSlider value="#{editBill.bill.recurring.value}" min="1"
+								max="150" step="1" />
+							<p:selectOneMenu id="recType"
+								value="#{editBill.bill.recurring.recurringType}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItems value="#{editBill.recurringTypes}" var="type"
+									itemValue="#{type}" itemLabel="#{type.name}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</pm:field>
+					<pm:field>
+						<p:outputLabel value="#{msg.repeatLabel}" />
+						<p:selectOneMenu value="#{editBill.bill.recurring.repeatType}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItems value="#{editBill.repeatTypes}" var="rep"
+								itemLabel="#{rep.name}" />
+							<p:ajax event="change" update="untilField timesField" />
+						</p:selectOneMenu>
+					</pm:field>
+					<pm:field id="untilField">
+						<p:outputLabel value="#{msg.date}"
+							rendered="#{editBill.bill.recurring.repeatType=='UNTIL'}" />
+						<p:calendar id="end" pattern="MM/dd/yyyy"
+							value="#{editBill.bill.recurring.endDate}" required="true"
+							rendered="#{editBill.bill.recurring.repeatType=='UNTIL'}" />
+					</pm:field>
+					<pm:field id="timesField">
+						<p:outputLabel value="#{msg.iteratLabel}"
+							rendered="#{editBill.bill.recurring.repeatType=='TIMES'}" />
+						<pm:inputSlider value="#{editBill.bill.recurring.times}" min="1"
+							max="100" step="1"
+							rendered="#{editBill.bill.recurring.repeatType=='TIMES'}" />
+					</pm:field>
+
+				</pm:content>
+			</h:form>
+		</pm:page>
+
+		<pm:page id="items" lazy="true">
+			<h:form id="itemsForm">
+				<pm:header
+					title="#{editBill.bill.id==null ? msg.mBill : msg.editBill}- #{msg.itemsHeader}"
+					swatch="a">
+
+
+					<p:commandButton type="submit"
+						action="#{editBill.mobileWizardBack(3)}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline"
+						ajax="false" />
+					<p:commandButton type="submit" value="#{msg.create}"
+						action="#{editBill.createBill(false)}" icon="ui-icon-check"
+						styleClass="ui-btn-right ui-btn-inline" />
+				</pm:header>
+
+				<pm:content id="content">
+					<p:panelGrid columns="2">
+						<p:selectBooleanCheckbox value="#{editBill.bill.privateBill}"
+							itemLabel="#{msg.cPrivate}">
+							<p:ajax event="change" listener="#{editBill.changePrivateBill}"
+								update="items:itemsForm:items" />
+						</p:selectBooleanCheckbox>
+						<p:selectBooleanCheckbox value="#{editBill.onlyTotal}"
+							itemLabel="#{msg.noEntriesMobile}">
+							<p:ajax event="change" process="items:itemsForm:items" />
+						</p:selectBooleanCheckbox>
+					</p:panelGrid>
+					<p:inputText value="#{editBill.bill.total}" type="number"
+						rendered="#{editBill.onlyTotal}" />
+					<p:commandButton value="#{msg.addItemHeader}" icon="ui-icon-plus"
+						action="#{editBill.mobileWizardNext(3)}" update="addItem"
+						rendered="#{!editBill.onlyTotal}" />
+
+					<p:dataTable id="items" var="item1"
+						value="#{editBill.bill.costEntries}"
+						tableStyleClass="ui-table-columntoggle" rowKey="#{item1.rowKey}"
+						rendered="#{editBill.onlyTotal=='FALSE'}" paginator="true"
+						rows="5">
+
+						<p:column priority="1" style="width:50px;">
+							<p:button icon="ui-icon-minus" rendered="#{item1.excluded}"
+								disabled="true" />
+							<p:button icon="ui-icon-check" rendered="#{!item1.excluded}"
+								disabled="true" />
+
+						</p:column>
+						<p:column headerText="#{msg['nameLabel']}" priority="1">
+							<h:outputText value="#{item1.name}" />
+						</p:column>
+						<p:column headerText="#{msg['priceLabel']}" priority="1">
+							<h:outputText
+								value="#{item1.amount} #{editBill.bill.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg['categoryLabel']}" priority="2">
+							<h:outputText value="#{item1.category.name}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}" priority="2">
+							<h:outputText value="#{item1.times}" />
+						</p:column>
+						<p:column>
+							<p:commandButton icon="ui-icon-action"
+								oncomplete="PF('dlg2').show();" update="items:itemsForm:dlg2">
+								<f:setPropertyActionListener value="#{item1}"
+									target="#{editBill.selectedCostEntry}" />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+
+				</pm:content>
+
+				<p:dialog header="#{editBill.selectedCostEntry.name}"
+					widgetVar="dlg2" id="dlg2">
+					<p:commandButton
+						action="#{editBill.changeItemStatus(editBill.selectedCostEntry)}"
+						icon="ui-icon-plus" value="#{msg.include}"
+						update="items:itemsForm:items" oncomplete="PF('dlg2').hide()"
+						rendered="#{editBill.selectedCostEntry.excluded}" />
+					<p:commandButton
+						action="#{editBill.changeItemStatus(editBill.selectedCostEntry)}"
+						icon="ui-icon-minus" value="#{msg.exclude}"
+						update="items:itemsForm:items" oncomplete="PF('dlg2').hide()"
+						rendered="#{editBill.selectedCostEntry.excluded!=true}" />
+					<p:commandButton action="pm:addItem?transition=slide"
+						update="addItem" icon="ui-icon-edit" value="#{msg.edit}">
+						<f:setPropertyActionListener value="#{editBill.selectedCostEntry}"
+							target="#{editBill.costEntry}" />
+					</p:commandButton>
+					<p:commandButton
+						action="#{editBill.deleteItem(editBill.selectedCostEntry)}"
+						id="delete" icon="ui-icon-delete" value="#{msg.delete}"
+						update="items" oncomplete="PF('dlg2').hide()" immediate="true" />
+				</p:dialog>
+			</h:form>
+		</pm:page>
+
+		<pm:page id="addItem">
+			<h:form id="addForm">
+				<pm:header
+					title="#{editBill.costEntry.category==null ? msg.addItemHeader :msg.editItem}"
+					swatch="a">
+					<p:commandButton type="submit"
+						action="#{editBill.mobileWizardBack(4)}" value="#{msg.cancel}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline"
+						ajax="false" />
+
+				</pm:header>
+				<pm:content>
+					<p:messages id="messages" showDetail="true" autoUpdate="true"
+						closable="true" />
+
+					<pm:field>
+						<p:outputLabel for="itemName"
+							value="#{msg.shoppingLists_nameTitle}:" />
+						<p:inputText id="itemName" value="#{editBill.costEntry.name}"
+							maxlength="45" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel
+							value="#{msg['priceLabel']} #{editBill.bill.currency.isoCode}:" />
+						<p:inputText value="#{editBill.costEntry.amount}" type="number"></p:inputText>
+					</pm:field>
+					<pm:field>
+						<p:outputLabel value="#{msg['amount']}" />
+						<pm:inputSlider value="#{editBill.costEntry.times}" min="1"
+							max="100" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="category" value="#{msg['categoryLabel']}" />
+						<p:selectOneMenu id="category"
+							value="#{editBill.costEntry.category}"
+							converter="omnifaces.SelectItemsConverter" style="width: 100%;">
+							<f:selectItem itemLabel="#{msg['chooseCategory']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{editBill.categories}" var="item"
+								itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+
+					</pm:field>
+
+					<p:commandButton type="submit"
+						value="#{editBill.costEntry.category==null ? msg.add : msg.save}"
+						action="#{editBill.addItemMobile}" icon="ui-icon-plus"
+						update="items" />
+				</pm:content>
+
+
+
+			</h:form>
+		</pm:page>
+
+	</ui:define>
+
+
+</ui:composition>

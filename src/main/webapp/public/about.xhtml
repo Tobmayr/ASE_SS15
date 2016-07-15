@@ -1,0 +1,41 @@
+<ui:composition template="/templates/main_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h1 class="page-header ">
+			<i class="fa fa-info-circle" /> #{msg['about']}
+		</h1>
+		<h:form id="aboutForm">
+
+			<p:messages showDetail="true" id="messages" />
+
+			<p:outputLabel value="#{msg['about1']}" />
+			<p:outputLabel value="#{msg['about2']}" />
+
+			<h:form>
+				<p:tagCloud model="#{about.model}" style="width: 1100px; " />
+			</h:form>
+
+			<p:panelGrid columns="1" class="noBorderGrid">
+				<p:outputLabel value="#{msg['aboutImg']}" />
+			</p:panelGrid>
+
+
+
+			<p:contentFlow value="#{about.images}" var="image"
+				style="width: 1100px; height: 500px ; border : none; ">
+				<p:graphicImage name="/images/#{image}" styleClass="content"
+					style="width: 450px; height: 300px " />
+				<div class="caption">#{image}</div>
+			</p:contentFlow>
+
+
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

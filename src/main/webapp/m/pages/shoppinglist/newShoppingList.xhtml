@@ -1,0 +1,128 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="shoppingListDetails">
+			<pm:header class="app-title" title="#{msg.newShoppingList_title}"
+				swatch="a">
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+			</pm:header>
+			<pm:content>
+				<h:form id="shoppingListBasicData">
+					<p:commandButton action="#{shoppingList.saveShoppingList}"
+						value="#{msg.save}" icon="ui-icon-check"
+						update="shoppingListBasicData" />
+					<p:messages />
+					<pm:field>
+						<p:outputLabel for="listName"
+							value="#{msg.newShoppingList_listName}" />
+						<p:inputText id="listName"
+							value="#{shoppingList.currentShoppingList.name}" required="true"
+							label="listName" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="listDeadline"
+							value="#{msg.newShoppingList_listDeadline}" />
+						<p:calendar id="listDeadline" required="true" locale="de"
+							value="#{shoppingList.currentShoppingList.deadline}" />
+					</pm:field>
+					<pm:field>
+						<p:selectBooleanCheckbox id="emailNotification"
+							itemLabel="#{msg.shoppingLists_EmailNotificationTitle}"
+							value="#{shoppingList.currentShoppingList.emailNotification}" />
+					</pm:field>
+					<pm:field>
+						<p:selectBooleanCheckbox id="showActivity"
+							onchange="this.form.submit()" immediate="true"
+							itemLabel="#{msg.shoppingLists_forActivityTitle}"
+							value="#{shoppingList.selectActivity}"
+							valueChangeListener="#{shoppingList.changeSelectActivity}" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="itemActivity"
+							rendered="#{shoppingList.selectActivity}"
+							value="#{msg.shoppingLists_selectActivityTitle}" />
+						<p:selectOneMenu id="itemActivity"
+							rendered="#{shoppingList.selectActivity}"
+							value="#{shoppingList.currentShoppingList.activityId}"
+							converter="omnifaces.SelectItemsConverter" required="false">
+							<f:selectItems value="#{shoppingList.activities}" var="act"
+								itemLabel="#{act.name}" itemValue="#{act.id}" />
+						</p:selectOneMenu>
+					</pm:field>
+				</h:form>
+
+				<pm:field>
+
+					<p:outputLabel value="#{msg.newShoppingList_listPositionsTitle}"
+						style="text-align: center; font-weight: bold" />
+
+					<h:form id="listItemPanel">
+						<p:messages />
+						<pm:field>
+							<p:outputLabel for="itemName"
+								value="#{msg.newShoppingList_itemName}" />
+							<p:inputText id="itemName" value="#{shoppingList.itemName}"
+								required="true" label="itemName" />
+						</pm:field>
+						<pm:field>
+							<p:outputLabel for="itemCategory"
+								value="#{msg.newShoppingList_itemCategory}" />
+
+							<p:selectOneMenu id="itemCategory"
+								value="#{shoppingList.itemCategory}"
+								converter="omnifaces.SelectItemsConverter" required="true">
+								<f:selectItem itemLabel="#{msg.chooseCategory}" itemValue=""
+									noSelectionOption="false" />
+								<f:selectItems value="#{shoppingList.categories}" var="cat"
+									itemLabel="#{cat.name}" itemValue="#{cat}" />
+							</p:selectOneMenu>
+						</pm:field>
+						<pm:field>
+							<h:outputLabel for="itemAmount"
+								value="#{msg.newShoppingList_itemAmount}" />
+							<pm:inputSlider id="itemAmount"
+								value="#{shoppingList.itemAmount}" minValue="1" maxValue="100" />
+						</pm:field>
+						<pm:field>
+							<p:commandButton
+								actionListener="#{shoppingList.addShoppingListItem}"
+								value="#{msg.add}" icon="ui-icon-plus"
+								update="itemList listItemPanel" />
+						</pm:field>
+
+						<p:dataTable id="itemList" var="listItem"
+							value="#{shoppingList.filteredItemList}"
+							tableStyleClass="ui-table-columntoggle">
+							<p:column headerText="#{msg.newShoppingList_itemNameTitle}">
+								<p:outputLabel value="#{listItem.name}" />
+							</p:column>
+							<p:column headerText="#{msg.newShoppingList_itemCategoryTitle}"
+								priority="2">
+								<p:outputLabel value="#{listItem.category.name}" />
+							</p:column>
+							<p:column headerText="#{msg.newShoppingList_itemAmountTitle}"
+								priority="1">
+								<p:outputLabel value="#{listItem.amount}" />
+							</p:column>
+							<p:column>
+								<p:commandButton
+									action="#{shoppingList.deleteShoppingListItem(listItem)}"
+									id="release" icon="ui-icon-delete" title="#{msg.delete}"
+									immediate="true" update="itemList" />
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</pm:field>
+			</pm:content>
+			<pm:footer />
+		</pm:page>
+	</ui:define>
+</ui:composition>

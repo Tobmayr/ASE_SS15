@@ -1,0 +1,137 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">
+				<i class="fa fa-shopping-cart" /> #{msg.myShoppingLists_title}
+			</h1>
+			<p:button outcome="#{navigation.pageNewShoppingList}"
+				value="#{msg.shoppingLists_create}" icon="fa fa-plus" />
+
+			<p:separator />
+			<p:dataTable id="myShoppingLists" var="myShoppingList"
+				value="#{userShoppingList.myShoppingLists}"
+				rowKey="#{myShoppingList.id}" widgetVar="shoppingListsTable"
+				emptyMessage="#{msg['empty.list.criteria']}"
+				filteredValue="#{userShoppingList.filteredUserShoppingLists}"
+				paginator="true" paginatorTemplate=" {Exporters}">
+
+				<f:facet name="header">
+                    #{msg.newShoppingList_listTitle}
+                </f:facet>
+
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="myShoppingLists"
+							fileName="myShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="myShoppingLists"
+							fileName="myShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="myShoppingLists"
+							fileName="myShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="myShoppingLists"
+							fileName="myShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="#{msg.shoppingLists_nameTitle}"
+					filterBy="#{myShoppingList.name}" filterMatchMode="contains"
+					sortBy="#{myShoppingList.name}">
+					<h:outputText value="#{myShoppingList.name}" />
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_stateTitle}" priority="1"
+					filterBy="#{myShoppingList.state}" filterMatchMode="contains"
+					sortBy="#{myShoppingList.state}">
+					<f:facet name="filter">
+						<p:selectOneMenu id="state"
+							value="#{userShoppingList.userFilterShoppingListState}"
+							converter="omnifaces.SelectItemsConverter"
+							onchange="PF('shoppingListsTable').filter()">
+							<f:selectItem itemLabel="#{msg.selectAll}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{userShoppingList.allShoppingListStates}"
+								var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{myShoppingList.state.name}" />
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+					priority="2" filterBy="#{myShoppingList.deadline}"
+					filterMatchMode="contains" sortBy="#{myShoppingList.deadline}">
+					<h:outputText value="#{myShoppingList.deadline}">
+						<f:convertDateTime type="both" dateStyle="medium"
+							timeStyle="short" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+					priority="4" filterBy="#{myShoppingList.createdByUsername}"
+					filterMatchMode="contains"
+					sortBy="#{myShoppingList.createdByUsername}">
+					<h:outputText value="#{myShoppingList.createdByUsername}"
+						title="#{myShoppingList.createdByFirstName} #{myShoppingList.createdByLastName}" />
+				</p:column>
+				<p:column headerText="#{msg.shoppingLists_assignedToTitle}"
+					priority="3" filterBy="#{myShoppingList.assignedToUsername}"
+					filterMatchMode="contains"
+					sortBy="#{myShoppingList.assignedToUsername}">
+					<h:outputText value="#{myShoppingList.assignedToUsername}"
+						title="#{myShoppingList.assignedToUsername}" />
+				</p:column>
+				<p:column headerText="#{msg.shoppingLists_forActivityTitle}"
+					priority="3" filterBy="#{myShoppingList.activityName}"
+					filterMatchMode="contains" sortBy="#{myShoppingList.activityName}">
+					<h:outputText value="#{myShoppingList.activityName}"
+						title="#{myShoppingList.activityName}" />
+				</p:column>
+				<p:column exportable="false">
+					<p:commandButton
+						action="#{userShoppingList.viewShoppingList(myShoppingList, navigation.pageUserShoppingLists)}"
+						id="view" icon="fa fa-eye" title="#{msg.view}" ajax="false" />
+					<p:commandButton
+						action="#{userShoppingList.editShoppingList(myShoppingList)}"
+						id="edit" icon="fa fa-edit" title="#{msg.edit}"
+						disabled="#{myShoppingList.state != 'NEW' and myShoppingList.state != 'CANCELLED'}"
+						ajax="false" />
+					<p:commandButton
+						action="#{userShoppingList.deleteShoppingList(myShoppingList)}"
+						id="delete" icon="fa fa-trash"
+						title="#{myShoppingList.state eq 'NEW' or myShoppingList.state eq 'CANCELLED'? msg.delete : msg.cancel}"
+						update="myShoppingLists"
+						disabled="#{myShoppingList.state eq 'ASSIGNED'}" />
+					<p:commandButton
+						action="#{userShoppingList.releaseShoppingList(myShoppingList)}"
+						id="release" icon="fa fa-check-square-o" title="#{msg.release}"
+						update="myShoppingLists"
+						disabled="#{myShoppingList.state != 'NEW'}" />
+					<p:commandButton
+						action="#{billActions.convertShoppingList(myShoppingList,navigation.pageUserShoppingLists)}"
+						id="convert" icon="fa fa-money" title="#{msg.transfer}"
+						disabled="#{myShoppingList.state eq 'NEW' || myShoppingList.state eq 'RELEASED'}"
+						ajax="false"/>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+
+</ui:composition>

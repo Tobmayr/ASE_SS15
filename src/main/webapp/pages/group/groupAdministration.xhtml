@@ -1,0 +1,331 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-group" /> #{msg.groupAdministration}
+		</h1>
+		<h:form id="editGroupForm" enctype="multipart/form-data">
+			<p:messages id="messages" autoUpdate="true" />
+			<p:panelGrid columns="4" class="noBorderGrid">
+				<p:outputLabel value="#{msg.lsag}:" style="padding-top:0.8em;" />
+				<p:selectOneMenu id="groupChanger"
+					value="#{groupAdministration.group}"
+					converter="omnifaces.SelectItemsConverter"
+					style="margin-top:0.4em;">
+					<f:selectItems value="#{groupAdministration.adminGroups}"
+						var="group" itemLabel="#{group.name}" itemValue="#{group}" />
+					<p:ajax event="change"
+						listener="#{groupAdministration.groupChanged}" update="adminView" />
+
+				</p:selectOneMenu>
+				<p:outputLabel value="#{msg.ldeleteGroup}:"
+					style="padding-top:0.8em;" />
+				<p:commandButton icon="fa fa-trash"
+					action="#{groupAdministration.deleteGroup}" update="editGroupForm">
+					<p:confirm header="#{msg.confDG}" message="#{msg.confDGMS}"
+						icon="ui-icon-alert" />
+				</p:commandButton>
+			</p:panelGrid>
+
+			<p:tabView id="adminView"
+				activeIndex="#{groupAdministration.tabindex}">
+				<p:tab id="basicTab" title="#{msg['groupDetails']}">
+					<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+						<h:panelGrid columns="2"
+							rendered="#{!groupAdministration.editable}">
+							<p:outputLabel value="#{msg.lhName}:"
+								style="margin-right:1em;" />
+							<p:outputLabel value="#{groupAdministration.group.name}" />
+							<p:outputLabel value="#{msg['countryLabel']}:" />
+							<p:outputLabel
+								value="#{groupAdministration.group.country.localizedName}" />
+							<p:outputLabel value="#{msg['cityLabel']}:" />
+							<p:outputLabel value="#{groupAdministration.group.city}" />
+							<p:outputLabel value="#{msg['zipLabel']}:" />
+							<p:outputLabel value="#{groupAdministration.group.zip}" />
+							<p:outputLabel value="#{msg['streetLabel']}:" />
+							<p:outputLabel value="#{groupAdministration.group.street}" />
+							<p:outputLabel value="#{msg['street2Label']}:" />
+							<p:outputLabel value="#{groupAdministration.group.street2}" />
+							<p:commandButton
+								value="#{groupAdministration.editable ? msg.save:msg.edit}"
+								action="#{groupAdministration.editGroup}"
+								update="basicPanel @this" />
+						</h:panelGrid>
+						<h:panelGrid columns="2"
+							rendered="#{groupAdministration.editable}">
+							<p:outputLabel for="name" value="#{msg['nameLabel']}:" />
+							<p:inputText id="name" value="#{groupAdministration.group.name}" />
+							<p:outputLabel for="country" value="#{msg['countryLabel']}:" />
+							<p:selectOneMenu id="country"
+								value="#{groupAdministration.group.country}"
+								converter="omnifaces.SelectItemsConverter" style="width:100%">
+
+								<f:selectItems value="#{groupAdministration.countries}"
+									var="item" itemLabel="#{item.localizedName}"
+									itemValue="#{item}" />
+
+							</p:selectOneMenu>
+							<p:outputLabel for="city" value="#{msg['cityLabel']}:" />
+							<p:inputText id="city" value="#{groupAdministration.group.city}" />
+							<p:outputLabel for="zip" value="#{msg['zipLabel']}:" />
+							<p:inputText id="zip" value="#{groupAdministration.group.zip}" />
+							<p:outputLabel for="street" value="#{msg['streetLabel']}:" />
+							<p:inputText id="street"
+								value="#{groupAdministration.group.street}" />
+							<p:outputLabel for="street2" value="#{msg['street2Label']}:" />
+							<p:inputText id="street2"
+								value="#{groupAdministration.group.street2}" />
+							<p:commandButton value="#{msg.cancel}"
+								action="#{groupAdministration.discardChanges}"
+								update="basicPanel" />
+							<p:commandButton
+								value="#{groupAdministration.editable ? msg.save:msg.edit}"
+								action="#{groupAdministration.editGroup}"
+								update="basicPanel @this" />
+						</h:panelGrid>
+					</p:panel>
+
+
+					<p:panel id="userPanel" header="#{msg['userHeader']}">
+						<p:dataTable id="groupUsers" var="user"
+							value="#{groupAdministration.groupusers}" rowKey="#{user.id}"
+							paginator="true" paginatorTemplate=" {Exporters}">
+							<f:facet name="{Exporters}">
+								<h:commandLink>
+									<p:graphicImage name="/images/export/excel.png" width="24" />
+									<p:dataExporter type="xls" target="groupUsers"
+										fileName="groupUsers" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/pdf.png" width="24" />
+									<p:dataExporter type="pdf" target="groupUsers"
+										fileName="groupUsers" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/csv.png" width="24" />
+									<p:dataExporter type="csv" target="groupUsers"
+										fileName="groupUsers" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/xml.png" width="24" />
+									<p:dataExporter type="xml" target="groupUsers"
+										fileName="groupUsers" encoding="iso-8859-1" />
+								</h:commandLink>
+							</f:facet>
+
+							<p:column headerText="#{msg['lhUsername']}" priority="4">
+								<h:outputText value="#{user.userName}" />
+							</p:column>
+							<p:column headerText="#{msg['lhFirstName']}"
+								filterBy="#{user.firstName}" sortBy="#{user.firstName}">
+								<h:outputText value="#{user.firstName}" />
+							</p:column>
+
+							<p:column headerText="#{msg['lhLastName']}" priority="2"
+								filterBy="#{user.lastName}" sortBy="#{user.lastName}">
+								<h:outputText value="#{user.lastName}" />
+							</p:column>
+							<p:column headerText="#{msg['lhMail']}" priority="4">
+								<h:outputText value="#{user.email}" />
+							</p:column>
+							<p:column exportable="false">
+								<p:commandButton
+									action="#{groupAdministration.giveAdminRights(user)}" id="edit"
+									icon="fa fa-trophy" title="#{msg.giveAdminRights}"
+									rendered="#{groupAdministration.isAdmin(user)==false}"
+									disabled="#{groupAdministration.isDeleted(user)}"
+									update="editGroupForm:adminView" />
+								<p:commandButton
+									action="#{groupAdministration.giveAdminRights(user)}"
+									icon="fa fa-arrow-down" title="#{msg.removeAdminRights}"
+									rendered="#{groupAdministration.isAdmin(user)}"
+									update="editGroupForm:adminView"
+									disabled="#{groupAdministration.isDeleted(user)}" />
+								<p:commandButton
+									action="#{groupAdministration.removeUser(user)}" id="delete"
+									icon="fa fa-trash" title="#{msg.removeUser}"
+									update="editGroupForm:adminView"
+									disabled="#{groupAdministration.isDeleted(user)}">
+									<p:confirm header="#{msg.confDU}" message="#{msg.confDUMS}"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:outputLabel value="#{msg.uinDel}"
+									rendered="#{groupAdministration.isDeleted(user)}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+
+					<p:panel header="#{msg.addUser}">
+						<p:panelGrid columns="3">
+							<p:outputLabel value="#{msg.lMailUsername}" />
+							<p:inputText value="#{groupAdministration.userSearch}" />
+							<p:commandButton action="#{groupAdministration.addUser}"
+								icon="fa fa-plus-square" update="userPanel" value="#{msg.add}" />
+
+						</p:panelGrid>
+
+					</p:panel>
+
+				</p:tab>
+				<p:tab id="categoryTab" title="#{msg['groupCategories']}">
+					<p:commandButton value="#{msg.newCat}"
+						action="#{categoryActions.newCategory(navigation.pageGroupAdministration)}"
+						icon="fa fa-plus-square" />
+					<p:panel id="categoryPanel" header="#{msg['categoryHeader']}">
+						<p:dataTable id="categories" var="category"
+							value="#{groupAdministration.categories}" rowKey="#{category.id}"
+							widgetVar="categoriesTable" emptyMessage="No category found"
+							paginator="true" paginatorTemplate=" {Exporters2}">
+							<f:facet name="{Exporters2}">
+								<h:commandLink>
+									<p:graphicImage name="/images/export/excel.png" width="24" />
+									<p:dataExporter type="xls" target="categories"
+										fileName="categories" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/pdf.png" width="24" />
+									<p:dataExporter type="pdf" target="categories"
+										fileName="categories" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/csv.png" width="24" />
+									<p:dataExporter type="csv" target="categories"
+										fileName="categories" encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/xml.png" width="24" />
+									<p:dataExporter type="xml" target="categories"
+										fileName="categories" encoding="iso-8859-1" />
+								</h:commandLink>
+							</f:facet>
+
+							<p:column headerText="#{msg['categoryName']}"
+								sortBy="#{category.name}">
+								<h:outputText value="#{category.name}" />
+							</p:column>
+							<p:column headerText="#{msg['lFixedCost']}">
+								<p:selectBooleanCheckbox value="#{category.fixedCost}"
+									disabled="true" />
+							</p:column>
+							<p:column headerText="#{msg.lCustomCategory}">
+								<p:selectBooleanCheckbox value="#{category.customDivision}"
+									disabled="true" />
+							</p:column>
+							<p:column headerText="#{msg['lParentCategory']}">
+								<h:outputText value="#{category.parentCategory.name}" />
+							</p:column>
+							<p:column exportable="false">
+								<p:commandButton
+									action="#{categoryActions.showCategory(category, navigation.pageGroupAdministration)}"
+									id="view" icon="fa fa-eye" title="#{msg.view}" />
+								<p:commandButton type="submit"
+									action="#{categoryActions.editCategory(category, navigation.pageGroupAdministration)}"
+									id="edit" icon="fa fa-edit" title="#{msg.edit}" />
+								<p:commandButton
+									action="#{categoryActions.deleteCategory(category, navigation.pageGroupAdministration)}"
+									id="delete" icon="fa fa-trash" title="#{msg.delete}"
+									update="categories">
+									<p:confirm header="#{msg.confDG}"
+										message="#{msg.confDGMG} #{category.name}?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</p:tab>
+				<p:tab id="shopTab" title="#{msg['groupShops']}">
+
+					<p:panel id="addPanel" header="#{msg.addShop}">
+						<p:panelGrid columns="3" class="noBorderGrid">
+							<p:outputLabel value="#{msg.categoryname}" />
+							<p:inputText value="#{groupAdministration.newShop.name}" />
+							<p:commandButton value="#{msg.add}" icon="fa fa-plus-square"
+								action="#{groupAdministration.editShop(groupAdministration.newShop)}"
+								update="shopPanel" />
+
+						</p:panelGrid>
+
+					</p:panel>
+					<p:panel id="shopPanel" header="#{msg['shopHeader']}">
+
+						<p:dataTable var="shop" value="#{groupAdministration.shops}"
+							rowKey="#{shop.id}" id="shoptable" editable="true"
+							paginator="true" paginatorTemplate=" {Exporters3}">
+							<p:ajax event="rowEdit"
+								listener="#{groupAdministration.editShop(shop)}"
+								update="editGroupForm:messages" />
+							<p:ajax event="rowEditCancel" />
+							<f:facet name="{Exporters3}">
+								<h:commandLink>
+									<p:graphicImage name="/images/export/excel.png" width="24" />
+									<p:dataExporter type="xls" target="shoptable" fileName="shop"
+										encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/pdf.png" width="24" />
+									<p:dataExporter type="pdf" target="shoptable" fileName="shop"
+										encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/csv.png" width="24" />
+									<p:dataExporter type="csv" target="shoptable" fileName="shop"
+										encoding="iso-8859-1" />
+								</h:commandLink>
+
+								<h:commandLink>
+									<p:graphicImage name="/images/export/xml.png" width="24" />
+									<p:dataExporter type="xml" target="shoptable" fileName="shop"
+										encoding="iso-8859-1" />
+								</h:commandLink>
+							</f:facet>
+
+							<p:column headerText="#{msg['shopname']}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{shop.name}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{shop.name}" maxlength="45" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column style="width:32px"
+								visible="#{costDivisionBean.isEditingAllowed()}"
+								exportable="false">
+								<p:rowEditor />
+							</p:column>
+
+							<p:column exportable="false">
+								<p:commandButton
+									action="#{groupAdministration.removeShop(shop)}" id="delete"
+									icon="fa fa-trash" title="#{msg.removeShop}" update="shoptable" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</p:tab>
+			</p:tabView>
+			<p:confirmDialog global="true" widgetVar="confDlg">
+				<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" />
+				<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

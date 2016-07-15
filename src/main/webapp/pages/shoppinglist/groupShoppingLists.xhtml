@@ -1,0 +1,126 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">
+				<i class="fa fa-shopping-cart" /> #{msg.groupShoppingLists_title}
+			</h1>
+
+			<p:dataTable id="groupShoppingLists" var="groupShoppingListItem"
+				value="#{groupShoppingList.groupShoppingLists}"
+				rowKey="#{groupShoppingList.id}" widgetVar="shoppingListsTable"
+				emptyMessage="#{msg['empty.list.criteria']}"
+				filteredValue="#{groupShoppingList.filteredGroupShoppingLists}"
+				paginator="true" paginatorTemplate=" {Exporters}">
+				<f:facet name="header">
+                    #{msg.newShoppingList_listTitle}
+                </f:facet>
+
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="groupShoppingLists"
+							fileName="groupShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="groupShoppingLists"
+							fileName="groupShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="groupShoppingLists"
+							fileName="groupShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="groupShoppingLists"
+							fileName="groupShoppingLists" encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+
+
+				<p:column headerText="#{msg.shoppingLists_nameTitle}"
+					filterBy="#{groupShoppingListItem.name}" filterMatchMode="contains"
+					sortBy="#{groupShoppingListItem.name}">
+					<h:outputText value="#{groupShoppingListItem.name}" />
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_stateTitle}"
+					filterBy="#{groupShoppingListItem.state}"
+					filterMatchMode="contains" sortBy="#{groupShoppingListItem.state}"
+					priority="1">
+					<f:facet name="filter">
+						<p:selectOneMenu id="state"
+							value="#{groupShoppingList.groupFilterShoppingListState}"
+							converter="omnifaces.SelectItemsConverter"
+							onchange="PF('shoppingListsTable').filter()">
+							<f:selectItem itemLabel="#{msg.selectAll}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{groupShoppingList.shoppingListStates}"
+								var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{groupShoppingListItem.state.name}" />
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+					priority="2" filterBy="#{groupShoppingListItem.deadline}"
+					filterMatchMode="contains"
+					sortBy="#{groupShoppingListItem.deadline}">
+					<h:outputText value="#{groupShoppingListItem.deadline}">
+						<f:convertDateTime type="both" dateStyle="medium"
+							timeStyle="short" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+					priority="4" filterBy="#{groupShoppingListItem.createdByUsername}"
+					filterMatchMode="contains"
+					sortBy="#{groupShoppingListItem.createdByUsername}">
+					<h:outputText value="#{groupShoppingListItem.createdByUsername}"
+						title="#{groupShoppingListItem.createdByFirstName} #{groupShoppingListItem.createdByLastName}" />
+				</p:column>
+				<p:column headerText="#{msg.shoppingLists_assignedToTitle}"
+					priority="3" filterBy="#{groupShoppingListItem.assignedToUsername}"
+					filterMatchMode="contains"
+					sortBy="#{groupShoppingListItem.assignedToUsername}">
+					<h:outputText value="#{groupShoppingListItem.assignedToUsername}"
+						title="#{groupShoppingListItem.assignedToFirstName} #{groupShoppingListItem.assignedToLastName}" />
+				</p:column>
+				<p:column headerText="#{msg.shoppingLists_forActivityTitle}"
+					priority="3" filterBy="#{groupShoppingListItem.activityName}"
+					filterMatchMode="contains"
+					sortBy="#{groupShoppingListItem.activityName}">
+					<h:outputText value="#{groupShoppingListItem.activityName}"
+						title="#{groupShoppingListItem.activityName}" />
+				</p:column>
+				<p:column exportable="false">
+					<p:commandButton
+						action="#{groupShoppingList.viewShoppingList(groupShoppingListItem, navigation.pageGroupShoppingLists)}"
+						id="view" icon="fa fa-eye" update="groupShoppingLists"
+						title="#{msg.view}" ajax="false" />
+					<p:commandButton
+						action="#{groupShoppingList.takeOverShoppingList(groupShoppingListItem)}"
+						id="takeOver" icon="fa fa-share" title="#{msg.takeOver}"
+						update="groupShoppingLists"
+						disabled="#{groupShoppingListItem.state != 'RELEASED'}" />
+					<p:commandButton
+						action="#{groupShoppingList.releaseShoppingList(groupShoppingListItem)}"
+						id="release" icon="fa fa-check-square-o" title="#{msg.release}"
+						update="groupShoppingLists"
+						disabled="#{groupShoppingListItem.state != 'ASSIGNED' || groupShoppingListItem.assignedTo != userBean.currentUser.id}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

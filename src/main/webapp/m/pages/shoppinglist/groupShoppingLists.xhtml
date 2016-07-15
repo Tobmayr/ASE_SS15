@@ -1,0 +1,164 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header class="app-title" title="#{msg.groupShoppingLists_title}"
+				swatch="a">
+			</pm:header>
+			<pm:content>
+
+				<h:form id="main">
+					<p:dataTable id="groupShoppingList" var="groupShoppingListItem"
+						value="#{groupShoppingList.groupShoppingLists}"
+						tableStyleClass="ui-table-columntoggle"
+						rowKey="#{groupShoppingListItem.id}">
+						<f:facet name="header">
+                            #{msg.newShoppingList_listTitle}
+                        </f:facet>
+						<p:column headerText="#{msg.shoppingLists_nameTitle}"
+							sortBy="#{groupShoppingListItem.name}">
+							<h:outputText value="#{groupShoppingListItem.name}" />
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_stateTitle}"
+							priority="1" sortBy="#{groupShoppingListItem.state.name}">
+							<h:outputText value="#{groupShoppingListItem.state.name}" />
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+							priority="2" sortBy="#{groupShoppingListItem.deadline}">
+							<h:outputText value="#{groupShoppingListItem.deadline}">
+								<f:convertDateTime type="both" dateStyle="medium"
+									timeStyle="short" locale="de" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+							priority="4" sortBy="#{groupShoppingListItem.createdByUsername}">
+							<h:outputText value="#{groupShoppingListItem.createdByUsername}"
+								title="#{groupShoppingListItem.createdByFirstName} #{groupShoppingListItem.createdByLastName}" />
+						</p:column>
+
+						<p:column headerText="#{msg.shoppingLists_assignedToTitle}"
+							priority="3" sortBy="#{groupShoppingListItem.assignedToUsername}">
+							<h:outputText value="#{groupShoppingListItem.assignedToUsername}"
+								title="#{groupShoppingListItem.assignedToFirstName} #{groupShoppingListItem.assignedToLastName}" />
+						</p:column>
+
+						<p:column>
+							<p:commandButton icon="ui-icon-action"
+								oncomplete="PF('shoppingListActions').show();">
+								<f:setPropertyActionListener value="#{groupShoppingListItem}"
+									target="#{groupShoppingList.currentShoppingList}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+
+					<p:dialog header="#{msg.newShoppingList_listTitle}"
+						widgetVar="shoppingListActions" showEffect="pop">
+
+						<p:commandButton value="#{msg.view}"
+							action="#{groupShoppingList.viewShoppingList( groupShoppingList.currentShoppingList, navigation.pageGroupShoppingLists)}"
+							oncomplete="PF('shoppingListActions').hide();"
+							update="main:groupShoppingList" icon="ui-icon-eye" />
+						<p:commandButton value="#{msg.shoppingLists_release}"
+							action="#{groupShoppingList.releaseShoppingList( groupShoppingList.currentShoppingList )}"
+							oncomplete="PF('shoppingListActions').hide();"
+							icon="ui-icon-check" update="main:groupShoppingList"
+							disabled="#{groupShoppingList.currentShoppingList.state != 'ASSIGNED'}" />
+						<p:commandButton value="#{msg.takeOver}"
+							action="#{groupShoppingList.takeOverShoppingList(groupShoppingList.currentShoppingList)}"
+							oncomplete="PF('shoppingListActions').hide();"
+							icon="ui-icon-forward" update="main:groupShoppingList"
+							disabled="#{groupShoppingList.currentShoppingList.state != 'RELEASED'}" />
+
+					</p:dialog>
+				</h:form>
+
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+
+				<pm:content>
+
+					<h:form id="main">
+						<p:dataTable id="shoppingList" var="currentShoppingList"
+							value="#{groupShoppingList.groupShoppingLists}"
+							tableStyleClass="ui-table-columntoggle"
+							rowKey="#{currentShoppingList.id}">
+							<f:facet name="header">
+							#{msg.newShoppingList_listTitle}
+						</f:facet>
+							<p:column headerText="#{msg.shoppingLists_nameTitle}"
+								sortBy="#{currentShoppingList.name}">
+								<h:outputText value="#{currentShoppingList.name}" />
+							</p:column>
+
+							<p:column headerText="#{msg.shoppingLists_stateTitle}"
+								priority="1" sortBy="#{currentShoppingList.state.name}">
+								<h:outputText value="#{currentShoppingList.state.name}" />
+							</p:column>
+
+							<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+								priority="2" sortBy="#{currentShoppingList.deadline}">
+								<h:outputText value="#{currentShoppingList.deadline}">
+									<f:convertDateTime type="both" dateStyle="medium"
+										timeStyle="short" locale="de" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+								priority="4" sortBy="#{currentShoppingList.createdByUsername}">
+								<h:outputText value="#{currentShoppingList.createdByUsername}"
+									title="#{currentShoppingList.createdByFirstName} #{currentShoppingList.createdByLastName}" />
+							</p:column>
+
+							<p:column headerText="#{msg.shoppingLists_assignedToTitle}"
+								priority="3" sortBy="#{currentShoppingList.assignedToUsername}">
+								<h:outputText value="#{currentShoppingList.assignedToUsername}"
+									title="#{currentShoppingList.assignedToFirstName} #{currentShoppingList.assignedToLastName}" />
+							</p:column>
+
+							<p:column>
+								<p:commandButton icon="ui-icon-action"
+									oncomplete="PF('shoppingListActions').show();">
+									<f:setPropertyActionListener value="#{currentShoppingList}"
+										target="#{userShoppingList.currentShoppingList}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+						<p:dialog header="#{msg.newShoppingList_listTitle}"
+							widgetVar="shoppingListActions" showEffect="pop">
+
+							<p:commandButton value="#{msg.view}"
+								action="#{userShoppingList.viewShoppingList(userShoppingList.currentShoppingList, navigation.pageUserShoppingLists)}"
+								oncomplete="PF('shoppingListActions').hide();"
+								icon="ui-icon-eye" />
+							<p:commandButton value="#{msg.takeOver}"
+								action="#{groupShoppingList.takeOverShoppingList(userShoppingList.currentShoppingList)}"
+								oncomplete="PF('shoppingListActions').hide();"
+								icon="ui-icon-forward" update="main:shoppingList" />
+							<p:commandButton value="#{msg.shoppingLists_release}"
+								action="#{userShoppingList.releaseShoppingList(userShoppingList.currentShoppingList)}"
+								oncomplete="PF('shoppingListActions').hide();"
+								icon="ui-icon-check" update="main:shoppingList" />
+						</p:dialog>
+					</h:form>
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

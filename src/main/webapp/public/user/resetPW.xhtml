@@ -1,0 +1,54 @@
+<ui:composition template="/templates/main_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-user" /> #{msg.RPWHeader} #{resetPass.user.userName}
+		</h1>
+		<h:outputText value="#{msg.eNewPass}" />
+		<h:form>
+			<p:messages />
+			<p:panel>
+
+				<p:panelGrid columns="2" class="noBorderGrid">
+					<p:column colspan="2">
+						<p:outputLabel for="registerPassword" value="#{msg['lPass']}"
+							style="font-weight:bold" />
+					</p:column>
+					<p:column>
+						<p:password id="registerPassword"
+							value="#{resetPass.user.password_clear}"
+							pt:placeholder="#{msg['phPass']}" required="true"
+							label="Password Match" feedback="false"
+							requiredMessage="#{valMsg['error.password.required']}">
+							<o:validator validatorId="javax.faces.RegularExpression"
+								pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})"
+								message="#{valMsg['error.password.format']}" />
+						</p:password>
+					</p:column>
+					<p:column colspan="2">
+						<p:outputLabel for="registerPassword2" value="#{msg['lPass2']}"
+							style="font-weight:bold" />
+					</p:column>
+					<p:column>
+						<p:password id="registerPassword2"
+							value="#{resetPass.passwordMatch}"
+							pt:placeholder="#{msg['phPass']}" label="Password Match"
+							feedback="false" />
+					</p:column>
+				</p:panelGrid>
+				<p:commandButton value="#{msg.chPW}" action="#{resetPass.changePW}" />
+
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+
+
+</ui:composition>

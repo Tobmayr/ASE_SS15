@@ -1,0 +1,229 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="main">
+			<pm:header>
+				<h:form id="toolForm">
+					<p:commandButton id="menu" type="button" styleClass="ui-btn-inline"
+						icon="ui-icon-bars" />
+					<p:commandButton id="newItem" icon="ui-icon-plus"
+						styleClass="ui-btn-inline" type="button"
+						onclick="PF('new-dlg').show();" />
+					<p:button icon="ui-icon-camera" styleClass="ui-btn-inline"
+						type="button" outcome="#{navigation.pageBillPhoto}" />
+					<p:button icon="ui-icon-calendar" styleClass="ui-btn-inline"
+						type="button" outcome="#{navigation.pageCalendar}" />
+					<p:commandButton icon="ui-icon-mail" styleClass="ui-btn-inline"
+						type="button" rendered="false" />
+					<p:commandButton icon="ui-icon-user" styleClass="ui-btn-inline"
+						style="float: right;" action="#{userBean.logout}" />
+				</h:form>
+
+			</pm:header>
+			<pm:content>
+				<h:form id="mainForm">
+					<div class="align-center">
+
+						<p:messages id="messages" showDetail="true" />
+
+						<p:accordionPanel dynamic="true" cache="true">
+							<p:tab title="#{msg.hBOverview}">
+								<p:dataTable id="bills" var="bill" value="#{billList.bills}"
+									tableStyleClass="ui-table-columntoggle" rowKey="#{bill.id}">
+									<p:column headerText="#{msg.dateLabel}" sortBy="#{bill.date}"
+										priority="1">
+										<h:outputText value="#{bill.date}">
+											<f:convertDateTime pattern="MM-dd-yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="#{msg.nameLabel}" sortBy="#{bill.name}"
+										priority="2">
+										<h:outputText value="#{bill.name}" />
+									</p:column>
+									<p:column headerText="#{msg.totalLabel}" sortBy="#{bill.total}"
+										priority="1">
+										<h:outputText value="#{bill.total} #{bill.currency.isoCode}" />
+									</p:column>
+									<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+										sortBy="#{bill.createdByUsername}" priority="2">
+										<h:outputText value="#{bill.createdByUsername}" />
+									</p:column>
+
+									<p:column priority="1">
+										<p:commandButton icon="ui-icon-action"
+											oncomplete="PF('billActions').show();"
+											update=":main:mainForm:j_idt13:dlg1">
+											<f:setPropertyActionListener value="#{bill}"
+												target="#{billList.currentBill}" />
+										</p:commandButton>
+									</p:column>
+
+								</p:dataTable>
+								<p:dialog id="dlg1" header="#{billList.currentBill.name}"
+									widgetVar="billActions" showEffect="pop">
+									<p:commandButton
+										action="#{billActions.showBill(billList.currentBill, navigation.pageHome, billList.privateBills)}"
+										id="view" value="#{msg.view}" icon="ui-icon-eye"
+										title="#{msg.view}" ajax="false"
+										oncomplete="PF('billActions')" />
+									<p:commandButton
+										action="#{billActions.editBill(billList.currentBill, navigation.pageHome)}"
+										id="edit" icon="ui-icon-edit" title="#{msg.edit}"
+										value="#{msg.edit}" ajax="false"
+										oncomplete="PF('billActions')" />
+									<p:commandButton
+										action="#{billActions.deleteBill(billList.currentBill, navigation.pageHome)}"
+										id="delete" icon="ui-icon-delete" title="#{msg.delete}"
+										value="#{msg.delete}" update="bills" ajax="false"
+										oncomplete="PF('billActions').hide();" />
+
+								</p:dialog>
+							</p:tab>
+							<p:tab title="#{msg.myShoppingLists_title}">
+								<p:dataTable id="shoppingList" var="currentShoppingList"
+									value="#{userShoppingList.shoppingListsAssignedToMe}"
+									tableStyleClass="ui-table-columntoggle"
+									rowKey="#{currentShoppingList.id}">
+									<f:facet name="header">
+                                        #{msg.newShoppingList_listTitle}
+                                    </f:facet>
+									<p:column headerText="#{msg.shoppingLists_nameTitle}"
+										sortBy="#{currentShoppingList.name}">
+										<h:outputText value="#{currentShoppingList.name}" />
+									</p:column>
+
+									<p:column headerText="#{msg.shoppingLists_stateTitle}"
+										priority="1" sortBy="#{currentShoppingList.state.name}">
+										<h:outputText value="#{currentShoppingList.state.name}" />
+									</p:column>
+
+									<p:column headerText="#{msg.shoppingLists_deadlineTitle}"
+										priority="2" sortBy="#{currentShoppingList.deadline}">
+										<h:outputText value="#{currentShoppingList.deadline}">
+											<f:convertDateTime type="both" dateStyle="medium"
+												timeStyle="short" locale="de" />
+										</h:outputText>
+									</p:column>
+
+									<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+										priority="3" sortBy="#{currentShoppingList.createdByUsername}">
+										<h:outputText value="#{currentShoppingList.createdByUsername}"
+											title="#{currentShoppingList.createdByFirstName} #{currentShoppingList.createdByLastName}" />
+									</p:column>
+
+									<p:column headerText="#{msg.shoppingLists_assignedToTitle}"
+										priority="4"
+										sortBy="#{currentShoppingList.assignedToUsername}">
+										<h:outputText
+											value="#{currentShoppingList.assignedToUsername}"
+											title="#{currentShoppingList.assignedToFirstName} #{currentShoppingList.assignedToLastName}" />
+									</p:column>
+
+									<p:column>
+										<p:commandButton icon="ui-icon-action"
+											oncomplete="PF('shoppingListActions').show();">
+											<f:setPropertyActionListener value="#{currentShoppingList}"
+												target="#{userShoppingList.currentShoppingList}" />
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
+
+								<p:dialog header="#{msg.newShoppingList_listTitle}"
+									widgetVar="shoppingListActions" showEffect="pop">
+
+									<p:commandButton value="#{msg.view}"
+										action="#{userShoppingList.viewShoppingList(userShoppingList.currentShoppingList, navigation.pageUserShoppingLists)}"
+										oncomplete="PF('shoppingListActions').hide();"
+										icon="ui-icon-eye" />
+									<p:commandButton value="#{msg.shoppingLists_edit}"
+										action="#{userShoppingList.editShoppingList(userShoppingList.currentShoppingList)}"
+										oncomplete="PF('shoppingListActions').hide();"
+										icon="ui-icon-edit" />
+									<p:commandButton value="#{msg.shoppingLists_delete}"
+										action="#{userShoppingList.deleteShoppingList(userShoppingList.currentShoppingList)}"
+										icon="ui-icon-delete"
+										oncomplete="PF('shoppingListActions').hide();"
+										update="shoppingList" />
+									<p:commandButton value="#{msg.shoppingLists_release}"
+										action="#{userShoppingList.releaseShoppingList(userShoppingList.currentShoppingList)}"
+										oncomplete="PF('shoppingListActions').hide();"
+										icon="ui-icon-check" update="shoppingList" />
+									<p:commandButton value="#{msg.takeOver}"
+										action="#{groupShoppingList.takeOverShoppingList(userShoppingList.currentShoppingList)}"
+										oncomplete="PF('shoppingListActions').hide();"
+										icon="ui-icon-forward" update="shoppingList" />
+								</p:dialog>
+							</p:tab>
+						</p:accordionPanel>
+
+					</div>
+					<p:overlayPanel for=":main:toolForm:menu" widgetVar="ovl-menu"
+						at="left" showEffect="overlay">
+						<h2 style="font-size: 2em">#{msg['lMenu']}</h2>
+						<p:menu>
+							<p:submenu label="#{msg['mBills']}">
+								<p:menuitem value="#{msg['mAddBill']}"
+									outcome="#{navigation.pageNewBill}" />
+								<p:menuitem value="#{msg['mOverview']}"
+									outcome="#{navigation.pageBillOverview}" />
+							</p:submenu>
+							<p:submenu label="#{msg.costDivision}">
+								<p:menuitem value="#{msg.costDivisionOverview}"
+									outcome="#{navigation.pageCostDivisionOverview}" />
+								<p:menuitem value="#{msg.costDivisionDetails}"
+									outcome="#{navigation.pageCostDivisionDetails}" />
+								<p:menuitem value="#{msg.userPayments}"
+									outcome="#{navigation.pageUserPayments}" />
+								<p:menuitem value="#{msg.groupPayments}"
+									outcome="#{navigation.pageGroupPayments}" />
+							</p:submenu>
+							<p:submenu label="#{msg.mGroup}">
+								<p:menuitem value="#{msg['mOverview']}"
+									outcome="#{navigation.pageGroupList}" />
+								<p:menuitem value="#{msg.liAddGroup}"
+									outcome="#{navigation.pageAddGroup}" />
+
+							</p:submenu>
+							<p:submenu label="#{msg['mActivities']}">
+								<p:menuitem value="#{msg.calendar}"
+									outcome="#{navigation.pageCalendar}" />
+							</p:submenu>
+							<p:submenu label="#{msg['mShopping']}">
+								<p:menuitem value="#{msg['myShoppingList']}"
+									outcome="#{navigation.pageUserShoppingLists}" />
+								<p:menuitem value="#{msg.groupShoppingLists}"
+									outcome="#{navigation.pageGroupShoppingLists}" />
+							</p:submenu>
+
+							<p:submenu label="#{msg['mSettings']}" />
+
+						</p:menu>
+
+					</p:overlayPanel>
+
+					<p:dialog header="#{msg.dHeader}" widgetVar="new-dlg"
+						showEffect="pop">
+						<p:button value="#{msg.bill}" outcome="#{navigation.pageNewBill}"
+							icon="ui-icon-money" />
+						<p:button value="#{msg.list}"
+							outcome="#{navigation.pageNewShoppingList}" icon="ui-icon-shop" />
+						<p:button value="#{msg.activity}" icon="ui-icon-calendar"
+							outcome="#{navigation.pageCalendar}" />
+					</p:dialog>
+
+
+				</h:form>
+
+			</pm:content>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

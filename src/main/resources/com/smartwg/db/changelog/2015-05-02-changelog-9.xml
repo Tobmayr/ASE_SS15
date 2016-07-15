@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-9" author="ks">
+		<comment>add missing columns to list table</comment>
+
+		<addColumn tableName="shopping_list">
+			<column name="created_by_user_id" type="INT(11)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_created_by_user"
+			referencedTableName="user" baseColumnNames="created_by_user_id"
+			baseTableName="shopping_list" referencedColumnNames="id" />
+
+		<addColumn tableName="shopping_list">
+			<column name="assigned_to_user_id" type="INT(11)" />
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_assigned_to_user"
+			referencedTableName="user" baseColumnNames="assigned_to_user_id"
+			baseTableName="shopping_list" referencedColumnNames="id" />
+
+	</changeSet>
+
+	<changeSet id="changelog-9a" author="ks">
+		<comment>unnecessary foreign key constraint removed</comment>
+
+		<dropNotNullConstraint tableName="shopping_list"
+			columnDataType="INT(11)" columnName="activity_id" />
+	</changeSet>
+
+	<changeSet id="changelog-9b" author="ks">
+		<comment>user_id removed from list table</comment>
+
+		<dropForeignKeyConstraint baseTableName="shopping_list"
+			constraintName="fk_list_user_id" />
+		<dropColumn tableName="shopping_list" columnName="user_id" />
+	</changeSet>
+
+	<changeSet id="changelog-9c" author="ks">
+		<comment>add additional properties to list_position table</comment>
+
+		<addColumn tableName="list_position">
+			<column name="name" type="VARCHAR(256)" />
+		</addColumn>
+		<addColumn tableName="list_position">
+			<column name="amount" type="INT(3)" />
+		</addColumn>
+		<addColumn tableName="list_position">
+			<column name="category_id" type="INT(11)" />
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_list_positon_category"
+			referencedTableName="category" baseColumnNames="category_id"
+			baseTableName="list_position" referencedColumnNames="id" />
+
+	</changeSet>
+
+	<changeSet id="changelog-9d" author="ks">
+		<comment>rename order column</comment>
+
+		<renameColumn tableName="list_position" columnDataType="INT"
+			oldColumnName="order" newColumnName="list_order" />
+	</changeSet>
+</databaseChangeLog>

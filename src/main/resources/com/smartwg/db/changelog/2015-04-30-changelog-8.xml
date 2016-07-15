@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-8a" author="to">
+		<comment>Exclude fileinformation in separate table from bill</comment>
+		<dropColumn columnName="file" tableName="bill" />
+		<addColumn tableName="bill">
+			<column name="resource_id" type="INT(11)"></column>
+		</addColumn>
+		<addColumn tableName="list">
+			<column name="resource_id" type="INT(11)"></column>
+		</addColumn>
+		<createTable tableName="resource">
+			<column name="id" type="INT(11)" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="type" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="content" type="MEDIUMBLOB">
+			</column>
+			<column name="file_url" type="VARCHAR(100)"></column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_bill_resource_id"
+			referencedTableName="resource" baseColumnNames="resource_id"
+			baseTableName="bill" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="fk_list_resource_id"
+			referencedTableName="resource" baseColumnNames="resource_id"
+			baseTableName="list" referencedColumnNames="id" />
+
+	</changeSet>
+	<changeSet id="changelog-8b" author="to">
+		<comment>Update Usertable</comment>
+		<addColumn tableName="user">
+			<column name="confirmed" type="TINYINT(1)"></column>
+		</addColumn>
+		<addColumn tableName="user">
+			<column name="confirm_code" type="VARCHAR(12)"></column>
+		</addColumn>
+		<addNotNullConstraint columnDataType="VARCHAR(45)"
+			columnName="e_mail" tableName="user" />
+		<addNotNullConstraint columnDataType="VARCHAR(45)"
+			columnName="username" tableName="user" />
+		<addUniqueConstraint columnNames="e_mail, username"
+			tableName="user" />
+
+	</changeSet>
+	<changeSet id="changelog-8c" author="to">
+		<comment>Update Activity</comment>
+		<addColumn tableName="activity">
+			<column name="rating" type="INT(11)"></column>
+		</addColumn>
+		<comment>Update User_Group</comment>
+		<comment>Update Absence</comment>
+		<renameColumn columnDataType="TINYINT(1)" newColumnName="temporary"
+			oldColumnName="level" tableName="absence" />
+		<comment>Update List</comment>
+		<renameTable newTableName="shopping_list" oldTableName="list" />
+		<addColumn tableName="shopping_list">
+			<column name="state" type="VARCHAR(10)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<comment>Update message</comment>
+		<renameColumn columnDataType="VARCHAR(1000)"
+			newColumnName="content" oldColumnName="message" tableName="message" />
+	</changeSet>
+	<changeSet id="changelog-8d" author="to">
+		<comment>Create table user_group_category</comment>
+		<createTable tableName="user_group_category">
+			<column name="user_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="group_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="category_id" type="INT(11)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="percent" type="DECIMAL(5,2)">
+				<constraints nullable="false" />
+			</column>
+
+		</createTable>
+		<addForeignKeyConstraint constraintName="fk_ugc_ug_user_id"
+			referencedTableName="user_group" baseColumnNames="user_id"
+			baseTableName="user_group_category" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="fk_ugc_ug_group_id"
+			referencedTableName="user_group" baseColumnNames="group_id"
+			baseTableName="user_group_category" referencedColumnNames="group_id" />
+		<addForeignKeyConstraint constraintName="fk_ugc_category_id"
+			referencedTableName="category" baseColumnNames="category_id"
+			baseTableName="user_group_category" referencedColumnNames="id" />
+
+
+	</changeSet>
+
+	<changeSet id="changelog-8e" author="to">
+		<modifyDataType tableName="recurring" columnName="type"
+			newDataType="VARCHAR(10)" />
+		<modifyDataType tableName="user_group" columnName="role"
+			newDataType="VARCHAR(10)" />
+		<modifyDataType tableName="recurring" columnName="times"
+			newDataType="INTEGER(6)" />
+		<modifyDataType tableName="recurring" columnName="value"
+			newDataType="INTEGER(6)" />
+		<modifyDataType tableName="cost_entry" columnName="times"
+			newDataType="INTEGER(6)" />
+	</changeSet>
+
+	<changeSet id="changelog.8f" author="to">
+		<addColumn tableName="category">
+			<column name="fixed_cost" type="TINYINT(1)"></column>
+			<column name="is_default" type="TINYINT(1)"></column>
+		</addColumn>
+	</changeSet>
+
+
+
+
+</databaseChangeLog>

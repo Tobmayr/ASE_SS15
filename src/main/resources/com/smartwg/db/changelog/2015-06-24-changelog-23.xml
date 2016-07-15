@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-23" author="to">
+		<addColumn tableName="user_group">
+			<column name="balance" type="DOUBLE" />
+		</addColumn>
+		<addDefaultValue columnName="balance" tableName="user_group"
+			defaultValue="0" />
+	</changeSet>
+
+	<changeSet id="changelog-23-b" author="to">
+		<comment>change absences connection from group to user_group</comment>
+		<addColumn tableName="absence">
+			<column name="group_id" type="INT(11)" />
+		</addColumn>
+		<dropForeignKeyConstraint baseTableName="absence"
+			constraintName="fk_absence_user_id" />
+		<addForeignKeyConstraint constraintName="fk_absence_userGroup_user"
+			referencedTableName="user_group" baseColumnNames="user_id"
+			baseTableName="absence" referencedColumnNames="user_id" />
+		<addForeignKeyConstraint constraintName="fk_absence_userGroup_group"
+			referencedTableName="user_group" baseColumnNames="group_id"
+			baseTableName="absence" referencedColumnNames="group_id" />
+	</changeSet>
+
+	<changeSet id="changelog-23-c" author="to">
+		<comment>Change false DATE-TYPE from DATE to DATETIME</comment>
+		<modifyDataType tableName="absence" columnName="away_from"
+			newDataType="DATETIME" />
+		<modifyDataType tableName="absence" columnName="away_til"
+			newDataType="DATETIME" />
+		<modifyDataType tableName="user" columnName="birth_date"
+			newDataType="DATETIME" />
+	</changeSet>
+
+	<changeSet id="changelog-23-d" author="to">
+		<addColumn tableName="activity">
+			<column name="recurring_id" type="INT(11)" />
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_activity_recurring"
+			referencedTableName="recurring" baseColumnNames="recurring_id"
+			baseTableName="activity" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="changeLog-23-e" author="to">
+		<addColumn tableName="user">
+			<column name="locale" type="VARCHAR(10)" />
+		</addColumn>
+
+	</changeSet>
+
+	<changeSet id="changeLog-23-f" author="to">
+		<addColumn tableName="user_group">
+			<column name="join_date" type="DATETIME" />
+			<column name="leave_date" type="DATETIME"/>
+		</addColumn>
+
+	</changeSet>
+</databaseChangeLog>

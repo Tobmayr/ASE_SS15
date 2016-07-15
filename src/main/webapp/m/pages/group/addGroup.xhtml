@@ -1,0 +1,68 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header
+				title="#{groupBean.selectedGroup.id==null ? msg.newGroup : msg.editGroup}"
+				swatch="a">
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+			</pm:header>
+
+			<pm:content>
+				<h:form id="groupBasicData">
+					<p:commandButton action="#{groupEditor.createGroup}"
+						value="#{msg.save}" icon="ui-icon-check" update="groupBasicData" />
+					<p:messages />
+					<pm:field>
+						<p:outputLabel for="groupName" value="#{msg['nameLabel']}" />
+						<p:inputText id="groupName" value="#{groupEditor.group.name}"
+							label="groupName" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="country" value="#{msg['countryLabel']}" />
+						<p:selectOneMenu id="country" value="#{groupEditor.group.country}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="#{msg['chooseCountry']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{groupEditor.countries}" var="item"
+								itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="groupCity" value="#{msg['cityLabel']}" />
+						<p:inputText id="groupCity" value="#{groupEditor.group.city}"
+							label="groupCity" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="groupZip" value="#{msg['zipLabel']}" />
+						<p:inputText id="groupZip" value="#{groupEditor.group.zip}"
+							label="groupZip" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="groupStreet" value="#{msg['streetLabel']}" />
+						<p:inputText id="groupStreet" value="#{groupEditor.group.street}"
+							label="groupStreet" />
+					</pm:field>
+					<pm:field>
+						<p:outputLabel for="groupStreet2" value="#{msg['street2Label']}" />
+						<p:inputText id="groupStreet2"
+							value="#{groupEditor.group.street2}" label="groupStreet2" />
+					</pm:field>
+				</h:form>
+			</pm:content>
+
+			<pm:footer>
+			</pm:footer>
+		</pm:page>
+	</ui:define>
+</ui:composition>

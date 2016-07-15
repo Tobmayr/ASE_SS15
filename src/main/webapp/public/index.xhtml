@@ -1,0 +1,41 @@
+<ui:composition template="/templates/main_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-user" /> #{msg.liLogin}
+		</h1>
+
+		<h:form id="loginForm">
+			<p:panel>
+				<p:messages />
+				<p:panelGrid columns="2" class="noBorderGrid">
+
+					<p:outputLabel for="loginEmail" value="#{msg['lMailUsername']}" />
+					<p:inputText id="loginEmail" value="#{login.emailUsername}"
+						pt:placeholder="#{msg['phMailUsername']}" pt:data-required="true"
+						required="true"
+						requiredMessage="#{valMsg['error.nameemail.required']}" />
+					<p:outputLabel for="loginPassword" value="#{msg['lPass']}" />
+					<p:password id="loginPassword" value="#{login.password}"
+						pt:placeholder="#{msg['phPass']}" required="true"
+						requiredMessage="#{valMsg['error.password.required']}" />
+
+					<p:commandButton value="#{msg['bLogin']}" action="#{login.login}"
+						update="loginForm" style="margin-top: 10px; margin-bottom: 10px;"
+						ajax="false" />
+					<br />
+					<p:link outcome="#{navigation.pageRegister}"
+						value="#{msg['linkRegister']}" />
+					<br />
+					<p:link outcome="#{navigation.pageForgotpass}"
+						value="#{msg.lforgotPassword}" />
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

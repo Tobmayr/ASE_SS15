@@ -1,0 +1,46 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+    <ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-group" /> #{msg.newGroup}
+		</h1>
+
+		<h:form id="newGroupForm" enctype="multipart/form-data">
+			<p:messages />
+			<p:button outcome="#{navigation.pageHome}" value="#{msg.cancel}"
+				icon="fa fa-remove" />
+			<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+				<h:panelGrid columns="2">
+					<p:outputLabel for="name" value="#{msg['nameLabel']}:" />
+					<p:inputText id="name" value="#{groupEditor.group.name}" />
+					<p:outputLabel for="country" value="#{msg['countryLabel']}:" />
+					<p:selectOneMenu id="country" value="#{groupEditor.group.country}"
+						converter="omnifaces.SelectItemsConverter" required="true">
+						<f:selectItem itemLabel="#{msg['chooseCountry']}" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItems value="#{groupEditor.countries}" var="item"
+							itemLabel="#{item.localizedName}" itemValue="#{item}" />
+					</p:selectOneMenu>
+					<p:outputLabel for="city" value="#{msg['cityLabel']}:" />
+					<p:inputText id="city" value="#{groupEditor.group.city}" />
+					<p:outputLabel for="zip" value="#{msg['zipLabel']}:" />
+					<p:inputText id="zip" value="#{groupEditor.group.zip}" />
+					<p:outputLabel for="street" value="#{msg['streetLabel']}:" />
+					<p:inputText id="street" value="#{groupEditor.group.street}" />
+					<p:outputLabel for="street2" value="#{msg['street2Label']}:" />
+					<p:inputText id="street2" value="#{groupEditor.group.street2}" />
+				</h:panelGrid>
+			</p:panel>
+
+			<p:commandButton value="#{msg['save']}"
+				action="#{groupEditor.createGroup}" update="newGroupForm"
+				icon="fa fa-check" ajax="false" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>

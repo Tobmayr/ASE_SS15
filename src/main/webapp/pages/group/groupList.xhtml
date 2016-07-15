@@ -1,0 +1,100 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form id="groupForm">
+			<h1 class="page-header">
+				<i class="fa fa-tasks" /> #{msg.liGList}
+			</h1>
+			<p:messages id="messages" autoUpdate="true" />
+			<p:button value="#{msg.liAddGroup}"
+				outcome="#{navigation.pageAddGroup}" icon="fa fa-plus-square" />
+			<p:button value="#{msg.search}"
+				outcome="#{navigation.pageGroupSearch}" icon=" fa fa-search" />
+			<p:panelGrid columns="2" class="noBorderGrid">
+				<p:outputLabel value="#{msg.lsag}:" style="padding-top:0.8em;" />
+				<p:selectOneMenu id="groupChanger" value="#{groupList.group}"
+					converter="omnifaces.SelectItemsConverter"
+					style="margin-top:0.4em;">
+					<f:selectItems value="#{groupList.groups}" var="group"
+						itemLabel="#{group.name}" itemValue="#{group}" />
+					<p:ajax event="change" listener="#{groupList.groupChanged}"
+						update="basicPanel userPanel" />
+
+				</p:selectOneMenu>
+
+			</p:panelGrid>
+
+			<p:panel id="basicPanel" header="#{msg['basicsHeader']}">
+				<h:panelGrid columns="2">
+					<p:outputLabel value="#{msg['nameLabel']}:"
+						style="margin-right:1em;" />
+					<p:outputLabel value="#{groupList.group.name}" />
+					<p:outputLabel value="#{msg['countryLabel']}:" />
+					<p:outputLabel value="#{groupList.group.country.localizedName}" />
+					<p:outputLabel value="#{msg['cityLabel']}:" />
+					<p:outputLabel value="#{groupList.group.city}" />
+					<p:outputLabel value="#{msg['zipLabel']}:" />
+					<p:outputLabel value="#{groupList.group.zip}" />
+					<p:outputLabel value="#{msg['streetLabel']}:" />
+					<p:outputLabel value="#{groupList.group.street}" />
+					<p:outputLabel value="#{msg['street2Label']}:" />
+					<p:outputLabel value="#{groupList.group.street2}" />
+				</h:panelGrid>
+			</p:panel>
+			<p:panel id="userPanel" header="#{msg['userHeader']}">
+				<p:dataTable var="user" value="#{groupList.users}"
+					rowKey="#{user.id}" id="users" paginator="true"
+					paginatorTemplate=" {Exporters}">
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="users" fileName="users"
+								encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="users" fileName="users"
+								encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="users" fileName="users"
+								encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="users" fileName="users"
+								encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['lhUsername']}" priority="4">
+						<h:outputText value="#{user.userName}" />
+					</p:column>
+					<p:column headerText="#{msg['lhFirstName']}"
+						filterBy="#{user.firstName}" sortBy="#{user.firstName}">
+						<h:outputText value="#{user.firstName}" />
+					</p:column>
+
+					<p:column headerText="#{msg['lhLastName']}" priority="2"
+						filterBy="#{user.lastName}" sortBy="#{user.lastName}">
+						<h:outputText value="#{user.lastName}" />
+					</p:column>
+					<p:column headerText="#{msg['lhMail']}" priority="4">
+						<h:outputText value="#{user.email}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

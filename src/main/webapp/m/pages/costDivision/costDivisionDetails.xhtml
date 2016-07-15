@@ -1,0 +1,78 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<h:form id="form">
+				<style>
+.tableView table, .tableView a.ui-datepicker-prev, .tableView a.ui-datepicker-next
+	{
+	display: none;
+}
+</style>
+				<pm:header class="app-title" title="#{msg.costDivisionDetails}"
+					swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+					<h:panelGrid columns="3" id="dateButtons" style="margin: 0 auto;">
+						<p:commandButton
+							actionListener="#{costDivisionBean.decrementMonth}" id="navLeft"
+							update="index:form:diagram, index:form:dateButtons, index:form:expensesTable, index:form:messages"
+							icon="ui-icon-triangle-1-w" ajax="false" />
+
+						<h:panelGroup class="tableView">
+							<p:calendar value="#{smartWG.costDivisionOverviewSelectedDate}"
+								mode="inline" />
+						</h:panelGroup>
+
+						<p:commandButton
+							actionListener="#{costDivisionBean.incrementMonth}" id="navRight"
+							update="index:form:diagram, index:form:dateButtons, index:form:expensesTable, index:form:messages"
+							icon="ui-icon-triangle-1-e" ajax="false" />
+					</h:panelGrid>
+					<p:messages id="messages" showDetail="true" />
+
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.costDivisionDetails.entrySet().toArray()}"
+						id="paymentTable">
+						<p:column headerText="#{msg['bill']} #{msg['totalLabel']}">
+							<h:outputText
+								value="#{payment.key.total} #{payment.key.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg['tShowBill']}">
+							<p:commandButton
+								action="#{billActions.showBill(payment.key, navigation.pageCostDivisionDetails, false)}"
+								id="view" icon="fa fa-eye" value="#{msg['view']}" ajax="false" />
+						</p:column>
+						<p:columns value="#{costDivisionBean.users}" var="user"
+							columnIndexVar="colIndex">
+							<f:facet name="header">
+								<h:outputText value="#{user.userName}" />
+							</f:facet>
+							<h:outputText
+								value="#{payment.value.payments[colIndex] != null ? payment.value.payments[colIndex] : 0.00} #{payment.key.currency.isoCode}" />
+						</p:columns>
+					</p:dataTable>
+					<br />
+					<p:commandButton
+						action="#{costDivisionBean.backButtonClicked(false)}"
+						icon="fa fa-reply" title="#{msg['back']}" value="#{msg['back']}"
+						ajax="false" />
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

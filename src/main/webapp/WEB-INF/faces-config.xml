@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+	<component>
+	      <component-type>com.googlecode.wickedcharts.Chart</component-type>
+	      <component-class>com.googlecode.wickedcharts.jsf21.UIChart</component-class>
+	</component>
+	<application>
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+   
+        <navigation-handler>
+            org.primefaces.mobile.application.MobileNavigationHandler
+        </navigation-handler>
+
+	
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>com.smartwg.i18n.messages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+		<resource-bundle>
+		<base-name>com.smartwg.i18n.validationMessages</base-name>
+		<var>valMsg</var>
+		</resource-bundle>
+	</application>
+
+</faces-config>
+

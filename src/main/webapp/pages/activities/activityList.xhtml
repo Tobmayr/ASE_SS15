@@ -1,0 +1,157 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+    <ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-tasks" /> #{msg.activityList_title}
+		</h1>
+
+		<div class="container-fluid">
+
+			<h:form id="activityOverviewForm">
+				<p:panel id="activityPanel">
+					<p:messages autoUpdate="true" />
+					<p:panelGrid columns="5" styleClass="noBorderGrid">
+						<p:selectOneMenu id="activityType"
+							value="#{activityList.activitySelect}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItems value="#{activityList.activitySelectTypes}"
+								var="type" itemValue="#{type}" itemLabel="#{type.name}" />
+							<p:ajax event="change"
+								listener="#{activityList.activitySelectChanged}"
+								update="activityPanel"></p:ajax>
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg.startLabel}:"
+							rendered="#{activityList.activitySelect=='CUSTOM'}" />
+						<p:calendar pattern="MM/dd/yyyy" value="#{activityList.start}"
+							required="true"
+							requiredMessage="#{valMsg['error.start.required']}"
+							rendered="#{activityList.activitySelect=='CUSTOM'}" />
+						<p:outputLabel value="#{msg.end}:"
+							rendered="#{billList.billSelect=='CUSTOM'}" />
+						<p:calendar pattern="MM/dd/yyyy" value="#{activityList.end}"
+							required="true" requiredMessage="#{valMsg['error.end.required']}"
+							rendered="#{activityList.activitySelect=='CUSTOM'}" />
+
+						<p:commandButton value="#{msg.search}" icon="fa fa-search"
+							action="#{activityList.activitySelectChanged(null)}"
+							update="activities"
+							rendered="#{activityList.activitySelect=='CUSTOM'}" />
+					</p:panelGrid>
+					<p:dataTable id="activities" var="activity"
+						value="#{activityList.activities}" rowKey="#{activity.id}"
+						selection="#{activityList.selectedActivity}"
+						selectionMode="single" widgetVar="activitiesTable"
+						emptyMessage="#{msg['empty.list.criteria']}"
+						filteredValue="#{activityList.filteredActivities}"
+						paginator="true" paginatorTemplate="{Exporters}">
+						<f:facet name="header">
+							<p:outputPanel>
+
+								<h:outputText value="#{msg['searchLabel']}" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('activitiesTable').filter()" style="width:150px"
+									placeholder="#{msg['phKeyword']}" />
+							</p:outputPanel>
+						</f:facet>
+
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<p:graphicImage name="/images/export/excel.png" width="24" />
+								<p:dataExporter type="xls" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/pdf.png" width="24" />
+								<p:dataExporter type="pdf" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/csv.png" width="24" />
+								<p:dataExporter type="csv" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+
+							<h:commandLink>
+								<p:graphicImage name="/images/export/xml.png" width="24" />
+								<p:dataExporter type="xml" target="activities"
+									fileName="activities" encoding="iso-8859-1" />
+							</h:commandLink>
+						</f:facet>
+						<p:column headerText="#{msg['activityList_date']}"
+							filterBy="#{activity.date}" filterMatchMode="contains"
+							sortBy="#{activity.id}">
+							<h:outputText value="#{activity.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="#{msg['nameLabel']}"
+							filterBy="#{activity.name}" filterMatchMode="contains"
+							sortBy="#{activity.name}">
+							<h:outputText value="#{activity.name}" />
+						</p:column>
+						<p:column headerText="#{msg['activityList_points']}"
+							filterBy="#{activity.getRatingFromUser(userBean.currentUser.userName)}"
+							filterMatchMode="contains"
+							sortBy="#{activity.getRatingFromUser(userBean.currentUser.userName)}">
+							<h:outputText
+								value="#{activity.getRatingFromUser(userBean.currentUser.userName)}" />
+                (<h:outputText value="#{activity.median}" />)
+            </p:column>
+						<p:column headerText="#{msg.activityList_assignedTo}"
+							filterBy="#{activity.assignedToUserId}"
+							filterMatchMode="contains" sortBy="#{activity.assignedToUserId}">
+							<f:facet name="filter">
+								<p:selectOneMenu id="shop"
+									converter="omnifaces.SelectItemsConverter"
+									onchange="PF('activitiesTable').filter()">
+									<f:selectItem itemLabel="#{msg['chooseUser']}" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{activityList.users}" var="item"
+										itemLabel="#{item.userName}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</f:facet>
+							<h:outputText value="#{activity.assigentTo_Username}" />
+						</p:column>
+						<p:column headerText="#{msg['done']}"
+							filterBy="#{activity.isDone}" filterMatchMode="contains"
+							sortBy="#{activity.isDone}">
+							<p:selectBooleanCheckbox value="#{activity.isDone}"
+								disabled="true" />
+						</p:column>
+						<p:column exportable="false">
+							<p:commandButton
+								action="#{activityEditor.setDone(activity, activity.isDone)}"
+								id="done" icon="fa fa-check-square-o"
+								title="#{activity.isDone ? msg.setAsUndone : msg.setAsDone}"
+								ajax="false" />
+							<p:commandButton
+								action="#{activityActions.editActivity(activity, navigation.pageActivityOverview)}"
+								id="edit" icon="fa fa-edit" title="#{msg.edit}" ajax="false"
+								rendered="#{smartWG.isDateBigger(activity.date)}" />
+							<p:commandButton
+								action="#{activityActions.deleteActivity(activity, navigation.pageActivityOverview )}"
+								id="delete" icon="fa fa-trash" title="#{msg.delete}"
+								update="activities"
+								rendered="#{smartWG.isDateBigger(activity.date)}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<h:outputText
+								value="#{msg['totalFooter']} #{activityList.overviewTotal} #{msg.pointLabel}"
+								style="font-weight:bold;">
+							</h:outputText>
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

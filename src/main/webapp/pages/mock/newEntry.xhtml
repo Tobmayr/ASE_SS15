@@ -1,0 +1,211 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<ui:define name="content">
+
+		<h1 class="page-header ">Neuer Kosteneintrag</h1>
+		<div class="container-fluid">
+			<h:form id="entryForm">
+				<p:panel id="panel" header="Informationen"
+					style="margin-bottom:10px;">
+					<h:form id="entryForm">
+						<h:panelGrid columns="2" style="width:100%;">
+							<h:outputLabel for="date" value="Datum:" style="font-weight:bold" />
+							<p:calendar id="date" pattern="MM/dd/yyyy" value="#{mockup.date}"
+								style="width:80%" />
+							<h:outputLabel for="image" value="Foto:" style="font-weight:bold" />
+							<p:fileUpload id="image" mode="simple" />
+							<h:outputLabel for="category" value="Kategorie:"
+								style="font-weight:bold" />
+							<p:selectOneMenu id="category" value="#{mockup.category}">
+								<f:selectItem itemLabel="Wähle Kategorie" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{mockup.categories}" />
+							</p:selectOneMenu>
+							<h:outputLabel for="shop" value="Geschäft:"
+								style="font-weight:bold" />
+							<p:selectOneMenu id="shop" value="#{mockup.shop}">
+								<f:selectItem itemLabel="Wähle Geschäft" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{mockup.shops}" />
+							</p:selectOneMenu>
+							<p:separator />
+							<p:separator />
+							<h:outputLabel for="newEntry" value="Item hinzufügen:"
+								style="font-weight:bold" />
+
+							<p:panelGrid id="newEntry" columns="2">
+
+								<p:inputText id="desc" placeholder="Beschreibung" />
+								<p:inputText id="newPrice" value="#{mockup.currentItem}" />
+
+
+								<p:button value="Speichern" />
+								<p:slider for="newPrice" />
+
+
+							</p:panelGrid>
+							<h:outputLabel for="costs" value="Einzelbeträge:"
+								style="font-weight:bold" />
+							<p:pickList value="#{mockup.costItems}" var="costs"
+								itemLabel="#{costs}" itemValue="#{costs}">
+								<f:facet name="sourceCaption">Kosten</f:facet>
+								<f:facet name="targetCaption">Ausgenommen</f:facet>
+
+							</p:pickList>
+
+							<h:outputLabel for="total" value="Gesamtbetrag in €:"
+								style="font-weight:bold" />
+							<p:inputText id="total" value="#{mockup.total}" readonly="true"
+								converterMessage="Cannot convert to double.">
+								<f:validateDoubleRange minimum="0.1" />
+							</p:inputText>
+
+
+							<h:outputLabel for="private" value="Privat"
+								style="font-weight:bold" />
+							<p:selectBooleanCheckbox id="private" />
+
+
+							<p:separator />
+							<p:separator />
+
+							<p:button value="Erstellen" update="" icon="ui-icon-check"
+								class="btn" />
+						</h:panelGrid>
+
+					</h:form>
+				</p:panel>
+
+
+
+
+
+
+
+
+			</h:form>
+		</div>
+
+
+
+
+
+
+
+
+
+
+		<!-- 
+		<pm:header title="Neuer Kosteneintrag" swatch="a">
+				<p:button outcome="pm:mockups?transition=slide" value="Back"
+             		 		icon="ui-icon-arrow-l"
+                 			styleClass="ui-btn-left ui-btn-inline"/>
+			</pm:header>
+			<pm:content>
+				<h:form id="entryForm">
+               		 <h:messages/>
+               		 
+               		 <pm:field>
+                        <h:outputLabel for="date" value="Datum:" style="font-weight:bold"/>
+                        <p:calendar id="date" 
+                                    pattern="MM/dd/yyyy" value="#{mockup.date}"  />
+                    </pm:field>
+                    
+                    <pm:field>
+               		 	<h:outputLabel for="image" value="Foto:" style="font-weight:bold"/>
+               		 	<p:fileUpload id="image"  mode="simple" skinSimple="true"/>
+               		 </pm:field>
+               		 
+                    <pm:field>
+                  		<h:outputLabel for="category" value="Kategorie:" style="font-weight:bold"/>
+                    	<p:selectOneMenu id="category" value="#{mockup.category}" effect="fold" editable="true">
+							<f:selectItem  itemLabel="Wähle Kategorie" itemValue="" noSelectionOption="true"/>
+							<f:selectItems value="#{mockup.categories}"/>
+       				 	</p:selectOneMenu>
+                    </pm:field>
+                     <pm:field>
+                  		<h:outputLabel for="shop" value="Geschäft:" style="font-weight:bold"/>
+                    	<p:selectOneMenu id="shop" value="#{mockup.shop}" effect="fold" editable="true">
+							<f:selectItem  itemLabel="Wähle Geschäft" itemValue="" noSelectionOption="true"/>
+							<f:selectItems value="#{mockup.shops}"/>
+       				 	</p:selectOneMenu>
+       				 	
+                    </pm:field>
+                      <p:separator/>
+                    <pm:field>
+                    	<h:outputLabel for="newEntry" value="Item hinzufügen:" style="font-weight:bold"/>
+                    	<p:panelGrid id="newEntry" columns="1">
+                    			<h:outputLabel for="desc"  value="Beschreibung" style="margin-top:2em"/>
+                    			<p:inputText id="desc"/>
+                    			<h:outputLabel for="slider" value="Preis in €"/>
+                    			<pm:inputSlider id="slider" value="#{mockup.currentItem}"/>
+                    			
+                    	</p:panelGrid>
+                   		
+                   		
+                   		
+                   	</pm:field>
+                   	
+                   	
+                    <pm:field>
+						<h:outputLabel for="costs" value="Einzelbeträge:" style="font-weight:bold"/>
+                    	<p:selectManyCheckbox id="costs" value="#{mockup.selectedCosts}">
+                    	<f:selectItems value="#{mockup.costs}" selected="true"/>;
+                    	</p:selectManyCheckbox>
+                    	  
+                    
+                    </pm:field>
+                    
+                    <pm:field>
+                    	<h:outputLabel for="total" value="Gesamtbetrag in €:" style="font-weight:bold"/>                    
+           				<p:inputText id="total" value="#{mockup.total}" readonly="true" converterMessage="Cannot convert to double.">
+              				  <f:validateDoubleRange minimum="0.1" />
+            			</p:inputText>
+            				<p:message for="total" />
+                    </pm:field>
+                   	
+                    <pm:field>
+                    	  <h:outputLabel for="private" value="Privat" style="font-weight:bold"/>
+        				  <p:selectBooleanCheckbox id="private"  />
+        				  
+                    </pm:field>
+                    
+                    
+                    
+                    
+                   <h:commandButton value="Erstellen" update=":result" 
+                                     icon="ui-icon-check"/>
+                </h:form>
+                
+			
+			
+				   
+			</pm:content>
+			<pm:footer/>
+		</pm:page>
+	
+	
+		
+		
+		<pm:page id="overview">
+			<pm:header title="Übersicht" swatch="a">
+				<p:button outcome="pm:mockups?transition=slide" value="Back"
+             		 		icon="ui-icon-arrow-l"
+                 			styleClass="ui-btn-left ui-btn-inline"/>
+			</pm:header>
+			
+			<pm:footer/>
+		
+		
+		
+		
+		 -->
+	</ui:define>
+
+
+</ui:composition>

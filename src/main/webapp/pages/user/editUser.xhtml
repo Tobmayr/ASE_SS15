@@ -1,0 +1,158 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui">
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-user" />#{msg.mAccount}
+		</h1>
+		<div class="container-fluid">
+			<h:form id="userForm">
+				<p:button value="#{msg.cancel}" outcome="#{navigation.pageHome}"
+					icon="fa fa-reply" />
+
+				<p:panel id="dataPanel" class="noBorderGrid"
+					header="#{msg.user_info}">
+					<p:messages id="messages" />
+
+
+					<p:panelGrid columns="2" rendered="#{!userEditor.editable}">
+						<p:outputLabel value="#{msg['lMail']}" style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.user.email}" />
+						<p:outputLabel value="#{msg['lFirstName']}"
+							style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.user.firstName}" />
+						<p:outputLabel value="#{msg['lLastName']}"
+							style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.user.lastName}" />
+						<p:outputLabel value="#{msg['lUsername']}"
+							style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.user.userName}" />
+						<p:outputLabel value="#{msg['lBirthdate']}"
+							style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.user.birthDate}">
+							<f:convertDateTime pattern="MM-dd-yyyy" />
+						</p:outputLabel>
+						<p:outputLabel for="notificationTypes" value="#{msg['lNotify']}"
+							style="font-weight:bold" />
+						<p:outputLabel value="#{userEditor.notification}" />
+						<p:outputLabel value="#{msg.lLanguage}:" />
+						<p:outputLabel value="#{userEditor.language.name}" />
+						<p:commandButton
+							value="#{!userEditor.editable? msg.edit : msg.save}"
+							action="#{userEditor.editUser}" icon="fa fa-edit" ajax="false"
+							update="userForm" />
+					</p:panelGrid>
+					<p:panelGrid columns="2" rendered="#{userEditor.editable}">
+						<p:outputLabel for="registerEmail" value="#{msg['lMail']}"
+							style="font-weight:bold" />
+						<p:inputText id="registerEmail" value="#{userEditor.user.email}"
+							pt:placeholder="#{msg['phMail']}" pt:type="email"
+							pt:data-required="true" required="true"
+							requiredMessage="#{valMsg['error.email.required']}">
+							<o:validator validatorId="javax.faces.RegularExpression"
+								pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])"
+								message="#{valMsg['error.email.format']}" />
+						</p:inputText>
+						<p:outputLabel for="firstName" value="#{msg['lFirstName']}"
+							style="font-weight:bold" />
+						<p:inputText id="firstName" value="#{userEditor.user.firstName}">
+							<o:validator validatorId="javax.faces.Length" maximum="20"
+								message="#{valMsg['error.name.length']}" />
+						</p:inputText>
+						<p:outputLabel for="lastName" value="#{msg['lLastName']}"
+							style="font-weight:bold" />
+						<p:inputText id="lastName" value="#{userEditor.user.lastName}">
+							<o:validator validatorId="javax.faces.Length" maximum="20"
+								message="#{valMsg['error.name.length']}" />
+						</p:inputText>
+						<p:outputLabel for="userName" value="#{msg['lUsername']}"
+							style="font-weight:bold" />
+						<p:inputText id="userName" value="#{userEditor.user.userName}"
+							required="true"
+							requiredMessage="#{valMsg['error.username.required']}">
+							<o:validator validatorId="javax.faces.Length" minimum="6"
+								maximum="20" message="#{valMsg['error.username.length']}" />
+						</p:inputText>
+						<p:outputLabel for="birthDate" value="#{msg['lBirthdate']}"
+							style="font-weight:bold" />
+						<p:calendar id="birthDate" value="#{userEditor.user.birthDate}"
+							navigator="true" yearRange="c-100:c-0" pattern="yyyy-MMM-dd" />
+						<p:outputLabel for="notificationTypes" value="#{msg['lNotify']}"
+							style="font-weight:bold" />
+						<p:selectCheckboxMenu id="notificationTypes"
+							value="#{userEditor.user.notificationTypes}"
+							converter="omnifaces.SelectItemsConverter"
+							label="#{msg.registerSelectNotification}" filter="false"
+							panelStyle="width:250px">
+							<f:selectItems value="#{userEditor.notifications}" var="item"
+								itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectCheckboxMenu>
+						<p:outputLabel value="#{msg.lLanguage}:" />
+						<p:selectOneMenu value="#{userEditor.language}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItems value="#{userEditor.languages}" var="lang"
+								itemValue="#{lang}" itemLabel="#{lang.name}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="#{msg.newPass}" />
+						<p:password id="registerPassword"
+							value="#{userEditor.user.password_clear}" feedback="false">
+							<o:validator validatorId="javax.faces.RegularExpression"
+								pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})"
+								message="#{valMsg['error.password.format']}" />
+						</p:password>
+						<p:outputLabel value="#{msg['lPass2']}" style="font-weight:bold" />
+						<p:password id="registerPassword2"
+							value="#{userEditor.passwordMatch}" feedback="false"
+							disabled="#{!userEditor.editable}" />
+						<p:commandButton value="#{msg.cancel}"
+							action="#{userEditor.discardChanges}" immediate="true"
+							update="dataPanel" />
+						<p:commandButton
+							value="#{!userEditor.editable? msg.edit : msg.save}"
+							action="#{userEditor.editUser}" icon="fa fa-edit" ajax="false"
+							update="userForm" />
+					</p:panelGrid>
+
+
+					<p:dataTable var="group" value="#{userEditor.groups}">
+						<p:column headerText="#{msg.lgroupName}">
+							<h:outputText value="#{group.name}" />
+						</p:column>
+
+						<p:column headerText="#{msg.ladress}">
+							<h:outputText value="#{group.street}" />
+						</p:column>
+
+						<p:column>
+							<p:commandButton
+								action="#{userEditor.viewGroup(group, navigation.pageUserEdit)}"
+								id="view" icon="fa fa-eye" title="#{msg.view}" ajax="false"
+								disabled="#{userEditor.isUnsubscribed(group)}" />
+							<p:commandButton action="#{userEditor.unsubscripeGroup(group)}"
+								icon="fa fa-trash" title="#{msg.unsubscripeGroup}"
+								update="userForm:dataPanel"
+								disabled="#{userEditor.isUnsubscribed(group)}">
+								<p:confirm header="#{msg.confUG}"
+									message="#{msg.confUGMG} #{group.name}?}" icon="ui-icon-alert" />
+							</p:commandButton>
+							<p:outputLabel value="#{msg.ginDel}"
+								rendered="#{userEditor.isUnsubscribed(group)}" />
+						</p:column>
+					</p:dataTable>
+
+				</p:panel>
+				<p:confirmDialog global="true" widgetVar="confDlg">
+					<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+						icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

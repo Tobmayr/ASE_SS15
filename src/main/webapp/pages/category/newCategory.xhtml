@@ -1,0 +1,136 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">>
+
+	<ui:define name="content">
+		<h1 class="page-header">#{CategoryEditor.category.id eq null ?
+			msg.newCategory : msg.editCategory}</h1>
+
+		<div class="container-fluid">
+
+			<!--<p:growl id="messages" sticky="true" showDetail="true" />-->
+			<h:form id="newCategoryForm" enctype="multipart/form-data">
+				<p:growl id="msgs" showDetail="true" />
+				<p:button
+					outcome="#{CategoryEditor.returnPage!=null ? CategoryEditor.returnPage : navigation.pageHome}"
+					value="#{msg.cancel}" icon="fa fa-remove" />
+				<p:separator />
+				<p:wizard widgetVar="wiz"
+					flowListener="#{CategoryEditor.onFlowProcess}">
+					<p:tab id="basicTabCat" title="#{msg['basicsHeader']}">
+						<p:panel id="basicPanel1" header="#{msg['basicsHeader']}">
+							<p:messages />
+							<h:panelGrid columns="2" class="noBorderGrid">
+								<p:outputLabel for="name" value="#{msg.lhName}:" />
+								<p:inputText id="name" value="#{CategoryEditor.category.name}"
+									required="true" />
+								<p:outputLabel for="parent" value="#{msg['lParentCategory']}:" />
+								<p:selectOneMenu id="parent"
+									value="#{CategoryEditor.category.parentCategory}"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem itemLabel="#{msg['chooseParent']}" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{CategoryEditor.categories}" var="item"
+										itemLabel="#{item.name}" itemValue="#{item}" />
+								</p:selectOneMenu>
+								<p:outputLabel for="fixedCost" value="#{msg['lFixedCost']}:" />
+								<p:selectBooleanCheckbox id="fixedCost"
+									value="#{CategoryEditor.category.fixedCost}" />
+								<p:outputLabel for="customCat" value="#{msg.lCustomCategory}:" />
+								<p:selectBooleanCheckbox id="customCat"
+									value="#{CategoryEditor.category.customDivision}" />
+							</h:panelGrid>
+						</p:panel>
+					</p:tab>
+					<p:tab id="customTabCat" title="#{msg['lCustomCategory']}">
+						<p:panel id="customPanel1" header="#{msg['lCustomCategory']}">
+							<p:messages />
+							<p:dataTable id="cat1" var="ugc"
+								value="#{CategoryEditor.ugcList}" editable="true"
+								style="margin-bottom:20px">
+
+								<p:ajax event="rowEdit" update=":newCategoryForm:msgs" />
+								<p:ajax event="rowEditCancel" update=":newCategoryForm:msgs" />
+
+								<p:column headerText="Username">
+									<h:outputText value="#{ugc.userGroupDTO.userName}" />
+								</p:column>
+
+								<p:column headerText="Percent">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{ugc.percent}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText id="dd" value="#{ugc.percent}"
+												converterMessage="Cannot convert to double." label="Percent"
+												style="width:100%">
+												<f:validateDoubleRange minimum="0.0" maximum="1.5" />
+											</p:inputText>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column style="width:32px">
+									<p:rowEditor />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:tab>
+					<p:tab id="summaryTabCat" title="#{msg['summaryTab']}">
+						<p:panel id="summary1" header="#{msg['summaryTab']}">
+							<p:panelGrid columns="2">
+								<p:outputLabel value="#{msg['nameLabel']}:" />
+								<p:outputLabel value="#{CategoryEditor.category.name}" />
+								<p:outputLabel value="#{msg['lParentCategory']}:" />
+								<p:outputLabel
+									value="#{CategoryEditor.category.parentCategory.name}" />
+								<p:outputLabel value="#{msg['lFixedCost']}" />
+								<p:selectBooleanCheckbox
+									value="#{CategoryEditor.category.fixedCost}" disabled="true" />
+								<p:outputLabel value="#{msg.lCustomCategory}" />
+								<p:selectBooleanCheckbox
+									value="#{CategoryEditor.category.customDivision}"
+									disabled="true" />
+							</p:panelGrid>
+							<p:panelGrid columns="2"
+								rendered="#{CategoryEditor.category.customDivision}">
+								<p:dataTable id="cat2" var="ugc"
+									value="#{CategoryEditor.ugcList}" editable="true"
+									style="margin-bottom:20px">
+
+									<p:column headerText="Username">
+										<h:outputText value="#{ugc.userGroupDTO.userName}" />
+									</p:column>
+
+									<p:column headerText="Percent">
+										<h:outputText value="#{ugc.percent}" />
+
+									</p:column>
+								</p:dataTable>
+							</p:panelGrid>
+							<p:commandButton value="#{msg['reset']}"
+								action="#{CategoryEditor.reset}" update="newCategoryForm"
+								oncomplete="PF('wiz').loadStep('basicTabCat', false)"
+								rendered="#{CategoryEditor.category.id eq null}" />
+							<p:commandButton
+								value="#{CategoryEditor.category.id eq null ? msg['create'] :msg.save}"
+								action="#{CategoryEditor.createCategory(false)}"
+								icon="ui-icon-check" ajax="false" />
+							<p:commandButton value="#{msg['createcon']}"
+								action="#{CategoryEditor.createCategory(true)}"
+								update="newCategoryForm" icon="ui-icon-check"
+								rendered="#{CategoryEditor.category.id eq null}" ajax="false" />
+
+
+						</p:panel>
+					</p:tab>
+
+				</p:wizard>
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	version="2.0">
+
+	<named-query name="findPaymentUsersByPaymentId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.PaymentUserDTO(p)
+			FROM
+			PaymentUser p
+			WHERE
+			p.payment.id = :id
+		</query>
+	</named-query>
+
+	<named-query name="findUnconfirmedPaymentUsersByUserId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.PaymentUserDTO(p)
+			FROM
+			PaymentUser p
+			WHERE
+			(p.receiver.id = :id
+			OR
+			p.sender.id = :id)
+			AND
+			p.confirmed = false
+		</query>
+	</named-query>
+
+	<named-query name="findPaymentUsersByUserId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.PaymentUserDTO(p)
+			FROM
+			PaymentUser p
+			WHERE
+			(p.receiver.id = :id
+			OR
+			p.sender.id = :id)
+		</query>
+	</named-query>
+
+	<named-query name="findShoppingListsByUserId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ShoppingListDTO(sl.id, sl.name,
+			sl.deadline,
+			sl.emailNotification, uc, ua, sl.privateList, sl.state,
+			a)
+			FROM
+			ShoppingList sl
+			JOIN
+			sl.createdBy uc
+			LEFT JOIN
+			sl.assignedTo ua
+			LEFT JOIN
+			sl.activity a
+			WHERE
+			sl.group.id=:group AND
+			(uc.id = :userId
+			OR
+			ua.id = :userId)
+			order by sl.deadline DESC
+		</query>
+	</named-query>
+
+	<named-query name="findShoppingListsAssignedToUser">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ShoppingListDTO(sl.id, sl.name,
+			sl.deadline, sl.emailNotification, uc, ua, sl.privateList, sl.state,
+			a)
+			FROM
+			ShoppingList sl
+			JOIN
+			sl.createdBy uc
+			LEFT JOIN
+			sl.assignedTo ua
+			LEFT JOIN
+			sl.activity a
+			WHERE
+			ua.id = :userId
+			AND
+			sl.state = 'ASSIGNED'
+			AND
+			sl.group.id = :group
+			order by sl.deadline DESC
+		</query>
+	</named-query>
+
+	<named-query name="findShoppingListsById">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ShoppingListDTO(sl.id, sl.name,
+			sl.deadline,
+			sl.emailNotification, uc, ua, sl.privateList, sl.state,
+			a)
+			FROM
+			ShoppingList sl
+			JOIN
+			sl.createdBy uc
+			LEFT JOIN
+			sl.assignedTo ua
+			LEFT JOIN
+			sl.activity a
+			where sl.id = :listId
+		</query>
+	</named-query>
+
+	<named-query name="findShoppingListsByGroupIdAndState">
+		<query>
+
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ShoppingListDTO(sl.id, sl.name,
+			sl.deadline,
+			sl.emailNotification, uc, ua, sl.privateList, sl.state,
+			a)
+			FROM
+			ShoppingList sl
+			JOIN
+			sl.createdBy uc
+			LEFT JOIN
+			sl.assignedTo ua
+			LEFT JOIN
+			sl.activity a
+			WHERE
+			sl.group.id = :groupId
+			AND sl.state in
+			(:listState)
+			order by sl.deadline DESC
+		</query>
+	</named-query>
+
+	<named-query name="findShoppingListPositionsByListId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ListItemDTO(p.id, p.name,
+			c.id,
+			c.name,
+			c.fixedCost,
+			c.defaultCategory,
+			p.amount, p.done)
+			FROM
+			ListPosition p
+			LEFT JOIN p.category c
+			WHERE p.shoppingList.id =
+			:shoppingListId
+			order by c.id
+
+		</query>
+	</named-query>
+
+
+	<named-query name="findAllCategories">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.CategoryDTO(c)
+			FROM
+			Category c
+			order by c.name
+		</query>
+	</named-query>
+
+	<named-query name="findCollectiveBillsByTimespan">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.BillDTO(b.id,b.name,b.date,b.createdBy.id,b.createdBy.userName,
+			b.total,b.privateBill,b.currency.id,b.currency.isoCode,b.group.id,s,
+			b.payment.id)
+			from
+			Bill b LEFT JOIN b.shop s WHERE
+			b.group.id=:group AND
+			b.privateBill=false AND b.date
+			BETWEEN
+			:start AND :end ORDER BY
+			b.date
+			DESC ,b.id ASC
+
+		</query>
+	</named-query>
+
+	<named-query name="findCollectiveBillsWithCostEntriesByTimespan">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.BillDTO(b)
+			from Bill b
+			WHERE b.group.id = :group
+			AND b.privateBill=false
+			AND b.date
+			BETWEEN :start AND :end
+			ORDER BY b.date DESC
+		</query>
+	</named-query>
+
+	<named-query name="findCostEntriesbyId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.CostEntryDTO(c.id, c.name,
+			c.amount, c.times, c.excluded, c.category.id, c.category.name,
+			c.category.fixedCost,c.category.defaultCategory)
+			FROM
+			CostEntry c
+			WHERE
+			c.bill.id= :id
+		</query>
+	</named-query>
+	<named-query name="findAllGroups">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.GroupDTO(g)
+			FROM Group g
+			order by g.id
+		</query>
+	</named-query>
+	<named-query name="findAllGroupsByUserId">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.GroupDTO(g)
+			FROM Group g, UserGroup ug
+			WHERE ug.group = g
+			AND ug.user.id= :userid
+			order by g.id
+		</query>
+	</named-query>
+
+
+	<named-query name="findConfirmedUser">
+		<query>
+			SELECT u
+			from User u
+			WHERE confirmed = true
+			and (email=:name or
+			userName=:name)
+
+		</query>
+
+	</named-query>
+
+	<named-query name="findUserByNameEmail">
+		<query>
+
+			SELECT userName,email FROM User u where userName=:name OR
+			email=:email
+		</query>
+	</named-query>
+	<named-query name="findAllUsers">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.UserDTO(u.id,
+			u.firstName,
+			u.lastName,
+			u.userName, u.email, u.birthDate, u.income,
+			u.notify)
+			FROM User u
+			order by u.id
+		</query>
+	</named-query>
+
+	<named-query name="findUsersByGroupID">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.UserDTO(u)
+			FROM User u, UserGroup g
+			WHERE g.user = u
+			AND g.group.id =:groupId
+			ORDER BY g.joinDate ASC
+		</query>
+	</named-query>
+
+	<named-query name="findAllActivities">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.ActivityDTO(a)
+			FROM Activity a
+			order by a.date
+		</query>
+	</named-query>
+
+	<named-query name="findActivityByGroupId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ActivityDTO(a)
+			FROM
+			Activity a
+			WHERE a.group.id = :groupId
+			order by a.date DESC
+		</query>
+	</named-query>
+
+	<named-query name="findAssignedActivitesTimespan">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.ActivityDTO(a)
+			FROM Activity
+			a where a.assignedTo.id=:user AND a.group.id=:group
+			AND
+			a.date
+			BETWEEN
+			:start AND :end
+			order by a.date DESC
+		</query>
+	</named-query>
+
+	<named-query name="findActivitiesByTimespan">
+		<query>
+			SELECT a FROM Activity a WHERE a.group.id=:group
+			AND a.date
+			BETWEEN
+			:start AND :end
+			order by a.date DESC
+		</query>
+	</named-query>
+
+	<named-query name="findAllCountries">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.CountryDTO(c.id,
+			c.isoCode,c.name)
+			FROM Country c
+			order by c.name
+		</query>
+	</named-query>
+
+	<named-query name="findBillById">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.BillDTO(b)
+			from Bill b where b.id=:id
+		</query>
+	</named-query>
+
+	<named-query name="findActivityById">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.ActivityDTO(a)
+			from Activity a where a.id=:id
+		</query>
+	</named-query>
+
+	<named-query name="findAbsencesByUserId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.AbsenceDTO(a.id,
+			a.awayFrom,
+			a.awayTill, a.temporary, ug)
+			FROM
+			Absence a
+			JOIN
+			a.userGroup ug
+			WHERE
+			ug.user.id=:userId AND
+			ug.group.id= :group
+		</query>
+	</named-query>
+
+	<named-query name="findAbsenceById">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.AbsenceDTO(a.id,
+			a.awayFrom,
+			a.awayTill, a.temporary, ug)
+			FROM
+			Absence a
+			JOIN
+			a.userGroup ug
+			WHERE
+			a.id
+			=
+			:absenceId
+		</query>
+	</named-query>
+
+	<named-query name="findAbsencesByGroupId">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.AbsenceDTO(a.id,
+			a.awayFrom,
+			a.awayTill, a.temporary, ug)
+			FROM
+			Absence a
+			JOIN
+			a.userGroup ug
+			WHERE
+			ug.group.id = :groupId
+			order by a.awayFrom asc, a.awayTill desc
+		</query>
+	</named-query>
+
+	<named-query name="findUserGroupCategoryByCategory">
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.UserGroupCategoryDTO(ugc)
+			from
+			UserGroupCategory ugc where ugc.category.id=:catId AND
+			ugc.category.deleted=false
+			order by ugc.user.id
+		</query>
+	</named-query>
+
+	<named-query name="findCategoriesByGroupAndDefault">
+
+		<query>
+			Select new com.smartwg.core.internal.domain.dtos.CategoryDTO(c)
+			FROM
+			Category c where c.group.id=:groupId and c.deleted=false
+			order by
+			c.name
+		</query>
+	</named-query>
+
+	<named-query name="findUserActivityByUserIdAndActivityId">
+
+		<query>
+			SELECT ua
+			from UserActivity ua
+			where ua.user.id=:userId and
+			ua.activity.id=:activityId
+		</query>
+	</named-query>
+
+	<named-query name="findUsersByMail">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.UserDTO(u)
+			FROM User u where email= :mail
+
+		</query>
+	</named-query>
+
+	<named-query name="findUserNotifications">
+		<query>
+			SELECT u.notify
+			FROM User u
+			WHERE u.id = :userId
+		</query>
+	</named-query>
+
+	<named-query name="findUserEmailsByGroupId">
+		<query>
+			SELECT
+			new
+			com.smartwg.core.internal.domain.dtos.NotificationDTO(u.email,u.notify)
+			FROM
+			User u
+			JOIN
+			u.groups g
+			WHERE
+			g.group.id = :groupId
+		</query>
+	</named-query>
+
+	<named-query name="findGroupMembersEmails">
+		<query>
+			SELECT
+			u.email
+			FROM
+			User u
+			JOIN
+			u.groups g
+			WHERE
+			g.group.id = :groupId
+		</query>
+	</named-query>
+
+
+	<named-query name="findRatingsByActivityId">
+
+		<query>
+			SELECT new
+			com.smartwg.core.internal.domain.dtos.UserActivityDTO(ua)
+			FROM
+			UserActivity ua
+			RIGHT JOIN ua.user
+			WHERE ua.activity.id=:activityId
+
+		</query>
+	</named-query>
+	<named-query name="findPlanedActivities">
+		<query>
+			SELECT new com.smartwg.core.internal.domain.dtos.ActivityDTO(a)
+			from
+			Activity a,Recurring r
+			WHERE a.recurring=r AND a.group.id=:group
+			and a.date between :start and
+			:end order by a.id
+		</query>
+	</named-query>
+
+	<named-query name="findAllAdmins">
+		<query>
+			Select new com.smartwg.core.internal.domain.dtos.UserDTO(u)
+			from UserGroup
+			ug, User u where ug.user=u
+			AND ug.role='ADMIN' AND
+			ug.group.id=:group
+		</query>
+	</named-query>
+
+</entity-mappings>

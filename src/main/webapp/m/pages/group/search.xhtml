@@ -1,0 +1,32 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header title="#{msg.searchGroup}" swatch="a">
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+			</pm:header>
+
+			<pm:content>
+				<h:form id="groupSearch">
+					<h1>Not implmented yet!</h1>
+					<p:commandButton action="#{groupBean.saveGroup}"
+						value="#{msg.search}" icon="ui-icon-check" update="groupSearch" />
+					<p:messages />
+				</h:form>
+			</pm:content>
+
+			<pm:footer>
+			</pm:footer>
+		</pm:page>
+	</ui:define>
+</ui:composition>

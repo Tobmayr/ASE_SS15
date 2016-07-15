@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-6" author="to">
+		<comment>update table user</comment>
+		<dropNotNullConstraint columnDataType="varbinary(20)"
+			columnName="password" tableName="user" />
+		<dropNotNullConstraint columnDataType="varbinary(8)"
+			columnName="salt" tableName="user" />
+
+	</changeSet>
+	<changeSet id="changelog-6a" author="to">
+		<comment>update table bill</comment>
+		<dropNotNullConstraint columnDataType="int(11)"
+			columnName="created_by_user_id" tableName="bill" />
+
+	</changeSet>
+	<changeSet id="changelog-6b" author="to">
+		<comment>update table cost_entry</comment>
+		<dropColumn tableName="cost_entry" columnName="date" />
+
+
+	</changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,138 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<style>
+.tableView table, .tableView a.ui-datepicker-prev, .tableView a.ui-datepicker-next
+	{
+	display: none;
+}
+</style>
+			<h1 class="page-header ">#{msg['costDivisionDetails']}</h1>
+
+			<div class="container-fluid">
+
+				<h:panelGrid columns="3" id="dateButtons">
+					<p:commandButton
+						actionListener="#{costDivisionBean.decrementMonth}" id="navLeft"
+						update=":form:diagram, :form:dateButtons, :form:expensesTable, :form:messages"
+						icon="ui-icon-triangle-1-w" ajax="false" />
+
+					<h:panelGroup class="tableView">
+						<p:calendar value="#{smartWG.costDivisionOverviewSelectedDate}"
+							mode="inline" />
+					</h:panelGroup>
+
+					<p:commandButton
+						actionListener="#{costDivisionBean.incrementMonth}" id="navRight"
+						update=":form:diagram, :form:dateButtons, :form:expensesTable, :form:messages"
+						icon="ui-icon-triangle-1-e" ajax="false" />
+				</h:panelGrid>
+
+				<p:messages showDetail="true" id="messages" />
+
+				<p:dataTable var="payment"
+					value="#{costDivisionBean.costDivisionDetails.entrySet().toArray()}"
+					editable="#{costDivisionBean.isEditingAllowed()}" id="paymentTable"
+					paginator="true" paginatorTemplate=" {Exporters}"
+					emptyMessage="#{msg['empty.norecords']}">
+					<p:ajax event="rowEdit"
+						listener="#{costDivisionBean.onEditCostDivision}"
+						update=":form:messages, :form:saveButton, :form:paymentTable"
+						resetValues="true" />
+					<p:ajax event="rowEditCancel"
+						update=":form:messages, :form:saveButton, :form:paymentTable" />
+
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="paymentTable"
+								fileName="payment" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="paymentTable"
+								fileName="payment" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="paymentTable"
+								fileName="payment" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="paymentTable"
+								fileName="payment" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['bill']} #{msg['totalLabel']}">
+						<h:outputText
+							value="#{payment.key.total} #{payment.key.currency.isoCode}" />
+					</p:column>
+					<p:column headerText="#{msg['tShowBill']}" exportable="false">
+						<p:commandButton
+							action="#{billActions.showBill(payment.key, navigation.pageCostDivisionDetails, false)}"
+							id="view" icon="fa fa-eye" title="#{msg.view}" ajax="false" />
+					</p:column>
+					<p:columns value="#{costDivisionBean.users}" var="user"
+						columnIndexVar="colIndex">
+						<f:facet name="header">
+							<h:outputText value="#{user.userName}" />
+						</f:facet>
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText
+									value="#{payment.value.payments[colIndex] != null ? payment.value.payments[colIndex] : 0.00} #{payment.key.currency.isoCode}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="modelInput"
+									value="#{payment.value.payments[colIndex]}" style="width:100%"
+									disabled="#{costDivisionBean.isEditingAllowed() ? payment.value.payments[colIndex].signum() > 0 : false}"
+									validatorMessage="#{msg['notValidAmount']}">
+									<f:convertNumber maxFractionDigits="2" />
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:columns>
+					<p:column style="width:32px"
+						visible="#{costDivisionBean.isEditingAllowed()}"
+						exportable="false">
+						<p:rowEditor />
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:commandButton
+					action="#{costDivisionBean.backButtonClicked(true)}"
+					icon="fa fa-reply" title="#{msg['back']}" value="#{msg['back']}"
+					ajax="false" />
+				<p:commandButton id="saveButton"
+					action="#{costDivisionBean.saveButtonClicked(true)}"
+					icon="fa fa-save" title="#{msg['save']}" value="#{msg['save']}"
+					disabled="#{!costDivisionBean.saveButtonEnabled}" ajax="false">
+				</p:commandButton>
+
+				<p:confirmDialog widgetVar="confirmDialog" showEffect="clip"
+					hideEffect="clip" header="#{msg['warning']}"
+					message="#{msg['unsavedChanges']}">
+					<p:commandButton value="#{msg['yes']}"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+						action="#{costDivisionBean.backButtonClicked(false)}"
+						oncomplete="PF('confirmDialog').hide()" />
+					<p:commandButton value="#{msg['no']}"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" ajax="false"
+						oncomplete="PF('confirmDialog').hide()" />
+				</p:confirmDialog>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

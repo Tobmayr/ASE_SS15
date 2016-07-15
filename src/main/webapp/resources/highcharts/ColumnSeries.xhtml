@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <cc:interface>
+        <cc:attribute name="name" default=""/>
+        <cc:attribute name="series" type="nz.co.kevindoran.highcharts.ColumnChartSeries"/>
+    </cc:interface>                       
+
+    <!-- I chose the series to contain the category names, as from the server/Java
+    point of view, it is important to maintain a map from category name
+    to value, instead of the series just being a list of numbers. If two
+    series are added, only the first will set the category names. -->
+    <cc:implementation>       
+        <h:outputScript name="javascript/highcharts/js/highcharts.js" target="head" />
+       if(typeof options.xAxis.categories === "undefined") {
+            options.xAxis.categories = 
+            [<ui:repeat value="#{cc.attrs.series.columns}" var="column">
+                 '#{column.name}',
+             </ui:repeat>];
+        }
+        var data = [<ui:repeat value="#{cc.attrs.series.columns}" var="column">
+                    #{column.value},
+                    </ui:repeat>];
+        
+        var series = {
+            type: 'column',
+            name: '#{cc.attrs.name}',
+            data: data
+        };
+        if(typeof options.series === "undefined") {
+            options.series = [];
+        }
+        options.series.push(series);
+    </cc:implementation>
+</html>

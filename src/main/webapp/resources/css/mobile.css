@@ -1,0 +1,39 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+.main-header {
+	height: 4em !important;
+	background-color: light-gray !important;
+}
+
+.menu-icon {
+	height: 3.5em !important;
+	width: 3.5em !important;
+	margin-right: 1em !important;
+}
+
+.align-center {
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
+.header-title {
+	font-size: 2em;
+}
+
+.app-title {
+	font-size: 1em;
+}
+
+.input-big {
+	font-size: 1.8em;
+}
+
+.text-big {
+	font-size: 1.3em;
+	margin-bottom: 1.3em;
+
+}

@@ -1,0 +1,80 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">
+				<i class="fa fa-calendar" /> #{msg.groupAbsences_title}
+			</h1>
+			<p:separator />
+			<p:dataTable id="groupAbsences" var="gAbsence"
+				value="#{groupAbsence.groupAbsences}" rowKey="#{gAbsence.id}"
+				widgetVar="absencesTable"
+				emptyMessage="#{msg['empty.list.criteria']}"
+				filteredValue="#{groupAbsence.filteredGroupAbsences}"
+				paginator="true" paginatorTemplate=" {Exporters}">
+
+				<f:facet name="header">
+          #{msg.mAbsences}
+        </f:facet>
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="groupAbsences"
+							fileName="groupAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="groupAbsences"
+							fileName="groupAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="groupAbsences"
+							fileName="groupAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="groupAbsences"
+							fileName="groupAbsences" encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+				<p:column headerText="#{msg.awayFromLabel}" priority="1"
+					filterBy="#{gAbsence.awayFrom}" filterMatchMode="contains"
+					sortBy="#{gAbsencee.awayFrom}">
+					<h:outputText value="#{gAbsence.awayFrom}">
+						<f:convertDateTime type="date" dateStyle="medium" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.awayTillLabel}" priority="1"
+					filterBy="#{gAbsence.awayTill}" filterMatchMode="contains"
+					sortBy="#{gAbsence.awayTill}">
+					<h:outputText value="#{gAbsence.awayTill}">
+						<f:convertDateTime type="date" dateStyle="medium" locale="de" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="#{msg.temporaryLabel}" priority="2"
+					filterBy="#{gAbsence.temporary}" filterMatchMode="contains"
+					sortBy="#{gAbsence.temporary}">
+					<h:outputText value="#{gAbsence.temporary}" />
+				</p:column>
+
+
+				<p:column headerText="#{msg.userLabel}" priority="2"
+					filterBy="#{gAbsence.userGroup.userName}"
+					filterMatchMode="contains" sortBy="#{gAbsence.userUsername}">
+					<h:outputText value="#{gAbsence.userGroup.userName}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

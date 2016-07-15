@@ -1,0 +1,142 @@
+<ui:composition template="/templates/main_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui">
+	<ui:define name="content">
+		<h1 class="page-header">
+			<i class="fa fa-user" /> #{msg.liRegister}
+		</h1>
+		<h:form id="registerForm">
+			<p:panel class="noBorderGrid" header="#{msg.register_createUser}">
+				<p:messages id="messages" />
+				<p:panelGrid>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="registerEemail" value="#{msg['lMail']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:inputText id="registerEemail"
+								value="#{registrationBean.currentUser.email}"
+								pt:placeholder="#{msg['phMail']}" pt:type="email"
+								pt:data-required="true" required="true"
+								requiredMessage="#{valMsg['error.email.required']}">
+								<o:validator validatorId="javax.faces.RegularExpression"
+									pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])"
+									message="#{valMsg['error.email.format']}" />
+
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="registerPassword" value="#{msg['lPass']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:password id="registerPassword"
+								value="#{registrationBean.currentUser.password_clear}"
+								pt:placeholder="#{msg['phPass']}" required="true"
+								label="Password Match" feedback="false"
+								requiredMessage="#{valMsg['error.password.required']}">
+								<o:validator validatorId="javax.faces.RegularExpression"
+									pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})"
+									message="#{valMsg['error.password.format']}" />
+							</p:password>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="registerPassword2" value="#{msg['lPass2']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:password id="registerPassword2"
+								value="#{registrationBean.passwordMatch}"
+								pt:placeholder="#{msg['phPass']}" label="Password Match"
+								feedback="false" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="firstName" value="#{msg['lFirstName']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:inputText id="firstName"
+								value="#{registrationBean.currentUser.firstName}">
+								<o:validator validatorId="javax.faces.Length" maximum="20"
+									message="#{valMsg['error.name.length']}" />
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="lastName" value="#{msg['lLastName']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:inputText id="lastName"
+								value="#{registrationBean.currentUser.lastName}">
+								<o:validator validatorId="javax.faces.Length" maximum="20"
+									message="#{valMsg['error.name.length']}" />
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="userName" value="#{msg['lUsername']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:inputText id="userName"
+								value="#{registrationBean.currentUser.userName}" required="true"
+								requiredMessage="#{valMsg['error.username.required']}">
+								<o:validator validatorId="javax.faces.Length" minimum="6"
+									maximum="20" message="#{valMsg['error.username.length']}" />
+							</p:inputText>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="birthDate" value="#{msg['lBirthdate']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:calendar id="birthDate"
+								value="#{registrationBean.currentUser.birthDate}"
+								navigator="true" yearRange="c-100:c-0" pattern="yyyy-MMM-dd" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:outputLabel for="notificationTypes" value="#{msg['lNotify']}"
+								style="font-weight:bold" />
+						</p:column>
+						<p:column>
+							<p:selectCheckboxMenu id="notificationTypes"
+								value="#{registrationBean.currentUser.notificationTypes}"
+								converter="omnifaces.SelectItemsConverter"
+								label="#{msg.registerSelectNotification}" filter="false"
+								panelStyle="width:250px">
+								<f:selectItems value="#{registrationBean.notifications}"
+									var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+							</p:selectCheckboxMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton value="#{msg['bRegister']}"
+								action="#{registrationBean.createUser}" update="registerForm" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

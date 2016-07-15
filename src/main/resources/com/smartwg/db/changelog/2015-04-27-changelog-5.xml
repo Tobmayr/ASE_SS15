@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-5" author="as">
+		<comment>update table absence</comment>
+		<addNotNullConstraint columnDataType="TINYINT(1)"
+			columnName="level" tableName="absence" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="user_id" tableName="absence" />
+
+		<addForeignKeyConstraint baseColumnNames="user_id"
+			baseTableName="absence" constraintName="fk_absence_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5a" author="as">
+		<comment>update table activity</comment>
+		<addNotNullConstraint columnDataType="DATETIME"
+			columnName="date" tableName="activity" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="points" tableName="activity" />
+
+		<addNotNullConstraint columnDataType="TINYINT(1)"
+			columnName="is_done" tableName="activity" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="group_id" tableName="activity" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="created_by_user_id" tableName="activity" />
+
+		<addForeignKeyConstraint baseColumnNames="created_by_user_id"
+			baseTableName="activity" constraintName="fk_activity_created_by_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="assigned_to_user_id"
+			baseTableName="activity" constraintName="fk_activity_assigned_to_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="activity" constraintName="fk_activity_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5b" author="as">
+		<comment>update table bill</comment>
+		<addForeignKeyConstraint baseColumnNames="created_by_user_id"
+			baseTableName="bill" constraintName="fk_bill_created_by_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5c" author="as">
+		<comment>update table category</comment>
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="category" constraintName="fk_category_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+
+		<addForeignKeyConstraint baseColumnNames="parent_category_id"
+			baseTableName="category" constraintName="fk_category_parent_category_id"
+			referencedColumnNames="id" referencedTableName="category" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5d" author="as">
+		<comment>update table cost_entry</comment>
+		<addNotNullConstraint columnDataType="TINYINT(1)"
+			columnName="is_excluded" tableName="cost_entry" />
+
+		<addNotNullConstraint columnDataType="VARCHAR(45)"
+			columnName="name" tableName="cost_entry" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5e" author="as">
+		<comment>update table list</comment>
+		<addNotNullConstraint columnDataType="DATETIME"
+			columnName="deadline" tableName="list" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5f" author="as">
+		<comment>update table list_position</comment>
+		<addNotNullConstraint columnDataType="TINYINT(1)"
+			columnName="is_done" tableName="list_position" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="list_id" tableName="list_position" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5g" author="as">
+		<comment>update table message</comment>
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="from_user_id" tableName="message" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="to_user_id" tableName="message" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="group_id" tableName="message" />
+
+		<addNotNullConstraint columnDataType="VARCHAR(1000)"
+			columnName="message" tableName="message" />
+
+		<addForeignKeyConstraint baseColumnNames="from_user_id"
+			baseTableName="message" constraintName="fk_message_from_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="to_user_id"
+			baseTableName="message" constraintName="fk_message_to_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="group_id"
+			baseTableName="message" constraintName="fk_message_group_id"
+			referencedColumnNames="id" referencedTableName="group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5h" author="as">
+		<comment>update table payment</comment>
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="sender_id" tableName="payment" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="receiver_id" tableName="payment" />
+
+		<addForeignKeyConstraint baseColumnNames="sender_id"
+			baseTableName="payment" constraintName="fk_payment_sender_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="receiver_id"
+			baseTableName="payment" constraintName="fk_payment_receiver_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5i" author="as">
+		<comment>update table payment_has_bill</comment>
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="payment_id" tableName="payment_has_bill" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="bill_id" tableName="payment_has_bill" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5j" author="as">
+		<comment>update table recurring</comment>
+		<addNotNullConstraint columnDataType="VARCHAR(10)"
+			columnName="type" tableName="recurring" />
+
+		<addNotNullConstraint columnDataType="TINYINT(2)"
+			columnName="value" tableName="recurring" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5k" author="as">
+		<comment>update table user</comment>
+		<addNotNullConstraint columnDataType="VARCHAR(45)"
+			columnName="username" tableName="user" />
+
+		<addNotNullConstraint columnDataType="VARCHAR(45)"
+			columnName="e_mail" tableName="user" />
+
+		<addNotNullConstraint columnDataType="VARBINARY(20)"
+			columnName="password" tableName="user" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5l" author="as">
+		<comment>update table user_group</comment>
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="user_id" tableName="user_group" />
+
+		<addNotNullConstraint columnDataType="INT(11)"
+			columnName="group_id" tableName="user_group" />
+
+	</changeSet>
+
+	<changeSet id="changelog-5m" author="as">
+		<comment>drop table shopping_list</comment>
+		<dropTable tableName="shopping_list" />
+
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,181 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:wc="http://googlecode.com/wickedcharts">
+
+	<ui:define name="content">
+		<h1 class="page-header ">
+			<i class="fa fa-bar-chart" />#{msg['hStatistics']}
+		</h1>
+
+		<h:form id="form">
+			<p:messages />
+			<p:panelGrid class="noBorderGrid" columns="2">
+				<p:panel>
+					<p:panelGrid class="noBorderGrid">
+						<p:row>
+							<p:column>#{msg['lTimespan']}</p:column>
+
+							<p:column>
+								<h:outputLabel for="from" value="#{msg['lFrom']}:"
+									style="font-weight:bold" />
+							</p:column>
+							<p:column colspan="1">
+								<p:calendar id="from" pattern="dd/MM/yyyy"
+									value="#{statistics.from}" />
+							</p:column>
+
+							<p:column>
+								<h:outputLabel for="to" value="#{msg['lTo']}:"
+									style="font-weight:bold" />
+							</p:column>
+							<p:column colspan="1">
+								<p:calendar id="to" pattern="dd/MM/yyyy"
+									value="#{statistics.to}" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+					<p:panelGrid columns="2">
+						<p:outputLabel for="username" value="#{msg['lUsername']}" />
+						<p:selectOneMenu id="username" value="#{statistics.user}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="#{msg['chooseUser']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{statistics.users}" var="item"
+								itemLabel="#{item.userName}" itemValue="#{item}" />
+						</p:selectOneMenu>
+						<h:outputLabel for="show" value="#{msg['lShowResults']}:"
+							style="font-weight:bold" />
+						<p:selectOneRadio id="show" value="#{statistics.show}">
+							<f:selectItem itemLabel="#{msg['lDaily']}" itemValue="daily" />
+							<f:selectItem itemLabel="#{msg['lWeekly']}" itemValue="weekly" />
+							<f:selectItem itemLabel="#{msg['lMonthly']}" itemValue="monthly" />
+							<f:selectItem itemLabel="#{msg['lYearly']}" itemValue="yearly" />
+						</p:selectOneRadio>
+						<h:outputLabel for="custom" value="#{msg['lCustom']}:"
+							style="font-weight:bold" />
+						<p:selectOneRadio id="custom" value="#{statistics.custom}"
+							required="true" requiredMessage="#{valMsg['errorCustom']}">
+							<f:selectItem itemLabel="#{msg['lBills']}" itemValue="Bill" />
+							<f:selectItem itemLabel="#{msg['lCategory']}"
+								itemValue="Category" />
+							<f:selectItem itemLabel="#{msg['lActivity']}"
+								itemValue="Activity" />
+							<f:ajax render="payment-amount-panel" />
+						</p:selectOneRadio>
+
+
+					</p:panelGrid>
+
+				</p:panel>
+				<h:panelGroup id="payment-amount-panel">
+
+					<p:panel id="billPanel" header="#{msg['lBill']}"
+						rendered="#{statistics.custom == 'Bill'}">
+
+						<p:panelGrid columns="2">
+							<h:outputLabel for="group" value="#{msg['lGroupType']}:"
+								style="font-weight:bold" />
+							<p:selectOneRadio id="group" value="#{statistics.group}">
+								<f:selectItem itemLabel="#{msg['showPercent']}"
+									itemValue="percent" />
+								<f:selectItem itemLabel="#{msg['lGroupAllBills']}"
+									itemValue="groupShops" />
+							</p:selectOneRadio>
+
+							<p:outputLabel for="shop" value="#{msg['shopLabel']}:" />
+							<p:selectOneMenu id="shop" value="#{statistics.shop}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="#{msg['chooseShop']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{statistics.shops}" var="item"
+									itemLabel="#{item.name}" itemValue="#{item}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel id="categoryPanel" header="#{msg['categoryLabel']}"
+						rendered="#{statistics.custom == 'Category'}">
+
+						<p:panelGrid columns="2">
+							<p:outputLabel for="category" value="#{msg['categoryLabel']}:" />
+							<p:selectOneMenu id="category" value="#{statistics.category}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="#{msg['chooseCategory']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{statistics.categories}" var="item"
+									itemLabel="#{item.name}" itemValue="#{item}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="shop2" value="#{msg['shopLabel']}:" />
+							<p:selectOneMenu id="shop2" value="#{statistics.shop}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="#{msg['chooseShop']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{statistics.shops}" var="item"
+									itemLabel="#{item.name}" itemValue="#{item}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel id="activityPanel" header="#{msg['lActivity']}"
+						rendered="#{statistics.custom == 'Activity'}">
+
+						<p:panelGrid columns="2">
+							<p:outputLabel for="activity" value="#{msg['lActivity']}:" />
+							<p:selectOneMenu id="activity" value="#{statistics.activity}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="#{msg['chooseActivity']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{statistics.activities}" var="item"
+									itemLabel="#{item.name}" itemValue="#{item}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="assignee" value="#{msg['lAssignee']}:" />
+							<p:selectOneMenu id="assignee" value="#{statistics.assignee}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="#{msg['chooseAssignee']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{statistics.assignees}" var="item"
+									itemLabel="#{item.userName}" itemValue="#{item}" />
+							</p:selectOneMenu>
+							<h:outputLabel for="isDone" value="#{msg['lShow']}:"
+								style="font-weight:bold" />
+							<p:selectOneRadio id="isDone" value="#{statistics.isDone}">
+								<f:selectItem itemLabel="#{msg['done']}" itemValue="true" />
+								<f:selectItem itemLabel="#{msg['notdone']}" itemValue="false" />
+								<f:selectItem itemLabel="#{msg['all']}" itemValue="all" />
+							</p:selectOneRadio>
+							
+						</p:panelGrid>
+					</p:panel>
+				</h:panelGroup>
+			</p:panelGrid>
+			<p:commandButton value="#{msg['reset']}" action="#{statistics.reset}"
+				update="form" outcome="#{navigation.pageStatistics}" />
+			<p:commandButton action="#{statistics.makeChart()}"
+				value="#{msg['makeChart']}" type="submit"
+				onclick="PF('testPanel').show()" icon="fa fa-bar-chart">
+				<f:ajax render="chart-panel" />
+			</p:commandButton>
+			<script src="http://code.highcharts.com/stock/highstock.js"></script>
+			<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+			<h:panelGroup id="chart-panel" widgetVar="testPanel" closable="true"
+				toggleable="true">
+				<p:panel id="chartPanel" rendered="#{statistics.showChart == true}">
+					<body>
+						<wc:chart id="chart1" options="#{statistics.options}"
+							theme="#{statistics.theme}" />
+					</body>
+					<div id="container"></div>
+				</p:panel>
+			</h:panelGroup>
+		</h:form>
+
+	</ui:define>
+
+
+</ui:composition>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-7" author="to">
+		<comment>update amount type from decimal(5,2) to decimal(7,2)</comment>
+		<modifyDataType columnName="income" newDataType="DECIMAL(7,2)"
+			tableName="user" />
+		<modifyDataType columnName="amount" newDataType="DECIMAL(7,2)"
+			tableName="cost_entry" />
+		<modifyDataType columnName="rate_to_euro" newDataType="DECIMAL(7,2)"
+			tableName="currency" />
+		<modifyDataType columnName="amount" newDataType="DECIMAL(7,2)"
+			tableName="payment_has_bill" />
+
+	</changeSet>
+	<changeSet id="changelog-7a" author="to">
+		<comment>set type type of current to enum('MONTH','YEAR','DAY')</comment>
+		<modifyDataType columnName="type" newDataType="enum('MONTH','DAY','YEAR')"
+			tableName="recurring" />
+		<comment>change type of file in bill to MEDIUMBLOB</comment>
+		<modifyDataType columnName="file" newDataType="MEDIUMBLOB"
+			tableName="bill" />
+		<comment>Added colum times to cost_entry</comment>
+		<addColumn tableName="cost_entry">
+			<column name="times" type="SMALLINT(6)" />
+		</addColumn>
+
+	</changeSet>
+
+
+
+
+
+</databaseChangeLog>

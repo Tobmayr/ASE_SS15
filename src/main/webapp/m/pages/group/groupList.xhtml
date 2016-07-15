@@ -1,0 +1,90 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<pm:header title="#{msg.liGList}" swatch="a">
+				<p:button outcome="#{navigation.pageHome}" value="Back"
+					icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+			</pm:header>
+
+			<pm:content>
+				<h:form id="groupForm">
+					<p:messages id="messages" autoUpdate="true" />
+					<p:panelGrid columns="2" class="noBorderGrid">
+						<p:outputLabel value="#{msg.lsag}:" style="padding-top:0.8em;" />
+						<p:selectOneMenu id="groupChanger" value="#{groupList.group}"
+							converter="omnifaces.SelectItemsConverter"
+							style="margin-top:0.4em;">
+							<f:selectItems value="#{groupList.groups}" var="group"
+								itemLabel="#{group.name}" itemValue="#{group}" />
+							<p:ajax event="change" listener="#{groupList.groupChanged}"
+								update="groupForm" />
+
+						</p:selectOneMenu>
+
+					</p:panelGrid>
+					<p:button value="#{msg.createGroup}" type="button"
+						outcome="#{navigation.pageAddGroup}" icon="ui-icon-plus" />
+					<p:button value="#{msg.search}"
+						outcome="#{navigation.pageGroupSearch}" icon="ui-icon-search" />
+					<p:accordionPanel>
+						<p:tab id="basicPanel" title="#{msg['basicsHeader']}"
+							toggleable="true">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="#{msg['nameLabel']}:"
+									style="margin-right:1em;" />
+								<p:outputLabel value="#{groupList.group.name}" />
+								<p:outputLabel value="#{msg['countryLabel']}:" />
+								<p:outputLabel value="#{groupList.group.country.localizedName}" />
+								<p:outputLabel value="#{msg['cityLabel']}:" />
+								<p:outputLabel value="#{groupList.group.city}" />
+								<p:outputLabel value="#{msg['zipLabel']}:" />
+								<p:outputLabel value="#{groupList.group.zip}" />
+								<p:outputLabel value="#{msg['streetLabel']}:" />
+								<p:outputLabel value="#{groupList.group.street}" />
+								<p:outputLabel value="#{msg['street2Label']}:" />
+								<p:outputLabel value="#{groupList.group.street2}" />
+							</h:panelGrid>
+						</p:tab>
+						<p:tab id="userPanel" title="#{msg['userHeader']}"
+							toggleable="true">
+							<p:dataTable var="user" value="#{groupList.users}"
+								rowKey="#{user.id}" id="users" paginator="true">
+
+								<p:column headerText="#{msg['lhUsername']}"
+									sortBy="#{user.userName}">
+									<h:outputText value="#{user.userName}" />
+								</p:column>
+								<p:column headerText="#{msg['lhFirstName']}"
+									sortBy="#{user.firstName}">
+									<h:outputText value="#{user.firstName}" />
+								</p:column>
+
+								<p:column headerText="#{msg['lhLastName']}"
+									sortBy="#{user.lastName}">
+									<h:outputText value="#{user.lastName}" />
+								</p:column>
+								<p:column headerText="#{msg['lhMail']}" sortBy="#{user.email}">
+									<h:outputText value="#{user.email}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:accordionPanel>
+				</h:form>
+			</pm:content>
+
+			<pm:footer>
+			</pm:footer>
+		</pm:page>
+
+	</ui:define>
+</ui:composition>

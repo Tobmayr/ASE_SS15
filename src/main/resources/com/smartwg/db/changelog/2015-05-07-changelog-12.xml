@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+	<property name="now" value="now()" dbms="mysql" />
+
+	<changeSet id="changelog-12" author="as">
+		<comment>add relationship between currency and country</comment>
+
+		<addColumn tableName="country">
+			<column name="default_currency" type="INT(11)" />
+		</addColumn>
+
+		<addForeignKeyConstraint baseColumnNames="default_currency"
+			baseTableName="country" constraintName="fk_country_default_currency"
+			referencedColumnNames="id" referencedTableName="currency" />
+	</changeSet>
+
+	<changeSet id="changelog-12a" author="as">
+		<comment>add currency data to country</comment>
+
+		<update tableName="country">
+			<column name="default_currency" type="INT(11)" value="1" />
+			<where>iso_code='AT'</where>
+		</update>
+
+		<update tableName="country">
+			<column name="default_currency" type="INT(11)" value="1" />
+			<where>iso_code='DE'</where>
+		</update>
+		
+
+	</changeSet>
+
+</databaseChangeLog>

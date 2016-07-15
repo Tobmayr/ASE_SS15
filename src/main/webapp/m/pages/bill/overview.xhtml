@@ -1,0 +1,92 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<h:form id="overviewForm">
+				<pm:header class="app-title" title="#{msg.hBOverview}" swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+					<p:messages />
+
+					<p:selectOneButton value="#{billList.overviewType}">
+						<f:selectItem itemLabel="#{msg.collective}" itemValue="0" />
+						<f:selectItem itemLabel="#{msg.privateBill}" itemValue="1" />
+						<p:ajax event="change" listener="#{billList.overviewChanged}"
+							update="bills" />
+					</p:selectOneButton>
+					<p:selectOneMenu id="billType" value="#{billList.billSelect}"
+						converter="omnifaces.SelectItemsConverter"
+						style="margin-top:0.4em;">
+						<f:selectItems value="#{billList.billSelectTypes}" var="type"
+							itemValue="#{type}" itemLabel="#{type.name}" />
+						<p:ajax event="change" listener="#{billList.billSelectChanged}"
+							update="bills" />
+					</p:selectOneMenu>
+
+					<p:dataTable id="bills" var="bill" value="#{billList.bills}"
+						tableStyleClass="ui-table-columntoggle" rowKey="#{bill.id}">
+						<p:column headerText="#{msg.dateLabel}" sortBy="#{bill.date}"
+							priority="1">
+							<h:outputText value="#{bill.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="#{msg.nameLabel}" sortBy="#{bill.name}"
+							priority="2">
+							<h:outputText value="#{bill.name}" />
+						</p:column>
+						<p:column headerText="#{msg.totalLabel}" sortBy="#{bill.total}"
+							priority="1">
+							<h:outputText value="#{bill.total} #{bill.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg.shoppingLists_createdByTitle}"
+							sortBy="#{bill.createdByUsername}" priority="2">
+							<h:outputText value="#{bill.createdByUsername}" />
+						</p:column>
+
+						<p:column priority="1">
+							<p:commandButton icon="ui-icon-action"
+								oncomplete="PF('billActions').show();"
+								update=":index:overviewForm:dlg1">
+								<f:setPropertyActionListener value="#{bill}"
+									target="#{billList.currentBill}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+					<p:dialog id="dlg1" header="#{billList.currentBill.name}"
+						widgetVar="billActions" showEffect="pop">
+						<p:commandButton
+							action="#{billActions.showBill(billList.currentBill, navigation.pageBillOverview, billList.privateBills)}"
+							id="view" value="#{msg.view}" icon="ui-icon-eye"
+							title="#{msg.view}" ajax="false" oncomplete="PF('billActions')" />
+						<p:commandButton
+							action="#{billActions.editBill(billList.currentBill, navigation.pageBillOverview)}"
+							id="edit" icon="ui-icon-edit" title="#{msg.edit}"
+							value="#{msg.edit}" ajax="false" oncomplete="PF('billActions')" />
+						<p:commandButton
+							action="#{billActions.deleteBill(billList.currentBill, navigation.pageBillOverview)}"
+							id="delete" icon="ui-icon-delete" title="#{msg.delete}"
+							value="#{msg.delete}" update="bills" ajax="false"
+							oncomplete="PF('billActions').hide();" />
+
+					</p:dialog>
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

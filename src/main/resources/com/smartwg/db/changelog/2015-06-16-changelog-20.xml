@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-20" author="to">
+		<comment>change data type of rate_to_eur</comment>
+		<modifyDataType tableName="currency" columnName="rate_to_euro"
+			newDataType="DECIMAL(9,5)" />
+		<modifyDataType tableName="country" columnName="iso_code"
+			newDataType="VARCHAR(3)" />
+	</changeSet>
+
+</databaseChangeLog>

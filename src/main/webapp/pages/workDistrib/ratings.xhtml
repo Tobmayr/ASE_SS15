@@ -1,0 +1,101 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<style type="text/css">
+.centered {
+	text-align: center;
+}
+.tableView table, .tableView a.ui-datepicker-prev, .tableView a.ui-datepicker-next
+	{
+	display: none;
+}
+</style>
+
+		<h:form id="form">
+			<h1 class="page-header ">#{msg['userRatings']}</h1>
+
+			<p:growl id="messages" sticky="true" showDetail="true" />
+<h:panelGrid columns="3" id="dateButtons">
+				<p:commandButton actionListener="#{workDistribBean.decrementMonth}"
+					id="navLeft"
+					update=":form"
+					icon="ui-icon-triangle-1-w" ajax="false" />
+
+				<h:panelGroup class="tableView">
+					<p:calendar value="#{smartWG.workDistribOverviewSelectedDate}"
+						mode="inline" />
+				</h:panelGroup>
+
+				<p:commandButton actionListener="#{workDistribBean.incrementMonth}"
+					id="navRight"
+					update=":form"
+					icon="ui-icon-triangle-1-e" ajax="false" />
+			</h:panelGrid>
+			<p:dataTable var="userActivities"
+				value="#{workDistribBean.userActivities.entrySet().toArray()}"
+				id="ratingsTable" paginator="true" paginatorTemplate=" {Exporters}">
+				<f:facet name="header">
+					<h:outputText value="#{msg['ratings']}" />
+				</f:facet>
+
+				<f:facet name="{Exporters}">
+					<h:commandLink>
+						<p:graphicImage name="/images/export/excel.png" width="24" />
+						<p:dataExporter type="xls" target="ratingsTable"
+							fileName="ratingsTable" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/pdf.png" width="24" />
+						<p:dataExporter type="pdf" target="ratingsTable"
+							fileName="ratingsTable" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/csv.png" width="24" />
+						<p:dataExporter type="csv" target="ratingsTable"
+							fileName="ratingsTable" encoding="iso-8859-1" />
+					</h:commandLink>
+
+					<h:commandLink>
+						<p:graphicImage name="/images/export/xml.png" width="24" />
+						<p:dataExporter type="xml" target="ratingsTable"
+							fileName="ratingsTable" encoding="iso-8859-1" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="#{msg['shoppingLists_selectActivityTitle']}">
+					<h:outputText value="#{userActivities.key.name}" />
+          (<h:outputText value="#{userActivities.key.date}">
+						<f:convertDateTime pattern="MM-dd-yyyy" />
+					</h:outputText>)
+				</p:column>
+
+				<p:columns exportable="false" value="#{workDistribBean.columns}"
+					var="user" columnIndexVar="colIndex"
+					styleClass="#{user eq userActivities.key.assigentTo_Username ? 'ui-datatable-header ui-widget-header ui-corner-top' : 'centered'}">
+					<f:facet name="header">
+						<p:outputPanel>  
+                          #{user}  
+                      </p:outputPanel>
+					</f:facet>
+
+					<h:outputText value="#{userActivities.value[colIndex].rating}" />
+				</p:columns>
+
+				<p:column headerText="#{msg['median']}">
+					<h:outputText value="#{userActivities.key.median}" />
+				</p:column>
+			</p:dataTable>
+			<br />
+			<p:button outcome="#{navigation.pageWorkDistributionOverview}"
+				icon="fa fa-reply" title="#{msg['back']}" value="#{msg['back']}" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>

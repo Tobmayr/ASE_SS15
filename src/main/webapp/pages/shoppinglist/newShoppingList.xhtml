@@ -1,0 +1,130 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header">#{shoppingList.currentShoppingList.id eq
+				null ? msg.newShoppingList_title : msg.editShoppingList_title}</h1>
+			<p:button outcome="#{navigation.pageUserShoppingLists}"
+				value="#{msg.cancel}" icon="fa fa-remove" />
+			<p:commandButton action="#{shoppingList.saveShoppingList}"
+				value="#{msg.save}" icon="fa fa-check" update="listPanel" />
+			<p:separator />
+
+
+			<p:panel id="listPanel"
+				header="#{msg.newShoppingList_listProperties}"
+				style="margin-bottom:10px; margin-top: 10px;">
+				<p:messages />
+				<p:panelGrid columns="2" class="noBorderGrid">
+					<p:outputLabel for="listName"
+						value="#{msg.newShoppingList_listName}" />
+					<p:inputText id="listName"
+						value="#{shoppingList.currentShoppingList.name}" required="true"
+						label="listName" />
+					<p:outputLabel for="listDeadline"
+						value="#{msg.newShoppingList_listDeadline}" />
+					<p:calendar id="listDeadline" required="true" locale="de"
+						pattern="dd-MM-yyyy HH:mm"
+						value="#{shoppingList.currentShoppingList.deadline}" />
+					<p:outputLabel for="emailNotification"
+						value="#{msg.shoppingLists_EmailNotificationTitle}" />
+					<p:selectBooleanCheckbox id="emailNotification"
+						value="#{shoppingList.currentShoppingList.emailNotification}">
+					</p:selectBooleanCheckbox>
+					<p:outputLabel for="showActivity"
+						value="#{msg.shoppingLists_forActivityTitle}" />
+					<p:selectBooleanCheckbox id="showActivity"
+						onchange="this.form.submit()"
+						value="#{shoppingList.selectActivity}" immediate="true"
+						valueChangeListener="#{shoppingList.changeSelectActivity}">
+					</p:selectBooleanCheckbox>
+					<p:outputLabel for="itemActivity"
+						rendered="#{shoppingList.selectActivity}"
+						value="#{msg.shoppingLists_selectActivityTitle}" />
+					<p:selectOneMenu id="itemActivity"
+						rendered="#{shoppingList.selectActivity}"
+						value="#{shoppingList.currentShoppingList.activityId}"
+						converter="omnifaces.SelectItemsConverter" required="false">
+						<f:selectItems value="#{shoppingList.activities}" var="act"
+							itemLabel="#{act.name}" itemValue="#{act.id}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:panel>
+		</h:form>
+
+		<h:form>
+			<p:panel id="listItemPanel"
+				header="#{msg.newShoppingList_addItem_title}"
+				style="margin-bottom:10px; margin-top: 10px;">
+				<p:messages />
+
+				<p:panelGrid columns="7" layout="grid">
+					<p:outputLabel for="itemName"
+						value="#{msg.newShoppingList_itemName}" />
+					<p:inputText id="itemName" value="#{shoppingList.itemName}"
+						required="true" label="itemName" />
+					<p:outputLabel for="itemCategory"
+						value="#{msg.newShoppingList_itemCategory}" />
+
+					<p:selectOneMenu id="itemCategory"
+						value="#{shoppingList.itemCategory}"
+						converter="omnifaces.SelectItemsConverter" required="true">
+						<f:selectItem itemLabel="#{msg.chooseCategory}" itemValue=""
+							noSelectionOption="false" />
+						<f:selectItems value="#{shoppingList.categories}" var="cat"
+							itemLabel="#{cat.name}" itemValue="#{cat}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="itemAmount"
+						value="#{msg.newShoppingList_itemAmount}" />
+					<p:spinner id="itemAmount" value="#{shoppingList.itemAmount}"
+						min="1" max="100" />
+					<p:commandButton update="itemList listItemPanel"
+						action="#{shoppingList.addShoppingListItem}" value="#{msg.add}"
+						icon="fa fa-plus" />
+				</p:panelGrid>
+				<p:dataTable id="itemList" var="listItem"
+					value="#{shoppingList.filteredItemList}"
+					emptyMessage="#{msg['empty.norecords']}">
+					<p:column headerText="#{msg.newShoppingList_itemNameTitle}">
+						<p:inplace id="listItemName" editor="true">
+							<p:inputText value="#{listItem.name}" />
+						</p:inplace>
+					</p:column>
+					<p:column headerText="#{msg.newShoppingList_itemCategoryTitle}"
+						priority="2">
+						<p:inplace id="listItemCat" editor="true"
+							label="#{listItem.category.name}">
+							<p:selectOneMenu id="listItemCategory"
+								value="#{listItem.category}" label="#{listItem.category.name}"
+								converter="omnifaces.SelectItemsConverter" required="true">
+								<f:selectItems value="#{shoppingList.categories}" var="cat"
+									itemLabel="#{cat.name}" itemValue="#{cat}" />
+							</p:selectOneMenu>
+
+						</p:inplace>
+					</p:column>
+					<p:column headerText="#{msg.newShoppingList_itemAmountTitle}"
+						priority="1">
+						<p:inplace id="listItemAmount" editor="true">
+							<p:spinner value="#{listItem.amount}" min="1" max="100" />
+						</p:inplace>
+					</p:column>
+					<p:column>
+						<p:commandButton
+							action="#{shoppingList.deleteShoppingListItem(listItem)}"
+							id="release" icon="fa fa-trash" title="#{msg.delete}"
+							update="itemList" immediate="true" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

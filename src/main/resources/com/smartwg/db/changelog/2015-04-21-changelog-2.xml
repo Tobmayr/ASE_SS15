@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="changelog-2" author="ks">
+		<comment>extend user table by additional properties</comment>
+
+		<modifyDataType columnName="password" newDataType="VARBINARY(20)"
+			tableName="user" />
+
+		<addColumn tableName="user">
+			<column name="salt" type="VARBINARY(8)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+		<addColumn tableName="user">
+			<column name="notify" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+
+	</changeSet>
+
+	<changeSet id="changelog-2a" author="ks">
+		<comment>create messages table</comment>
+
+		<createTable tableName="massages">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="from_user_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="to_user_id" type="BIGINT" />
+			<column name="to_group_id" type="BIGINT" />
+			<column name="content" type="VARCHAR(2024)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2b" author="ks">
+		<comment>create absence table</comment>
+
+		<createTable tableName="absence">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="user_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="away_from" type="DATE">
+				<constraints nullable="false" />
+			</column>
+			<column name="away_til" type="DATE">
+				<constraints nullable="false" />
+			</column>
+			<column name="level" type="TINYINT(1)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2c" author="ks">
+		<comment>create payment table</comment>
+
+		<createTable tableName="payment">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="date" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="confirmed" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="sender_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="receiver_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="bill_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2d" author="ks">
+		<comment>create bill table</comment>
+
+		<createTable tableName="bill">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="recurring" type="TINYINT(1)" />
+			<column name="file_url" type="VARCHAR(1024)" />
+			<column name="recurring_type" type="VARCHAR(10)" />
+			<column name="recurring_start_date" type="DATETIME" />
+			<column name="recurring_end_date" type="DATETIME" />
+			<column name="created_by" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="shop_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2e" author="ks">
+		<comment>create shop table</comment>
+
+		<createTable tableName="shop">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="logo_url" type="VARCHAR(1024)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2f" author="ks">
+		<comment>create currency table</comment>
+
+		<createTable tableName="currency">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="iso_code" type="VARCHAR(3)">
+				<constraints nullable="false" />
+			</column>
+			<column name="rate_to_euro" type="DECIMAL(5,2)">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2g" author="ks">
+		<comment>create cost entry table</comment>
+
+		<createTable tableName="cost_entry">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)" />
+			<column name="amount" type="DECIMAL(5,2)">
+				<constraints nullable="false" />
+			</column>
+			<column name="currency_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="date" type="DATETIME">
+				<constraints nullable="false" />
+			</column>
+			<column name="bill_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="category_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="excluded" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2h" author="ks">
+		<comment>create category table</comment>
+
+		<createTable tableName="category">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="flat_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="parent_category_id" type="BIGINT" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2i" author="ks">
+		<comment>create flat table</comment>
+
+		<createTable tableName="flat">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="admin_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="country" type="VARCHAR(45)" />
+			<column name="city" type="VARCHAR(45)" />
+			<column name="zip" type="VARCHAR(10)" />
+			<column name="street" type="VARCHAR(255)" />
+			<column name="street2" type="VARCHAR(255)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2j" author="ks">
+		<comment>create feature table</comment>
+
+		<createTable tableName="feature">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="VARCHAR(1024)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2k" author="ks">
+		<comment>create flat_enabled_features table and foreign key constraints</comment>
+
+		<createTable tableName="flat_enabled_features">
+			<column name="feature_id" type="BIGINT" />
+			<column name="flat_id" type="BIGINT" />
+		</createTable>
+
+		<addPrimaryKey tableName="flat_enabled_features"
+			columnNames="feature_id, flat_id" />
+
+		<addForeignKeyConstraint baseColumnNames="feature_id"
+			baseTableName="flat_enabled_features" constraintName="fk_feature_id"
+			referencedColumnNames="id" referencedTableName="feature" />
+
+		<addForeignKeyConstraint baseColumnNames="flat_id"
+			baseTableName="flat_enabled_features" constraintName="fk_flat_id"
+			referencedColumnNames="id" referencedTableName="flat" />
+	</changeSet>
+
+	<changeSet id="changelog-2l" author="ks">
+		<comment>create list position table</comment>
+
+		<createTable tableName="list_position">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="done" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="shopping_list_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2m" author="ks">
+		<comment>create shopping list table</comment>
+
+		<createTable tableName="shopping_list">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="deadline" type="DATETIME" />
+			<column name="flat_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_by_user_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="private" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="state" type="VARCHAR(10)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="changelog-2n" author="ks">
+		<comment>create user flat table</comment>
+
+		<createTable tableName="user_flat">
+			<column name="user_id" type="BIGINT" />
+			<column name="flat_id" type="BIGINT" />
+		</createTable>
+
+		<addPrimaryKey tableName="user_flat" columnNames="user_id, flat_id" />
+
+		<addForeignKeyConstraint baseColumnNames="user_id"
+			baseTableName="user_flat" constraintName="fk_user_flat_user_id"
+			referencedColumnNames="id" referencedTableName="user" />
+
+		<addForeignKeyConstraint baseColumnNames="flat_id"
+			baseTableName="user_flat" constraintName="fk_user_flat_flat_id"
+			referencedColumnNames="id" referencedTableName="flat" />
+	</changeSet>
+
+	<changeSet id="changelog-2o" author="ks">
+		<comment>create activity table</comment>
+
+		<createTable tableName="activity">
+			<column name="id" type="BIGINT" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(45)">
+				<constraints nullable="false" />
+			</column>
+			<column name="date" type="DATETIME" />
+			<column name="points" type="INT" />
+			<column name="flat_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_by_user_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="assigned_to_user_id" type="BIGINT" />
+			<column name="done" type="TINYINT(1)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

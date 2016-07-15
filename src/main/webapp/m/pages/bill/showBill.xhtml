@@ -1,0 +1,181 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="basic">
+			<h:form id="showForm">
+				<pm:header class="app-title" title="#{msg.tShowBill}" swatch="a">
+					<p:button
+						outcome="#{billOverview.returnPage!=null ? billOverview.returnPage : navigation.pageHome}"
+						value="#{msg.backB}" icon="ui-icon-arrow-l"
+						styleClass="ui-btn-left ui-btn-inline" />
+					<p:commandButton action="#{billOverview.mobileWizardNext(1)}"
+						value="#{msg.next}" icon="ui-icon-arrow-r"
+						styleClass="ui-btn-right ui-btn-inline" update="recurring"
+						ajax="false" />
+				</pm:header>
+				<pm:content>
+					<p:panel id="summary" header="#{msg.basicsHeader}">
+						<p:panelGrid columns="2" style="width:90%" class="noBorderGrid">
+							<p:outputLabel value="#{msg['dateLabel']}:" />
+							<h:outputText value="#{billOverview.bill.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+							<p:outputLabel value="#{msg['imageLabel']}:" />
+							<h:outputText value="#{billOverview.bill.resource.name}" />
+							<p:outputLabel value="#{msg['nameLabel']}:" />
+							<h:outputText value="#{billOverview.bill.name}" />
+							<p:outputLabel value="#{msg['shopLabel']}:" />
+							<h:outputText value="#{billOverview.bill.shopDTO.name}" />
+							<p:outputLabel value="#{msg['totalLabel']}:" />
+							<h:outputText value="#{billOverview.bill.total}" />
+							<p:outputLabel value="#{msg['currencyLabel']}:" />
+							<h:outputText value="#{billOverview.bill.currency.isoCode}" />
+							<p:outputLabel value="#{msg.activityList_createdBy}"/> 
+							<h:outputText value="#{billOverview.bill.createdByUsername}"/>
+						</p:panelGrid>
+					</p:panel>
+
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+
+		<pm:page id="recurring" lazy="true">
+			<h:form>
+				<pm:header class="app-title" title="#{msg.tShowBill}" swatch="a">
+					<p:commandButton type="submit"
+						action="#{billOverview.mobileWizardBack(2)}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline"
+						ajax="false" />
+					<p:commandButton type="submit"
+						action="#{billOverview.mobileWizardNext(2)}" value="#{msg.next}"
+						icon="ui-icon-arrow-r" styleClass="ui-btn-right ui-btn-inline"
+						ajax="false" update="items" />
+				</pm:header>
+				<pm:content>
+					<p:panel header="#{msg.recurringTab}"
+						rendered="#{billOverview.bill.recurring!=null}">
+						<p:panelGrid columns="2" class="noBorderGrid">
+							<p:outputLabel value="#{msg.startLabel}:" />
+							<h:outputText value="#{billOverview.bill.recurring.date}">
+								<f:convertDateTime pattern="MM-dd-yyyy" />
+							</h:outputText>
+							<p:outputLabel value="#{msg.repeatEvery}:" />
+							<h:outputText
+								value="#{billOverview.bill.recurring.value} #{billOverview.bill.recurring.recurringType.name}" />
+							<p:outputLabel value="#{msg.repeatLabel}" />
+							<h:outputText
+								value="#{billOverview.bill.recurring.repeatType.name}"
+								rendered="#{billOverview.bill.recurring.repeatType=='FOREVER'}" />
+							<h:outputText
+								value="#{billOverview.bill.recurring.repeatType.name} #{billOverview.bill.recurring.times} #{msg.iteratLabel} "
+								rendered="#{billOverview.bill.recurring.repeatType=='TIMES'}" />
+							<h:outputText
+								value="#{billOverview.bill.recurring.repeatType.name} #{billOverview.bill.recurring.endDate}"
+								rendered="#{billOverview.bill.recurring.repeatType=='UNTIL'}" />
+						</p:panelGrid>
+					</p:panel>
+					<p:panel header="#{msg.imageLabel}"
+						rendered="#{billOverview.bill.resource!=null}">
+						<p:panelGrid columns="2" class="noBorderGrid">
+							<p:graphicImage value="#{file.file}" width="#{file.width}"
+								height="#{file.height}">
+								<f:param name="id" value="#{billOverview.bill.resource.id}" />
+							</p:graphicImage>
+							<p:panelGrid columns="2">
+								<p:outputLabel value="#{msg.imageLabel}:" />
+								<h:outputText value="#{billOverview.bill.resource.name}" />
+								<p:outputLabel value="#{msg.fileType}:" />
+								<h:outputText value="#{billOverview.bill.resource.simpleType}" />
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:panel>
+				</pm:content>
+			</h:form>
+		</pm:page>
+
+		<pm:page id="items" lazy="true">
+			<h:form id="itemsForm">
+				<pm:header title="#{msg.tShowBill}" swatch="a">
+					<p:commandButton type="submit"
+						action="#{editBill.mobileWizardBack(3)}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline"
+						ajax="false" />
+					<p:button
+						outcome="#{billOverview.returnPage!=null ? billOverview.returnPage : navigation.pageHome}"
+						value="#{msg.finish}" icon="ui-icon-arrow-r"
+						styleClass="ui-btn-right ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+					<p:panel header="#{msg.itemsHeader}">
+						<p:dataTable id="items" var="item1"
+							value="#{billOverview.bill.costEntries}"
+							tableStyleClass="ui-table-columntoggle" rowKey="#{item1.rowKey}"
+							paginator="true" rows="5">
+
+							<p:column priority="1" style="width:50px;">
+								<p:button icon="ui-icon-minus" rendered="#{item1.excluded}"
+									disabled="true" />
+								<p:button icon="ui-icon-check" rendered="#{!item1.excluded}"
+									disabled="true" />
+
+							</p:column>
+							<p:column headerText="#{msg['nameLabel']}" priority="1">
+								<h:outputText value="#{item1.name}" />
+							</p:column>
+							<p:column headerText="#{msg['priceLabel']}" priority="1">
+								<h:outputText
+									value="#{item1.amount} #{billOverview.bill.currency.isoCode}" />
+							</p:column>
+							<p:column headerText="#{msg['categoryLabel']}" priority="2">
+								<h:outputText value="#{item1.category.name}" />
+							</p:column>
+							<p:column headerText="#{msg['amount']}" priority="2">
+								<h:outputText value="#{item1.times}" />
+							</p:column>
+							<p:column>
+								<p:commandButton icon="ui-icon-eye" title="#{msg.view}"
+									oncomplete="PF('dlg2').show();" update="items:itemsForm:dlg2">
+									<f:setPropertyActionListener value="#{item1}"
+										target="#{billOverview.selectedCostEntry}" />
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:panel>
+					<p:dialog header="#{billOverview.selectedCostEntry.name}"
+						widgetVar="dlg2" id="dlg2">
+						<p:panelGrid columns="2">
+							<p:outputLabel for="itemName"
+								value="#{msg.shoppingLists_nameTitle}:" />
+							<h:outputText id="itemName"
+								value="#{billOverview.selectedCostEntry.name}" />
+							<p:outputLabel value="#{msg['priceLabel']} :" />
+							<h:outputText
+								value="#{billOverview.selectedCostEntry.amount} #{billOverview.bill.currency.isoCode}" />
+							<p:outputLabel value="#{msg['amount']}" />
+							<h:outputText value="#{billOverview.selectedCostEntry.times}" />
+							<p:outputLabel value="#{msg['categoryLabel']}" />
+							<h:outputText
+								value="#{billOverview.selectedCostEntry.category.name}" />
+						</p:panelGrid>
+
+					</p:dialog>
+				</pm:content>
+			</h:form>
+		</pm:page>
+
+	</ui:define>
+
+
+</ui:composition>

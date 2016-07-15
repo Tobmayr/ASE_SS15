@@ -1,0 +1,23 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+
+		<h1 class="page-header ">Putzen</h1>
+
+		<p:tabMenu activeIndex="1">
+			<p:menuitem value="Home" outcome="activities" icon="ui-icon-home" />
+			<p:menuitem value="Putzen" outcome="cleaning" icon="ui-icon-trash" />
+			<p:menuitem value="Freizeit" outcome="freetime" icon="ui-icon-star" />
+			<p:menuitem value="Einkaufsliste" outcome="shoppingList"
+				icon="ui-icon-cart" />
+		</p:tabMenu>
+
+	</ui:define>
+
+
+</ui:composition>

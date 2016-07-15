@@ -1,0 +1,53 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+
+		<pm:page id="index">
+			<h:form id="form">
+				<style>
+.payment-panel .ui-panel-m-content {
+	padding: 0 !important;
+}
+</style>
+				<pm:header class="app-title" title="#{msg.paymentsOverview}"
+					swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value=" #{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+
+					<p:messages id="messages" showDetail="true" />
+
+					<p:dataTable var="payment"
+						value="#{costDivisionBean.databasePaymentUsersAll}"
+						id="paymentsTable">
+						<p:column headerText="#{msg['sender']}">
+							<h:outputText value="#{payment.sender.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['receiver']}">
+							<h:outputText value="#{payment.receiver.userName}" />
+						</p:column>
+						<p:column headerText="#{msg['amount']}">
+							<h:outputText
+								value="#{payment.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+						</p:column>
+						<p:column headerText="#{msg.confirmed}">
+							<h:outputText value="#{payment.confirmed ? msg.yes : msg.no}" />
+						</p:column>
+					</p:dataTable>
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

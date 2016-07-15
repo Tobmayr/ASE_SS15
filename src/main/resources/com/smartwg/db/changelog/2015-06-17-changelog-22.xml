@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<changeSet id="changelog-22" author="to">
+		<comment>add deleted flag for categories and shops</comment>
+		<addColumn tableName="category">
+			<column name="deleted" type="TINYINT(1)" />
+		</addColumn>
+		<addDefaultValue columnName="deleted" tableName="category" defaultValue="0"/>
+		<addColumn tableName="shop">
+			<column name="deleted" type="TINYINT(1)" />
+		</addColumn>
+		<addDefaultValue columnName="deleted" tableName="shop" defaultValue="0"/>
+		<addColumn tableName="user">
+			<column name="deleted" type="TINYINT(1)" />
+		</addColumn>
+		<addDefaultValue columnName="deleted" tableName="user" defaultValue="0"/>
+		<addColumn tableName="user_group">
+			<column name="deleted" type="TINYINT(1)"></column>
+		</addColumn>
+		<addDefaultValue columnName="deleted" tableName="user_group" defaultValue="0"/>
+	</changeSet>
+
+</databaseChangeLog>

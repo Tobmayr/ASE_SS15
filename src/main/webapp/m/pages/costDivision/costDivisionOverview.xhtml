@@ -1,0 +1,93 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<ui:define name="body">
+		<pm:page id="index">
+			<h:form id="form">
+				<style>
+.tableView table, .tableView a.ui-datepicker-prev, .tableView a.ui-datepicker-next
+	{
+	display: none;
+}
+
+.expenses-panel .ui-panel-m-content {
+	padding: 0 !important;
+}
+</style>
+				<pm:header title="#{msg.costDivisionOverview}" swatch="a">
+					<p:button outcome="#{navigation.pageHome}" value="#{msg.backB}"
+						icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
+				</pm:header>
+				<pm:content>
+					<div class="align-center">
+						<h:panelGrid columns="3" id="dateButtons" style="margin: 0 auto;">
+							<p:commandButton
+								actionListener="#{costDivisionBean.decrementMonth}" id="navLeft"
+								update="index:form:diagram, index:form:dateButtons, index:form:expensesTable, index:form:messages"
+								icon="ui-icon-triangle-1-w" ajax="false" />
+
+							<h:panelGroup class="tableView">
+								<p:calendar value="#{smartWG.costDivisionOverviewSelectedDate}"
+									mode="inline" />
+							</h:panelGroup>
+
+							<p:commandButton
+								actionListener="#{costDivisionBean.incrementMonth}"
+								id="navRight"
+								update="index:form:diagram, index:form:dateButtons, index:form:expensesTable, index:form:messages"
+								icon="ui-icon-triangle-1-e" ajax="false" />
+						</h:panelGrid>
+
+						<p:messages showDetail="true" id="messages" />
+
+						<p:panel id="costDivisionPanel" header="#{msg.costDivision}">
+							<p:dataTable var="paymentUser"
+								value="#{costDivisionBean.paymentUsers}" id="costDivisionTable">
+								<p:column headerText="#{msg['lhUsername']} #{msg.sender}">
+									<h:outputText value="#{paymentUser.sender.userName}" />
+								</p:column>
+								<p:column headerText="#{msg['lhUsername']} #{msg.receiver}">
+									<h:outputText value="#{paymentUser.receiver.userName}" />
+								</p:column>
+								<p:column headerText="#{msg['amount']}">
+									<h:outputText
+										value="#{paymentUser.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+						<p:button outcome="#{navigation.pageCostDivisionDetails}"
+							icon="fa fa-eye" title="#{msg.costDivisionDetails}"
+							value="#{msg.costDivisionDetails}" />
+
+						<p:panel id="expensesPanel" header="#{msg.expenses}"
+							footer="#{msg['totalLabel']}: #{costDivisionBean.totalExpenses} "
+							styleClass="expenses-panel">
+							<p:dataTable var="user"
+								value="#{costDivisionBean.paidBillAmountsOfUsers.entrySet().toArray()}"
+								id="expensesTable">
+								<p:column headerText="#{msg['lhUsername']}">
+									<h:outputText value="#{user.key}" />
+								</p:column>
+								<p:column headerText="#{msg['amount']}">
+									<h:outputText
+										value="#{user.value} #{userBean.currentGroup.country.currency.isoCode}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</div>
+				</pm:content>
+				<pm:footer>
+				</pm:footer>
+			</h:form>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

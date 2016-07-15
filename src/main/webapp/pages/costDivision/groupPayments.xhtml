@@ -1,0 +1,65 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<h1 class="page-header ">#{msg.paymentsOverview}</h1>
+
+			<div class="container-fluid">
+
+				<p:messages showDetail="true" id="messages" />
+
+				<p:dataTable var="payment"
+					value="#{costDivisionBean.databasePaymentUsersAll}"
+					id="paymentsTable" paginator="true"
+					paginatorTemplate=" {Exporters}"
+					emptyMessage="#{msg['empty.norecords']}">
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="paymentsTable"
+								fileName="payments" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="paymentsTable"
+								fileName="payments" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="paymentsTable"
+								fileName="payments" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="paymentsTable"
+								fileName="payments" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['sender']}">
+						<h:outputText value="#{payment.sender.userName}" />
+					</p:column>
+					<p:column headerText="#{msg['receiver']}">
+						<h:outputText value="#{payment.receiver.userName}" />
+					</p:column>
+					<p:column headerText="#{msg['amount']}">
+						<h:outputText
+							value="#{payment.amount} #{userBean.currentGroup.country.currency.isoCode}" />
+					</p:column>
+					<p:column headerText="#{msg.confirmed}">
+						<h:outputText value="#{payment.confirmed ? msg.yes : msg.no}" />
+					</p:column>
+				</p:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

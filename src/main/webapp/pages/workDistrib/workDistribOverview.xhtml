@@ -1,0 +1,130 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<style>
+.tableView table, .tableView a.ui-datepicker-prev, .tableView a.ui-datepicker-next
+	{
+	display: none;
+}
+</style>
+		<h:form>
+			<h1 class="page-header ">#{msg['workDistribOverview']}</h1>
+
+			<p:growl id="messages" sticky="true" showDetail="true" />
+			<h:panelGrid columns="3" id="dateButtons">
+				<p:commandButton actionListener="#{workDistribBean.decrementMonth}"
+					id="navLeft" update=":form" icon="ui-icon-triangle-1-w"
+					ajax="false" />
+
+				<h:panelGroup class="tableView">
+					<p:calendar value="#{smartWG.workDistribOverviewSelectedDate}"
+						mode="inline" />
+				</h:panelGroup>
+
+				<p:commandButton actionListener="#{workDistribBean.incrementMonth}"
+					id="navRight" update=":form" icon="ui-icon-triangle-1-e"
+					ajax="false" />
+			</h:panelGrid>
+			<div class="container-fluid">
+				<p:chart type="bar" model="#{workDistribBean.model}"
+					style="height:300px" extender="ext" />
+
+				<h:outputScript name="jqplot/dist/plugins/jqplot.canvasOverlay.js" />
+				<h:outputScript
+					name="jqplot/dist/plugins/jqplot.canvasTextRenderer.min.js" />
+				<h:outputScript
+					name="jqplot/dist/plugins/jqplot.canvasOverlay.min.js" />
+				<h:outputScript
+					name="jqplot/dist/plugins/jqplot.canvasAxisTickRenderer.min.js" />
+
+				<h:outputScript>         
+							function ext()
+							{
+							 this.cfg.canvasOverlay = {
+				                show: true,
+				                objects: [{horizontalLine: {
+                        name: 'pebbles',
+                        y: "#{workDistribBean.pointsShouldBeReached}",
+                        lineWidth: 2,
+                        color: 'rgb(100, 55, 124)',
+                        shadow: true,
+                        lineCap: 'butt',
+                        xOffset: 0
+                    }}]};
+							
+							}
+            </h:outputScript>
+				<br />
+				<p:commandButton action="#{workDistribBean.ratingsButtonClicked()}"
+					icon="fa fa-users" title="#{msg['ratings']}" ajax="false"
+					value="#{msg['ratings']}" />
+				<br /> <br />
+				<p:dataTable var="userPoints" id="userPoints"
+					value="#{workDistribBean.userPoints.entrySet().toArray()}"
+					paginator="true" paginatorTemplate=" {Exporters}">
+					<f:facet name="header">
+						<h:outputText value="#{msg['points']}" />
+					</f:facet>
+
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="userPoints"
+								fileName="userPoints" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="userPoints"
+								fileName="userPoints" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="userPoints"
+								fileName="userPoints" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="userPoints"
+								fileName="userPoints" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['lhUsername']}">
+						<h:outputText value="#{userPoints.key.userName}" />
+					</p:column>
+					<p:column headerText="#{msg['gainPoints']}">
+						<h:outputText
+							value="#{userPoints.value.gainPoints} (#{userPoints.value.alreadyDone})" />
+					</p:column>
+					<p:column headerText="#{msg['shouldPoints']}">
+						<h:outputText value="#{userPoints.value.shouldPoints}" />
+					</p:column>
+					<p:column headerText="#{msg['pointsBalance']}">
+						<h:outputText
+							value="#{workDistribBean.formatDouble( userPoints.value.gainPoints - userPoints.value.shouldPoints)}" />
+					</p:column>
+					<p:column headerText="#{msg['overallBalance']}">
+						<h:outputText
+							value="#{workDistribBean.formatDouble(smartWG.getCurrentBalance(userPoints.key.userName))}" />
+					</p:column>
+
+					<f:facet name="footer">
+						<h:outputText
+							value="#{msg['totalLabel']}: #{workDistribBean.totalPoints} "
+							style="font-weight:bold;" />
+					</f:facet>
+				</p:dataTable>
+			</div>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,135 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="body">
+		<pm:page id="mandatory">
+			<pm:header title="#{msg['bRegister']} - #{msg['madatoryHeader']}"
+				class="app-title" swatch="a">
+			</pm:header>
+			<h:form id="regForm">
+				<pm:content>
+
+					<h:messages id="messages" />
+					<pm:field>
+						<h:outputLabel for="registerEemail" value="#{msg['lMail']}" />
+						<p:inputText id="registerEemail"
+							value="#{registrationBean.currentUser.email}" pt:type="email"
+							pt:placeholder="#{msg['phMail']}" pt:data-required="true"
+							required="true"
+							requiredMessage="#{valMsg['error.email.required']}">
+							<o:validator validatorId="javax.faces.RegularExpression"
+								pattern="([\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z])"
+								message="#{valMsg['error.email.format']}" />
+						</p:inputText>
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="userName" value="#{msg['lUsername']}" />
+						<p:inputText id="userName"
+							value="#{registrationBean.currentUser.userName}"
+							placeholder="#{msg['phUserName']}" required="true"
+							requiredMessage="#{valMsg['error.username.required']}">
+							<o:validator validatorId="javax.faces.Length" minimum="6"
+								maximum="20" message="#{valMsg['error.username.length']}" />
+						</p:inputText>
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="registerPassword" value="#{msg['lPass']}" />
+						<p:password id="registerPassword"
+							value="#{registrationBean.currentUser.password_clear}"
+							pt:placeholder="#{msg['phPass']}" required="true"
+							label="Password Match" feedback="false"
+							requiredMessage="#{valMsg['error.password.required']}">
+							<o:validator validatorId="javax.faces.RegularExpression"
+								pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})"
+								message="#{valMsg['error.password.format']}" />
+						</p:password>
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="registerPassword2" value="#{msg['lPass2']}" />
+						<p:password id="registerPassword2"
+							value="#{registrationBean.passwordMatch}"
+							pt:placeholder="#{msg['phPass']}" label="Password Match"
+							feedback="false" />
+					</pm:field>
+				</pm:content>
+				<pm:footer>
+					<p:button value="#{msg['cancel']}"
+						styleClass="ui-btn-left ui-btn-inline"
+						outcome="#{navigation.pageHome}"></p:button>
+					<p:commandButton value="#{msg['finish']}"
+						styleClass="ui-btn-right ui-btn-inline"
+						action="#{registrationBean.createUser}" ajax="false" />
+					<p:commandButton value="#{msg['next']}"
+						styleClass="ui-btn-right ui-btn-inline"
+						action="pm:optional?transition=slide" style="margin-right:6em;"
+						type="submit" update="regForm:messages" />
+
+				</pm:footer>
+			</h:form>
+		</pm:page>
+
+		<pm:page id="optional">
+			<pm:header title="#{msg['bRegister']} - #{msg['optionalHeader']}"
+				class="header-title" swatch="a">
+			</pm:header>
+			<h:form id="reg1Form">
+				<pm:content>
+					<h:messages />
+					<pm:field>
+						<h:outputLabel for="firstName" value="#{msg['lFirstName']}" />
+						<p:inputText id="firstName"
+							value="#{registrationBean.currentUser.firstName}">
+							<o:validator validatorId="javax.faces.Length" maximum="20"
+								message="#{valMsg['error.name.length']}" />
+						</p:inputText>
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="lastName" value="#{msg['lLastName']}" />
+						<p:inputText id="lastName"
+							value="#{registrationBean.currentUser.lastName}">
+							<o:validator validatorId="javax.faces.Length" maximum="20"
+								message="#{valMsg['error.name.length']}" />
+						</p:inputText>
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="birthDate" value="#{msg['lBirthdate']}" />
+						<p:calendar id="birthDate"
+							value="#{registrationBean.currentUser.birthDate}"
+							navigator="true" pattern="yyyy-MMM-dd" yearRange="c-100:c-0" />
+					</pm:field>
+					<pm:field>
+						<h:outputLabel for="notificationTypes" value="#{msg['lNotify']}" />
+						<p:selectCheckboxMenu id="notificationTypes"
+							value="#{registrationBean.currentUser.notificationTypes}"
+							converter="omnifaces.SelectItemsConverter"
+							label="#{msg.registerSelectNotification}" filter="false"
+							panelStyle="width:250px">
+							<f:selectItems value="#{registrationBean.notifications}"
+								var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+						</p:selectCheckboxMenu>
+					</pm:field>
+				</pm:content>
+				<pm:footer>
+					<p:button value="#{msg['backB']}"
+						styleClass="ui-btn-left ui-btn-inline"
+						outcome="pm:mandatory?transition=slide"></p:button>
+					<p:commandButton value="#{msg['finish']}"
+						styleClass="ui-btn-right ui-btn-inline"
+						action="#{registrationBean.createUser}" ajax="false" />
+
+
+				</pm:footer>
+			</h:form>
+		</pm:page>
+
+	</ui:define>
+
+
+</ui:composition>

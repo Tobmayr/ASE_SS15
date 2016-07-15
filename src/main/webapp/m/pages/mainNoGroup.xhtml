@@ -1,0 +1,111 @@
+<ui:composition template="/templates/main_mobile.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="body">
+
+		<pm:page id="main">
+			<pm:header>
+				<h:form id="toolForm">
+					<p:commandButton id="menu" type="button" styleClass="ui-btn-inline"
+						icon="ui-icon-bars" />
+					<p:commandButton icon="ui-icon-user" styleClass="ui-btn-inline"
+						style="float: right;" action="#{userBean.logout}" />
+				</h:form>
+
+			</pm:header>
+			<pm:content>
+
+				<div class="align-center">
+					<p:accordionPanel dynamic="true" cache="true">
+						<p:tab title="#{msg.newGroup}">
+							<h:form id="createForm">
+								<p:messages autoUpdate="true" id="messages" />
+								<p:outputLabel for="name" value="#{msg['nameLabel']}:" />
+								<p:inputText id="name" value="#{dashboardNoGroup.newGroup.name}" />
+								<p:outputLabel for="country" value="#{msg['countryLabel']}:" />
+								<p:selectOneMenu id="country"
+									value="#{dashboardNoGroup.newGroup.country}"
+									converter="omnifaces.SelectItemsConverter" required="true"
+									requiredMessage="#{valMsg['error.country.name.required']}">
+									<f:selectItem itemLabel="#{msg['chooseCountry']}" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItems value="#{dashboardNoGroup.countries}" var="item"
+										itemLabel="#{item.name}" itemValue="#{item}" />
+								</p:selectOneMenu>
+								<p:outputLabel for="city" value="#{msg['cityLabel']}:" />
+								<p:inputText id="city" value="#{dashboardNoGroup.newGroup.city}" />
+								<p:outputLabel for="zip" value="#{msg['zipLabel']}:" />
+								<p:inputText id="zip" value="#{dashboardNoGroup.newGroup.zip}" />
+								<p:outputLabel for="street" value="#{msg['streetLabel']}:" />
+								<p:inputText id="street"
+									value="#{dashboardNoGroup.newGroup.street}" />
+								<p:outputLabel for="street2" value="#{msg['street2Label']}:" />
+								<p:inputText id="street2"
+									value="#{dashboardNoGroup.newGroup.street2}" />
+								<p:commandButton action="#{dashboardNoGroup.createGroup}"
+									value="#{msg['save']}" icon="fa fa-check" />
+							</h:form>
+						</p:tab>
+						<p:tab id="searchTab" title="#{msg.lsGroup}">
+							<h:form id="seachForm">
+								<p:panel header="#{msg.lresults}">
+									<p:messages id="messages" autoUpdate="true" />
+									<p:panelGrid columns="3">
+										<p:outputLabel for="search" value="Search for" />
+										<p:inputText id="search"
+											value="#{dashboardNoGroup.searchParam}" />
+										<p:commandButton action="#{dashboardNoGroup.searchGroups}"
+											icon="ui-icon-search" title="#{msg.search}"
+											update="seachForm:groups" />
+									</p:panelGrid>
+
+
+									<p:dataTable id="groups" var="group"
+										value="#{dashboardNoGroup.groups}" rowKey="#{group.id}">
+										<p:column headerText="Group Name">
+											<h:outputText value="#{group.name}" />
+										</p:column>
+
+										<p:column headerText="Address">
+											<h:outputText value="#{group.street}" />
+										</p:column>
+
+										<p:column headerText="City">
+											<h:outputText value="#{group.city}" />
+										</p:column>
+
+										<p:column headerText="Zip">
+											<h:outputText value="#{group.zip}" />
+										</p:column>
+
+										<p:column exportable="false">
+											<p:commandButton
+												action="#{dashboardNoGroup.joinGroup(group)}"
+												icon="fa fa-arrow-circle-right" title="#{msg.tJoin}" />
+
+										</p:column>
+									</p:dataTable>
+
+								</p:panel>
+
+
+							</h:form>
+						</p:tab>
+					</p:accordionPanel>
+
+				</div>
+
+
+
+
+			</pm:content>
+		</pm:page>
+	</ui:define>
+
+
+</ui:composition>

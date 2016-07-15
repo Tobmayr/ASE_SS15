@@ -1,0 +1,67 @@
+<ui:composition template="/templates/main.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="content">
+		<h:form>
+			<h1 class="page-header ">#{msg['groupCalendar']}</h1>
+
+			<p:growl id="messages" sticky="true" showDetail="true" />
+
+			<div class="container-fluid">
+				<p:tabMenu activeIndex="1">
+					<p:menuitem value="#{msg['calendar']}" outcome="calendar"
+						icon="ui-icon-calendar" />
+					<p:menuitem value="#{msg['groupCalendar']}" outcome="groupCalendar"
+						icon="ui-icon-grip-dotted-vertical" />
+				</p:tabMenu>
+
+				<p:dataTable id="activities" var="activities"
+					value="#{calendarBean.rows}" paginator="true"
+					paginatorTemplate=" {Exporters}">
+					<f:facet name="{Exporters}">
+						<h:commandLink>
+							<p:graphicImage name="/images/export/excel.png" width="24" />
+							<p:dataExporter type="xls" target="activities"
+								fileName="activities" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/pdf.png" width="24" />
+							<p:dataExporter type="pdf" target="activities"
+								fileName="activities" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/csv.png" width="24" />
+							<p:dataExporter type="csv" target="activities"
+								fileName="activities" encoding="iso-8859-1" />
+						</h:commandLink>
+
+						<h:commandLink>
+							<p:graphicImage name="/images/export/xml.png" width="24" />
+							<p:dataExporter type="xml" target="activities"
+								fileName="activities" encoding="iso-8859-1" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column headerText="#{msg['date']}"
+						style="width:100px;white-space:pre;#{activities[0].name == null ? 'border-style:hidden !important' : ''}">
+						<h:outputText value="#{activities[0].name}" />
+					</p:column>
+					<p:columns value="#{calendarBean.users}" var="user"
+						columnIndexVar="colIndex">
+						<f:facet name="header">
+							<h:outputText value="#{user.userName}" />
+						</f:facet>
+						<h:outputText value="#{activities[colIndex + 1].name}" />
+					</p:columns>
+				</p:dataTable>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
