@@ -1,5 +1,5 @@
 # ASE_SS15
-Repository for the web application Fair Share, which has been created in the context of the course "Advamced Software Engineering" at the Vienna University of Technology (Summerterm 2015).
+Repository for the web application Fair Share, which has been created in the context of the course "Advanced Software Engineering" at the Vienna University of Technology (Summerterm 2015).
 
 What is FAIR SHARE?</br>
 -Management Tool for shared flats</br>
